@@ -1,0 +1,70 @@
+---
+title: "Introduction to R"
+author: "Jes Coyle"
+date: "October 28, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(comment = '')
+knitr::opts_chunk$set(eval=F)
+```
+
+## Getting Started
+
+R is a free software environment for data analysis and visualization. It has become a preferred tool among ecologists for analyzing research data. For this lesson you will need to download R (from: <http://r-project.og>) and install it. You should also download and install R Studio for desktop (from: <http://rstudio.com>).
+
+The first step to success using R is to set up your files so that they are organized and easy to find. Before opening R, create a new directory ('folder') in the place on your computer where you store files for this class (maybe it's called 'BIO46'?). Name this new directory 'R-lessons'. Inside the 'R-lessons' directory create two more directories- one named 'Data', for data files, and one named 'Code', for files that will contain you analysis (these are called 'scripts'). We will use 'R_lessons' as your working directory in this and subsequent lessons.
+
+Today we will work through the script named 'R-lesson1.r'. You should download this script from Axess or obtain it from <http://github.com/jescoyle/BIO46/R-lessons/Code/R-lesson1.r> and save it in the directory 'R-lessons/Code'. 
+
+Now start R Studio and open 'R-lesson1.r'. In R Studio you can open scripts by clicking the folder icon or *File > Open File* and then navigating to the directory 'R-lessons/Code'. When the file opens, type in your name in the top line then click the save icon to save your work.
+
+This file contains the code that you will see in this lesson document. There are two main parts- comments that give you information and code that actually does something:
+
+```{r}
+# Comments begin with a # and give you information about what the code does.
+# For example, the next line is code that will print 'Hello' in the console.
+print('Hello')
+```
+
+You should run (i.e. execute) each line of code in the script as you work through the lesson. You can run a line of code by placing your cursor on the line and either clicking the 'Run' button at the top right. You can run multiple lines by highlighting them and clicking 'Run'.
+
+There will also be sections in the lesson where you will need to write your own code or add to an existing line. These will be marked by **YOUR TURN**. To complete the assignment you *must* do all of the **YOUR TURN** sections. You will save and submit your modified 'R-lesson1.r' script at the end of class. If you are stuck, ask your partner. If you are both stuck, ask for help- we are here to make sure everyone gets through the assignment. Occasionally there will be **BONUS** sections. These are not required, but there if you finish early and want a challenge. As you work through the document, be sure to click 'Save' periodically. R Studio does not have auto-save.
+
+**YOUR TURN**: Modify the code above so that the console greets you by name.
+
+## Objects
+
+R works on things called 'objects'. An objects is anything saved in R that has a name and some information associated with that name. Today we will learn how to make and manipulate several kinds (i.e. *classes*) of objects: vectors, matrices, arrays, dataframes, and lists.
+
+### Vectors
+
+Vectors are a series of *elements* of a single *data type* (e.g. numbers or characters). The most basic way to create a vector is to use the concatenate function `c()`.
+
+```{r vectors}
+# This is a vector of numbers
+c(1,2,3,4,5)
+
+# This is a vector of characters
+c('a','b','c','d','e')
+
+# Vectors cannot contain elements with different types
+c(1,2,3,'a','b')
+```
+
+**Discuss with your partner:** What happened in the third vector when you tried to combine three numbers and two letters?
+
+Notice that each of these vectors printed to the console, but then where did they go? They no longer exists. If we want to *use* a vector then we have to give it a name so that it becomes an *object*. To retrieve the object, just type its name.
+
+```{r vector-objects}
+# Make a vector called lichens
+lichens = c(1,2,3,4,5)
+
+# Print the contents of lichens
+lichens
+```
+
+
+
