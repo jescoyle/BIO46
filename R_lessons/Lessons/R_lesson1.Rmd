@@ -1,0 +1,38 @@
+---
+title: "Introduction to R"
+author: "Jes Coyle"
+date: "October 28, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Getting Started
+
+R is a free software environment for data analysis and visualization. It has become a preferred tool among ecologists for analyzing research data. For this lesson you will need to download R (from: <http://r-project.og>) and install it. You should also download and install R Studio for desktop (from: <http://rstudio.com>).
+
+The first step to success using R is to set up your files so that they are organized and easy to find. Before opening R, create a new directory ('folder') in the place on your computer where you store files for this class (maybe its called 'BIO46'?). Name this new directory 'R_lessons'. Inside the 'R_lessons' directory create two more directories- one named 'Data', for data files, and one named 'Code', for files that will contain you analysis (these are called 'scripts'). We will use 'R_lessons' as your working directory in this and subsequent lessons.
+
+Today we will work through the script named 'R-lesson1.r'. You should download this script from Axess or obtain it from <http://github.com/jescoyle/BIO46/R_lessons/Code/R-lesson1.r>
+
+Now open R Studio.
+
+
+
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
