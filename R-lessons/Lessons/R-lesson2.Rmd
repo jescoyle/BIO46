@@ -1,0 +1,347 @@
+---
+title: "Summarizing and Visualizing Data"
+author: "BIO 46, Winter 2017, Stanford University"
+date: "Week 3: January 24, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(comment = '')
+knitr::opts_chunk$set(eval=F)
+```
+
+## Lesson Goals
+
+Today you will learn how to...
+
+1. Read a data table into R.
+2. Summarize data fields.
+3. Use logical operators to subset data.
+4. Merge data from two tables.
+5. Visualize data with boxplots.
+
+To accomplish this you will be working with a data file ('iButtons\_Fall2016.csv') that contains temperature observations from iButtons deployed on 17 trees at Jasper Ridge. The iButtons recorded temperature in Celcius every 10 minutes from mid September to early October 2016. Each row in this file contains contains a temperature observation from an iButton deployed on a tree. Another file ('JRTrees\_Fall2016.csv') contains information about the trees where the iButtons where deployed.
+
+Before beginning the lesson you should download each of these files from Canvas (Files/R-lessons/Data) and put them in the 'R-lessons/Data' directory on your compueter. Today we will work through the script named 'R-lesson2.r'. You should download this script from Canvas (Files/R-lessons/Code) and save it in your directory 'R-lessons/Code'. You can also download it from [GitHub](https://raw.githubusercontent.com/jescoyle/BIO46/master/R-lessons/Code/R-lesson2.r). 
+
+## Reading data tables into R
+R has the capability to read data tables in many different text formats. The most common format you will use is csv, comma separated values, where each column is separated by commas. If you open JRTrees\_Fall2016.csv with a text editor you will see this. There are two ways to read a csv file into R: `read.table()` and `read.csv()`, which is just a more specific version of `read.table`. Before you can use these functions you will first need to find the location where the data is stored, the *file path*.
+
+**YOUR TURN**: Change the working directory below so that you can read in the data tables from your 'R-lessons/Data' directory.
+
+```{r read-in-data}
+# Stop R from automatically converting text to categorical variables when reading in data
+options(stringsAsFactors=F)
+
+# Define the location of your working directory
+working_dir = 'C:/Users/jrcoyle/Documents/Stanford/BIO46/GitHub/R-lessons/Data'
+
+# Set the working directory for this session
+setwd(working_dir)
+
+# Read iButton data and save in a data frame names temp_data
+temp_data = read.table('iButtons_Fall2016.csv', header=T, sep=',')
+
+# Read tree data using the short-cut function, read.csv
+tree_data = read.csv('JRTrees_Fall2016.csv')
+```
+
+**Discuss with your partner**: What do the `sep=`  and `header=` arguments do in `read.table`. (Hint: use `?` to check your answer.)
+
+What do these data look like? In R studio you can use the Environment window to see that tree_data is a dataframe with 17 rows and 3 columns. There are also several functions that are useful for looking at the data in the console.
+
+```{r}
+# Look at the first few rows of tree_data
+head(tree_data)
+
+# Count the number of rows in tree_data
+nrow(tree_data)
+
+# Count the number of columns in tree_data
+ncol(tree_data)
+
+# Get the number of rows and columns together (e.g. the dimensions)
+dim(tree_data)
+
+```
+
+**YOUR TURN**: Print out the column names of `temp_data` as well as the number of observations.
+
+## Summarizing data fields
+
+There are 17 different trees in tree_data. Let's check to see whether there are observations from each of these trees in the temperature data. The `table()` function counts the number of unique values present in a vector.
+
+```{r}
+# Count the number of observations from each tree
+table(temp_data$TreeID)
+
+```
+
+**Discuss with your partner**: Why does using `table()` on the TreeID column give the number of observations from each tree?
+
+**YOUR TURN**: Make a vector named `species_count` that contains the number of trees measured for each tree species.
+
+We can also summarize the temperature values.
+
+```{r}
+# What are the mean, minimum, and maximum temperature measured?
+mean(temp_data$Temp)
+min(temp_data$Temp)
+max(temp_data$Temp)
+
+# What is the range of temperature values?
+range(temp_data$Temp)
+
+```
+
+**YOUR TURN**: Calculate the temperature difference between the highest and lowest recorded temperatures.
+
+## Subsetting data
+
+Suppose we only wanted to summarize temperature data from Tree 1. R uses logical operators to test whether certain conditions are true or false. These are: 
+
+
+R Code   | Test
+---------|---------------------------------
+`A == B` | Is A equal to B?
+`A < B`  | Is A less than B?
+`A > B`  | Is A greater than B?
+`A <= B` | Is A less than or equal to B?
+`A >= B` | Is A greater than or equal to B?
+`A != B` | Is A not equal to B?
+
+So, in order to subset `temp_data` to only observations from Tree 1, first we need to test which rows correspond to Tree 1 and then use this vector of trues/falses to select the rows from Tree 1.
+
+```{r}
+# Find which rows of temp_data are from Tree 1
+t1_rows = temp_data$TreeID == 'T1'
+t1_rows
+
+# How long is t1_rows?
+length(t1_rows)
+
+# How many rows are in temp_data?
+nrow(temp_data)
+
+# Is t1_rows the same length as temp_data?
+length(t1_rows) == nrow(temp_data)
+
+# Select rows from temp_data when t1_rows is TRUE (e.g. row corresponds to tree 1)
+T1_data = subset(temp_data, t1_rows)
+
+# Another way to subset:
+T1_data = temp_data[t1_rows, ]
+
+```
+
+**Discuss with your partner**: How many rows should T1_data have? How can you check?
+
+We can also use subsets to find times when the iButtons recorded extreme temperatures. When you perform arithmetic with logicals, true counts as 1 and false counts as 0. This is can be useful for counting. 
+
+```{r}
+# Find observations when the recorded temperature was greater than 40 Celcius
+high_temps = temp_data$Temp > 40
+
+# How many temperature readings were greater than 40?
+sum(high_temps)
+
+# Which rows correspond to temperatures greater than 40?
+which(high_temps)
+
+```
+
+**YOUR TURN**:  
+
+1. Make a dataframe called high\_temp\_data containing only observations where the temperature was greater than 40&deg;C.
+2. Count the number of observations from each tree that had temperatures greater than 40&deg;C.
+
+It isn't necessary to save a vector of logicals before subsetting. You can do it all in one step:
+
+```{r}
+# Find all observations where the temperature was less than 5 Celcius
+subset(temp_data, Temp < 5)
+
+# If subseting using [], you must specify the actual column, not just its name:
+temp_data[Temp < 5, ]
+temp_data[temp_data$Temp < 5, ]
+
+```
+
+R allows you to combine logical statements using `&` (and) and `|` (or).
+
+```{r}
+# Find observations from Tree 3 where the temperature was greater than 35 Celcius
+high_t3 = temp_data$TreeID == 'T3' & temp_data$Temp > 35
+which(high_t3)
+
+# Subset to these data
+subset(temp_data, high_t3)
+subset(temp_data, TreeID == 'T3' & Temp > 35)
+
+# Find observations where the temperature was greater than 40 or less than 5 Celcius
+extreme_temps = temp_data$Temp > 40 | temp_data$Temp < 5
+
+# Subset to these data
+temp_data[extreme_temps, ]
+temp_data[temp_data$Temp > 40 | temp_data$Temp < 5, ]
+
+
+```
+
+**YOUR TURN**:
+
+1. How many temperature records were greater than 40&deg;C or less than 5&deg;C?
+2. Make a dataframe called low\_t4 containing only observations from Tree 4 where the temperature was less than or equal to 10&deg;C.
+3. How many temperature observations from Tree 4 were less than 5&deg;C?
+4. Calculate the mean temperature from all data recorded at Tree 4. 
+
+
+## Summarizing data with dplyr
+
+Suppose we wanted to calculate the mean temperature for each tree. R has several functions that would allow us to do this, including `tapply()`, `aggregate()`, and `by()`. However, these can be tricky to use. From here on, we are going to switch over to using functions from an add-on package called dplyr. In order to use these these functions your must first install the package from the internet and then tell R to load the functions in the package.
+
+To install a package in R Studio you can click the 'Packages' tab in the upper right window, then click 'Install' and type 'dplyr' into the line marked 'Packages'. When you click install watch the console. Notice that `install.packages('dplyr')` appears. You could have also just typed this directly into the console to download and install the package.
+
+You only need to install a package once, but in order to use the functions in a package you need to load the functions each time you start R.
+
+```{r}
+# Load the package dplyr
+library(dplyr)
+```
+
+The functions in the dplyr can do a lot and we will learn just a little today. If you want to learn more there is a great introduction [here](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html). 
+
+In the dplyr package we use `filter()` instead of `subset()` to select rows where certain conditions are true. However, instead of using `&` to join multiple conditions, we just separate them with commas.
+
+```{r}
+# Find all observations where the temperature was less than 5 Celcius
+filter(temp_data, Temp < 5)
+
+# Find observations from Tree 3 where the temperature was greater than 35 Celcius
+filter(temp_data, Temp > 35, TreeID=='T3')
+
+```
+
+The `summarise` function allows us to calculate several summary statistics at once from a single dataframe. The first argument is the dataframe to be summarized and subsequent arguments have the form: `column_name = function_to_calculate()`.
+
+```{r}
+# Count the number of observations in temp_data
+summarise(temp_data, count=n())
+
+# Calculate the average temperature 
+summarise(temp_data, avgT = mean(Temp))
+
+# Do both at once
+summarise(temp_data, count = n(), avgT = mean(Temp))
+
+# Also calculate the maximum temperature
+summarise(temp_data, count = n(), avgT = mean(Temp), highT = max(Temp))
+
+```
+
+**YOUR TURN**: Modify the last line of code so that `lowT` containing the minimum temperature is also printed.
+
+The real power of dplyr is that is allows us to easily summarize groups of data using the `group_by()` function. The function creates a grouped table from a regular dataframe based on the specified variables. Then, when `summarise()` is applied to the grouped table, the summary statistics are printed for each group.
+
+```{r}
+# Create a grouped table of temp_data based on TreeID
+temp_byTree = group_by(temp_data, TreeID)
+
+# Summarize temperature data by tree
+tree_summary = summarise(temp_byTree, count = n(), avgT = mean(Temp), highT = max(Temp)) 
+
+# Which tree had the lowest mean temperature?
+filter(tree_summary, avgT == min(avgT))
+
+```
+
+## Merging data tables
+
+The tree data table shows that trees were located in two regions within Jasper Ridge, the north and the south. Suppose we wanted to know whether temperature differeed between these regions. In order to use the data from tree\_data to summarize data in temp\_data, first we need to merge the two data sets by adding a column to temp\_data containin the regions each tree is located in. The function to do this is `merge()`. We supply the two data frames as the first two agruemnts and then include a `by=` argument to tell the function which column is the same between the two dataframes.
+
+```{r}
+# Add the columns of tree_data onto temp_data based on TreeID
+merged_data = merge(temp_data, tree_data, by='TreeID')
+
+# Summarize temperature by region
+temp_byReg = group_by(merged_data, Region)
+reg_summary = summarise(temp_byReg, count = n(), avgT = mean(Temp), highT = max(Temp), lowT = min(Temp))
+reg_summary
+
+```
+
+**Discuss with your partner**: Is one region cooler than the other? Why or why not?
+
+**YOUR TURN**: Summarize temperature differences between the two tree species. Name this summary table `species_summary`.
+
+## Visualizing data
+
+Today we will visualize the location and spread of data in R using boxplots. Visualizing data is an important tool for evaluating whether data collected from different groups of observations differ from one another. First let's use a boxplot to look at temperature variation in the entire data set. In a boxplot, the middle line is the median of the data while the box extends to the 1st and 3rd quartiles (e.g., 50% of the observations are inside the box).
+
+```{r}
+# Make a boxplot of the temperature data from all trees
+boxplot(temp_data$Temp)
+
+```
+
+**YOUR TURN**: Use `?` to figure out how to make the plot whiskers extend to the lowest an highest temperature values.
+
+We can make boxplots with data from each tree separately. To do this we will write a *formula* as the first argument. A formula tells R what to place on the y-axis and what to place on the x-axis. For example, to plot temperature (y-axis) as a function of tree identity (x-axis) the formula is: `Temp ~ TreeID`.
+
+```{r}
+# Make boxplots of temperature for each tree
+boxplot(Temp ~ TreeID, data=temp_data)
+```
+
+Notice that we had to include the agrument `data=` to tell R where to look for the variable names `Temp` and `TreeID`. The plot needs axis labels. We can add these using the arguments `xlab` and `ylab`.
+
+```{r}
+# Make boxplots that include axis labels
+boxplot(Temp ~ TreeID, data=temp_data, xlab='Tree', ylab=expression(Temperature~(degree*C)))
+```
+
+Finally, let's add a line for the median across the entire data set so that we can tell which trees have warmer and cooler temperatures. 
+
+```{r}
+# Add red horizontal dashed line at the median of the entire data set
+abline(h = median(temp_data$Temp), col='red', lty=2)
+```
+
+**YOUR TURN**: Make two boxplots to determine whether temperature differ between regions and between tree species. Be sure to include axis labels on your plots. Use the `?` to figure out how to change the group labels below the boxes.
+
+
+## Let's Review
+
+**YOUR TURN**: For each of the following lines of code, write a comment above it describing (briefly) what it will do. Then, run the line of code to check your answer. Modify your comment if necessary.
+
+```{r review}
+
+jrtrees = read.table('JRTrees_Fall2016.csv', header=T, sep=',')
+
+
+dim(jrtrees)
+
+
+table(jrtrees$Region)
+
+
+jrtrees[jrtrees$Region == 'north', ]
+
+
+sum(jrtrees$Species == 'Quercus_agrifolia' & jrtrees$Region == 'north')
+
+
+filter(temp_data, Temp <= mean(Temp) )
+
+
+tbt = group_by(temp_data, TreeID)
+meds = summarise(tbt, med = median(Temp))
+
+
+jr_merged = merge(jrtrees, meds, by='TreeID')
+
+
+boxplot(med ~ Species, data=jr_merged)
+
+```
