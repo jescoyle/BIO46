@@ -29,7 +29,7 @@ This file contains the code that you will see in this lesson document. There are
 print('Hello')
 ```
 
-You will run (i.e. execite) each line of code in the interactive console. In R Studio, the console is the window in the lower left. It will have some text in it, and on the lowest line it should display:
+You will run (i.e. execute) each line of code in the interactive console. In R Studio, the console is the window in the lower left. It will have some text in it, and on the lowest line it should display:
 
 `>`
 
