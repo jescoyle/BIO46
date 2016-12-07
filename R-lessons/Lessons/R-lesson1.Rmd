@@ -37,7 +37,7 @@ If you see a
 
 `+`
 
-then R is waiting for additional input. Make sure tha `>` is displayed before you try to run each line of code. If your see `+` try pressing `Esc`. You should run each line of code in the script as you work through the lesson. You can run a line of code by placing your cursor on the line and either clicking the 'Run' button at the top right. You can run multiple lines by highlighting them and clicking 'Run'.
+then R is waiting for additional input. Make sure that `>` is displayed before you try to run each line of code. If your see `+` try pressing `Esc`. You should run each line of code in the script as you work through the lesson. You can run a line of code by placing your cursor on the line and either clicking the 'Run' button at the top right. You can run multiple lines by highlighting them and clicking 'Run'.
 
 There will also be sections in the lesson where you will need to write your own code or add to an existing line. These will be marked by **YOUR TURN**. To complete the assignment you *must* do all of the **YOUR TURN** sections. You will save and submit your modified 'R-lesson1.r' script at the end of class. If you are stuck, ask your partner. If you are both stuck, ask for help- we are here to make sure everyone gets through the assignment. Occasionally there will be **BONUS** sections. These are not required, but there if you finish early and want a challenge. As you work through the document, be sure to click 'Save' periodically. R Studio does not have auto-save.
 
