@@ -138,12 +138,12 @@ print('Hello')</code></pre>
 <p>If you see a</p>
 <p><code>+</code></p>
 <p>then R is waiting for additional input. Make sure that <code>&gt;</code> is displayed before you try to run each line of code. If your see <code>+</code> try pressing <code>Esc</code>. You should run each line of code in the script as you work through the lesson. You can run a line of code by placing your cursor on the line and either clicking the ‘Run’ button at the top right. You can run multiple lines by highlighting them and clicking ‘Run’.</p>
-<p>There will also be sections in the lesson where you will need to write your own code or add to an existing line. These will be marked by <strong>YOUR TURN</strong>. To complete the assignment you <em>must</em> do all of the <strong>YOUR TURN</strong> sections. You will save and submit your modified ‘R-lesson1.r’ script at the end of class. If you are stuck, ask your partner. If you are both stuck, ask for help- we are here to make sure everyone gets through the assignment. Occasionally there will be <strong>BONUS</strong> sections. These are not required, but there if you finish early and want a challenge. As you work through the document, be sure to click ‘Save’ periodically. R Studio does not have auto-save.</p>
+<p>There will also be sections in the lesson where you will need to write your own code or add to an existing line. These will be marked by <strong>YOUR TURN</strong>. To complete the assignment you <em>must</em> do all of the <strong>YOUR TURN</strong> sections. You will save and submit your modified ‘R-lesson1.r’ script at the end of class or by Friday, if you run out of time to complete the lesson in class. If you are stuck, ask your partner. If you are both stuck, ask for help- we are here to make sure everyone gets through the lesson. Occasionally there will be <strong>BONUS</strong> sections. These are not required, but are for you if you finish early and want a challenge. As you work through the lesson, be sure to click ‘Save’ periodically. <strong>R Studio does not have auto-save.</strong></p>
 <p><strong>YOUR TURN</strong>: Modify the code above so that the console greets you by name.</p>
 </div>
 <div id="objects" class="section level2">
 <h2>Objects</h2>
-<p>R works on things called ‘objects’. An objects is anything saved in R that has a name and some information associated with that name. Today we will learn how to make and manipulate several kinds (i.e. <em>classes</em>) of objects: vectors, matrices, arrays, dataframes, and lists.</p>
+<p>R works on things called ‘objects’. An object is anything saved in R that has a name and some information associated with that name. Today we will learn how to make and manipulate several kinds (i.e. <em>classes</em>) of objects: vectors, dataframes, and lists.</p>
 <div id="vectors" class="section level3">
 <h3>Vectors</h3>
 <p>Vectors are a series of <em>elements</em> of a single <em>data type</em> (e.g. numbers or characters). The most basic way to create a vector is to use the concatenate function <code>c()</code>.</p>
@@ -165,7 +165,13 @@ fingers
 
 # Make and view a vector called lichen
 lichen = c('ascomycete','algae','yeast','bacteria')
-lichen</code></pre>
+lichen
+
+# Make a vector called animals
+animals = c('cat','parrot','fly','squid','seastar')</code></pre>
+<p>You can check the number of elements in a vector using the function <code>length()</code>.</p>
+<pre class="r"><code># How many elements are in lichen?
+length(lichen)</code></pre>
 <p><strong>YOUR TURN</strong>: Make a vector with the first 4 even numbers named ‘evens’.</p>
 <p>Here’s a couple more ways to make vectors:</p>
 <pre class="r"><code># Repeat something multiple times
@@ -181,32 +187,7 @@ seq(0, 10, by=2)
 seq(0, 1, length.out=11)
 seq(-10, 3, 0.5)</code></pre>
 <p><strong>YOUR TURN</strong>: Make a vector named ‘trials’ with the integers from 1 to 50 repeated 3 times. E.g: 1,2,3,…,50,1,2,3,…,50,1,2,3,…50.</p>
-<p><strong>Discuss with your partner</strong>: How many elements should <code>trials</code> have in it?</p>
-</div>
-<div id="matrices-and-arrays" class="section level3">
-<h3>Matrices and Arrays</h3>
-<p>Matrices and arrays are just vectors with 2 (matrix) or more (array) dimensions. Like vectors, they must contain only one type of data. Here’s how to make matrices and arrays:</p>
-<pre class="r"><code># Make a 3 x 4 matrix filled of 0s
-matrix(0, 3, 4)
-
-# Make a 3 x 3 matrix with the integers 1 - 9
-matrix(1:9, 3, 3)
-
-# Make a 3-D array filled with cats
-array('cat', dim = c(2,3,4))
-
-# Make a matrix with more animals
-animals = c('cat','parrot','fly','squid','seastar')
-my_zoo = matrix(animals, 3, 5)</code></pre>
-<p><strong>Discuss with your partner:</strong></p>
-<ul>
-<li>What happens when you change <code>dim = c(2,3,4)</code> to <code>dim = c(2,3,3)</code> when making that cat array?<br />
-</li>
-<li>What happens when you change it to <code>dim=c(2,3)</code>?<br />
-</li>
-<li>Predict which animal would be in the 4th row an 99th column of <code>matrix(animals, 5, 100)</code>.</li>
-</ul>
-<p><strong>YOUR TURN</strong>: Make a matrix named trial_matrix with three columns, each of which contains the numbers 1 to 50 in increasing order.</p>
+<p><strong>Discuss with your partner</strong>: How many elements should <code>trials</code> have in it? How can you check?</p>
 </div>
 <div id="lists-and-dataframes" class="section level3">
 <h3>Lists and Dataframes</h3>
@@ -215,21 +196,23 @@ my_zoo = matrix(animals, 3, 5)</code></pre>
 <pre class="r"><code># Make some lists
 list('My', 'dog', 'has', 10, 'fleas.')
 list(c('My','dog','has'), 10, 'fleas.')
-list(animals, my_zoo)
 lichen_list = list('lichen', lichen)
+
+# How many elements in lichen_list?
+length(lichen_list)
 
 # Make a dataframe
 data.frame(1:4, lichen)
 data.frame(part = 1:4, organism = lichen)</code></pre>
 <p><strong>Discuss with your partner</strong>:</p>
 <ul>
-<li>Why are the two elements in lichen_list different?<br />
+<li>View the contents of <code>lichen_list</code>. Why are the two elements in <code>lichen_list</code> different?<br />
 </li>
 <li>What is the effect of including <code>part =</code> before <code>1:4</code>?</li>
 </ul>
 <p><strong>YOUR TURN</strong>:</p>
 <ul>
-<li>Add a vector containing the first four even numbers to the beginning of <code>lichen_list</code>.<br />
+<li>Make a list containing two elements: a vector of the first four even numbers and the vector <code>lichen</code>.<br />
 </li>
 <li>Make a dataframe called ‘hand’ whose first column has the integers 1 to 5, second column contains finger names (starting with ‘thumb’), and third column contains <code>animals</code>. Name the columns ‘number’,‘name’,‘animal’.</li>
 </ul>
@@ -237,7 +220,7 @@ data.frame(part = 1:4, organism = lichen)</code></pre>
 <div id="accessing-elements-in-objects" class="section level3">
 <h3>Accessing elements in objects</h3>
 <p>Have you noticed the window in the upper right corner of R Studio? It should show the objects that you have currently defined in your environment. That is, it gives the names and contents of objects you have created. To show these objects in the console, type <code>ls()</code>.</p>
-<p>Suppose you want to change the third object in <code>animals</code> to ‘snail’. It would be very inconvenient to retype the whole vector. Instead R uses indices to access and change elements in objects.</p>
+<p>Suppose you want to change the third object in <code>animals</code> from ‘fly’ to ‘spider’. It would be very inconvenient to retype the whole vector. Instead R uses indices to access and change elements in objects.</p>
 <pre class="r"><code># Print the third element of animals
 animals[3]
 
@@ -249,50 +232,47 @@ animals</code></pre>
 lichen_list[[1]]
 
 # Change the first element in `lichen_list` to odd numbers
-lichen_list[[1]] = seq(1, 7, by=2)</code></pre>
+lichen_list[[1]] = seq(1, 7, by=2)
+lichen_list</code></pre>
 <p>You can access multiple elements at once by using a vector of integers.</p>
 <pre class="r"><code># Get the first and last elements in lichen
 lichen[c(1,4)]
 
 # Display the elements of lichen in reverse the order
 lichen[4:1]</code></pre>
-<p><strong>YOUR TURN</strong>: Create a vector named ‘little_zoo’ containing only parrots, squids, seastars and algae without typing the names of any of these animals.</p>
-<p>You can access elements in objects with 2 or more dimensions by separating indices with commas.</p>
-<pre class="r"><code># Which animal is in the 2nd row and 4th column of my_zoo?
-my_zoo[2,4]
+<p><strong>YOUR TURN</strong>: Create a vector named ‘little_zoo’ containing only parrots, squids, seastars and algae without typing the names of any of these organisms.</p>
+<p>You can access elements in dataframes by separating indices with commas.</p>
+<pre class="r"><code># What is in the 2nd row and 3rd column of hand?
+hand[2,3]
 
-# Which animals are in the 3rd row of my_zoo?
-my_zoo[3,]
+# What is in the 3rd row of hand?
+hand[3,]
 
-# Which animals are in the 4th and 5th columns of my_zoo?
-my_zoo[,c(4,5)]</code></pre>
+# What is the 5th animal and finger name?
+hand[5, c(3,2)]</code></pre>
 <p><strong>Discuss with your partner</strong>:</p>
 <ul>
-<li>What happens when you type <code>my_zoo[3]</code>? What about <code>my_zoo[5]</code>?<br />
-</li>
 <li>What happens when you type <code>lichen[2,3]</code>? Why? How would you change this to access the 2nd and 3rd elements of <code>lichen</code>?</li>
 </ul>
-<p><strong>BONUS</strong>: Change the last two odd numbers in <code>lichen_list</code> back to even numbers.</p>
-<p>We can also access elements in objects using their names. For example, when you created the dataframe <code>hand</code> you gave each of its columns names. Other objects, like vectors, lists and matrices can have names for their elements, rows and columns.</p>
-<pre class="r"><code># Name the rows and columns of a matrix
-rownames(my_zoo) = c('A','B','C')
-colnames(my_zoo) = c('blue','pink','red','yellow','green')
-my_zoo
-
-# Get the animals in the blue column in rows A and B
-my_zoo[c('A','B'), 'blue']
-
-# Create a data frame
+<p><strong>BONUS</strong>: Change the last two odd numbers in the first element of <code>lichen_list</code> to even numbers.</p>
+<p>We can also access elements in objects using their names. For example, when you created the dataframe <code>hand</code> you gave each of its columns names. Other objects, like vectors and lists can also have names for their elements.</p>
+<pre class="r"><code># Create a data frame
 my_data = data.frame(1:20, lichen, rep(1:5, each=4))
+
+# View the dataframe column names given by default
+names(my_data)
 
 # Change the column names
 names(my_data) = c('trial', 'organism', 'treatment')
 names(my_data)
-colnames(my_data)
 my_data
+
+# Elements in a vector are not assigned names by default
+names(animals)
 
 # Name the elements in a vector
 names(animals) = c('Felix', 'Polly', 'Charlotte', 'Kraken', 'Patrick')
+animals
 
 # What type of animal is Patrick?
 animals['Patrick']
@@ -329,54 +309,11 @@ seq</code></pre>
 seq(10, 20, 5)
 
 # Make a sequence of 6 numbers spread evenly between 10 and 20 
-seq(10, 20, length.out=6)</code></pre>
+seq(10, 20, length.out=6)
+
+# Make a sequence of the first 5 numbers divisible by 3
+seq(3, length.out=5, by=3)</code></pre>
 <p><strong>YOUR TURN</strong>: Display the help file on <code>matrix()</code>. Make a matrix named row_matrix that has 4 rows, each with the numbers 1 to 5, in order.</p>
-<div id="arithmetic" class="section level3">
-<h3>Arithmetic</h3>
-<p>We can also use functions to do arithmetic on numeric objects. These functions are <em>operators</em>, they don’t use parentheses with arguments inside. Instead we just write out the calculation that we want R to perform.</p>
-<pre class="r"><code># Add two numbers
-2+3
-
-# Add the first two elements of fingers
-fingers[1] + fingers[2]
-
-# Subtraction
-monkey = 6 - 2
-monkey
-
-# Division'
-monkey / 2
-
-# Multiplication
-monkey*3
-
-# Exponents
-3^2
-
-# Order of operations
-5+2*4^2
-(5+2)*4^2
-5+(2*4)^2</code></pre>
-<p>These operations can also be used on vectors or matrices. In this case, the calculation is performed element by element.</p>
-<pre class="r"><code># Create two vectors
-troupe = rep(monkey, 7)
-troupe
-bananas = seq(-3,3)
-bananas
-
-# Arithmetic with vectors and scalars
-bananas + 3
-bananas * 2
-bananas^2
-
-# Vector arithmetic
-troupe + bananas
-troupe - bananas
-troupe * bananas
-troupe / bananas
-troupe^bananas</code></pre>
-<p>*<strong>YOUR TURN</strong>: Add a column to <code>my_data</code> called <code>temp_F</code> which is the Fahrenheit equivalent of the Celcius temperature displayed in <code>temp_C</code>.</p>
-</div>
 </div>
 <div id="lets-review" class="section level2">
 <h2>Let’s Review</h2>
@@ -393,22 +330,13 @@ rep(fox, 3)
 seq(0, 10, 2)
 
 
-matrix(1:9, nrow=3)
-
-
-array(fox, dim=c(2,2,4))
-
-
 list('myfox', fox)
 
 
 fox_data = data.frame(fox, rep('hare', 7))
 
 
-names(fox_data)[2] = 'prey'
-
-
-fox_data$kits = fox*2</code></pre>
+names(fox_data)[2] = 'prey'</code></pre>
 </div>
 
 

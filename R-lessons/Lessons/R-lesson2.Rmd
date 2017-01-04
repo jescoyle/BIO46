@@ -95,6 +95,72 @@ range(temp_data$Temp)
 
 ```
 
+
+### Arithmetic - NEED TO REVISE EXAMPLES FOR THIS LESSON
+
+We can also use functions to do arithmetic on numeric objects. These functions are *operators*, they don't use parentheses with arguments inside. Instead we just write out the calculation that we want R to perform.
+
+
+```{r arithmetic}
+# Add two numbers
+2+3
+
+# Add the first two elements of fingers
+fingers[1] + fingers[2]
+
+# Subtraction
+monkey = 6 - 2
+monkey
+
+# Division'
+monkey / 2
+
+# Multiplication
+monkey*3
+
+# Exponents
+3^2
+
+# Order of operations
+5+2*4^2
+(5+2)*4^2
+5+(2*4)^2
+
+```
+
+These operations can also be used on vectors or matrices. In this case, the calculation is performed element by element.
+
+```{r vector-arithmetic}
+# Create two vectors
+troupe = rep(monkey, 7)
+troupe
+bananas = seq(-3,3)
+bananas
+
+# Arithmetic with vectors and scalars
+bananas + 3
+bananas * 2
+bananas^2
+
+# Vector arithmetic
+troupe + bananas
+troupe - bananas
+troupe * bananas
+troupe / bananas
+troupe^bananas
+
+```
+
+***YOUR TURN**: Add a column to `my_data` called `temp_F` which is the Fahrenheit equivalent of the Celcius temperature displayed in `temp_C`.
+
+
+
+
+
+
+
+
+
 **YOUR TURN**: Calculate the temperature difference between the highest and lowest recorded temperatures.
 
 ## Subsetting data
