@@ -1,0 +1,102 @@
+---
+title: "Summarizing and Visualizing Data Part 2"
+author: "BIO 46, Winter 2017, Stanford University"
+date: "January 21, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+1. Summarizing with dplyr
+2. X-Y plots
+
+
+## Summarizing data with dplyr
+
+Suppose we wanted to calculate the mean temperature for each tree. R has several functions that would allow us to do this, including `tapply()`, `aggregate()`, and `by()`. However, these can be tricky to use. From here on, we are going to switch over to using functions from an add-on package called dplyr. In order to use these these functions your must first install the package from the internet and then tell R to load the functions in the package.
+
+To install a package in R Studio you can click the 'Packages' tab in the upper right window, then click 'Install' and type 'dplyr' into the line marked 'Packages'. When you click install watch the console. Notice that `install.packages('dplyr')` appears. You could have also just typed this directly into the console to download and install the package.
+
+You only need to install a package once, but in order to use the functions in a package you need to load the functions each time you start R.
+
+```{r}
+# Load the package dplyr
+library(dplyr)
+```
+
+The functions in the dplyr can do a lot and we will learn just a little today. If you want to learn more there is a great introduction [here](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html). 
+
+In the dplyr package we use `filter()` instead of `subset()` to select rows where certain conditions are true. However, instead of using `&` to join multiple conditions, we just separate them with commas.
+
+```{r}
+# Find all observations where the temperature was less than 5 Celcius
+filter(temp_data, Temp < 5)
+
+# Find observations from Tree 3 where the temperature was greater than 35 Celcius
+filter(temp_data, Temp > 35, TreeID=='T3')
+
+```
+
+The `summarise` function allows us to calculate several summary statistics at once from a single dataframe. The first argument is the dataframe to be summarized and subsequent arguments have the form: `column_name = function_to_calculate()`.
+
+```{r}
+# Count the number of observations in temp_data
+summarise(temp_data, count=n())
+
+# Calculate the average temperature 
+summarise(temp_data, avgT = mean(Temp))
+
+# Do both at once
+summarise(temp_data, count = n(), avgT = mean(Temp))
+
+# Also calculate the maximum temperature
+summarise(temp_data, count = n(), avgT = mean(Temp), highT = max(Temp))
+
+```
+
+**YOUR TURN**: Modify the last line of code so that `lowT` containing the minimum temperature is also printed.
+
+The real power of dplyr is that is allows us to easily summarize groups of data using the `group_by()` function. The function creates a grouped table from a regular dataframe based on the specified variables. Then, when `summarise()` is applied to the grouped table, the summary statistics are printed for each group.
+
+```{r}
+# Create a grouped table of temp_data based on TreeID
+temp_byTree = group_by(temp_data, TreeID)
+
+# Summarize temperature data by tree
+tree_summary = summarise(temp_byTree, count = n(), avgT = mean(Temp), highT = max(Temp)) 
+
+# Which tree had the lowest mean temperature?
+filter(tree_summary, avgT == min(avgT))
+
+```
+
+
+## Merging data tables
+
+The tree data table shows that trees were located in two regions within Jasper Ridge, the north and the south. Suppose we wanted to know whether temperature differed between these regions. In order to use the data from `tree_data` to summarize data in `temp_data`, first we need to merge the two data sets by adding a column to `temp_data` containing the region where each temperature measurement was taken. The function to do this is `merge()`. We supply the two data frames as the first two agruemnts and then include a `by=` argument to tell the function which column is the same between the two dataframes.
+
+```{r}
+# Add the columns of tree_data onto temp_data based on TreeID
+merged_data = merge(temp_data, tree_data, by='TreeID')
+
+# Look at the first few rows of the new merged data
+# Notice that all of the columns from tree_data have been added on to temp_data
+head(merged_data)
+
+# Summarize temperature by region
+temp_byReg = group_by(merged_data, Region)
+reg_summary = summarise(temp_byReg, count = n(), avgT = mean(Temp), highT = max(Temp), lowT = min(Temp))
+reg_summary
+
+```
+
+**Discuss with your partner**: Is one region cooler than the other? Why or why not?
+
+**YOUR TURN**: Summarize temperature differences between the two tree species. Name this summary table `species_summary`.
+
+
+
+

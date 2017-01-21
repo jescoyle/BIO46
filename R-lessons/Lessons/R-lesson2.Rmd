@@ -1,32 +1,40 @@
 ---
-title: "Summarizing and Visualizing Data"
+title: "Summarizing and Visualizing Data Part 1"
 author: "BIO 46, Winter 2017, Stanford University"
 date: "Week 3: January 24, 2017"
-output: html_document
+output: 
+  html_document:
+    highlight: haddock
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(comment = '')
-knitr::opts_chunk$set(eval=F)
+knitr::opts_chunk$set(echo = TRUE, comment = '', eval=F)
 ```
 
 ## Lesson Goals
 
-Today you will learn how to...
+Today you will be learning how to manipulate data in R and do the following tasks:
 
-1. Read a data table into R.
-2. Summarize data fields.
-3. Use logical operators to subset data.
-4. Merge data from two tables.
-5. Visualize data with boxplots.
+1. Load a data table into R.
+2. Subset and summarize data.
+3. Combine two data tables.
+4. Visualize data with boxplots.
 
-To accomplish this you will be working with a data file ('iButtons\_Fall2016.csv') that contains temperature observations from iButtons deployed on 17 trees at Jasper Ridge. The iButtons recorded temperature in Celcius every 10 minutes from mid September to early October 2016. Each row in this file contains contains a temperature observation from an iButton deployed on a tree. Another file ('JRTrees\_Fall2016.csv') contains information about the trees where the iButtons where deployed.
+Today we will work through the script named 'R-lesson2.r'. You should download this script from Canvas (Files/R-lessons/Code) and save it in your directory 'R-lessons/Code'. You can also download it from [GitHub](https://raw.githubusercontent.com/jescoyle/BIO46/master/R-lessons/Code/R-lesson2.r). As you work through this lesson, be sure to run each line of code in the script (which corresponds to the code in the lesson). If you can't tell how a whole line of code worked, try highlightly small pieces of the line of code and running them separately to see what they do. You only need to run each line of code once- any time that you assign an object a name, R will remember that object until you re-use that name for a different object. If you forget what objects you have created and named you can look in the Environment section of RStudio, which lists a description of each object you have created and assigned a name.
 
-Before beginning the lesson you should download each of these files from Canvas (Files/R-lessons/Data) and put them in the 'R-lessons/Data' directory on your compueter. Today we will work through the script named 'R-lesson2.r'. You should download this script from Canvas (Files/R-lessons/Code) and save it in your directory 'R-lessons/Code'. You can also download it from [GitHub](https://raw.githubusercontent.com/jescoyle/BIO46/master/R-lessons/Code/R-lesson2.r). 
+In the **YOUR TURN** sections you should type code that accomplishes the required task. When you complete the lesson, save your R script and upload it to the R Lesson 2 assignment on Canvas.
 
 ## Reading data tables into R
-R has the capability to read data tables in many different text formats. The most common format you will use is csv, comma separated values, where each column is separated by commas. If you open JRTrees\_Fall2016.csv with a text editor you will see this. There are two ways to read a csv file into R: `read.table()` and `read.csv()`, which is just a more specific version of `read.table`. Before you can use these functions you will first need to find the location where the data is stored, the *file path*.
+
+R has the capability to read data tables in many different text formats. The main type of data you will be usually be working with in R is a table where rows represent observations and columns describes attributes of those observations. R can read data tables stored as a text file with rows on separate lines and columns separated by a designated symbol, such as tabs, commas, or spaces. R cannot read Excel file formats directly. They must first be saved as a text file. Today we will be working with a text file where the columns are separated by commas. This type of file is called a *comma separated values* file, or *csv* file. 
+
+You will be working with the file 'iButtons\_Fall2016.csv'. If you open this file in a text editor you can see how the data is stored, with commas separating each column. This data table contains temperature observations from iButtons deployed on 17 trees at Jasper Ridge. The iButtons recorded temperature in Celcius every 10 minutes from mid September to early October 2016. Each row in this file contains a temperature observation from an iButton deployed on a tree. Another file ('JRTrees\_Fall2016.csv') contains information about the trees where the iButtons where deployed.
+
+Before beginning the lesson you should download each of these files from Canvas (Files/R-lessons/Data) and put them in the 'R-lessons/Data' directory on your compueter. 
+
+There are two functions that allow you to read a csv file into R: `read.table()` is used for any text file. `read.csv()` is a short-cut function for csv files. Before you can use these functions you will first need to find the location where the data is stored, the *file path*. Use the File explorer (Windows) or Finder (Mac) to locate file path of the folder where you saved the data files you downloaded. You will use this information in the code below.
+
+In the code below I first set an option that controls how text is interpreted when it is read into R. Then I define an object named `working_dir` which is a text string that tells R where to look for the data file. File paths in Windows start with a drive ('C:/') and for Macs they start with a '/'. In order to read the data on your computer you must change `working_dir` to the file path that is correct for your computer.
 
 **YOUR TURN**: Change the working directory below so that you can read in the data tables from your 'R-lessons/Data' directory.
 
@@ -35,25 +43,30 @@ R has the capability to read data tables in many different text formats. The mos
 options(stringsAsFactors=F)
 
 # Define the location of your working directory
-working_dir = 'C:/Users/jrcoyle/Documents/Stanford/BIO46/GitHub/R-lessons/Data'
+working_dir = 'C:/Users/jrcoyle/Documents/Stanford/BIO46/GitHub/R-lessons/Data' # Windows
 
 # Set the working directory for this session
 setwd(working_dir)
 
 # Read iButton data and save in a data frame names temp_data
-temp_data = read.table('iButtons_Fall2016.csv', header=T, sep=',')
+# header = TRUE is used for data where the first row gives the column names
+# sep =',' tells the function that columns are separated by commas
+temp_data = read.table('iButtons_Fall2016.csv', header=TRUE, sep=',')
 
-# Read tree data using the short-cut function, read.csv
+# Read tree data using the short-cut function, read.csv()
+# By default this function assumes that column names are in the first row and that the columns are separated by commas
 tree_data = read.csv('JRTrees_Fall2016.csv')
 ```
 
-**Discuss with your partner**: What do the `sep=`  and `header=` arguments do in `read.table`. (Hint: use `?` to check your answer.)
 
-What do these data look like? In R studio you can use the Environment window to see that tree_data is a dataframe with 17 rows and 3 columns. There are also several functions that are useful for looking at the data in the console.
+What do these data look like? In R studio you can use the Environment window to see that `tree_data` is a dataframe with 17 rows and 3 columns. There are also several functions that are useful for looking at the data in the console.
 
 ```{r}
 # Look at the first few rows of tree_data
 head(tree_data)
+
+# Print out just the column names of tree_data
+names(tree_data)
 
 # Count the number of rows in tree_data
 nrow(tree_data)
@@ -66,13 +79,17 @@ dim(tree_data)
 
 ```
 
-**YOUR TURN**: Print out the column names of `temp_data` as well as the number of observations.
+**YOUR TURN**: Print out the column names of `temp_data` as well as the number of observations (each observation is stored in a row).
 
 ## Summarizing data fields
 
 There are 17 different trees in tree_data. Let's check to see whether there are observations from each of these trees in the temperature data. The `table()` function counts the number of unique values present in a vector.
 
 ```{r}
+
+# Display the TreeID column of temp_data
+temp_data$TreeID
+
 # Count the number of observations from each tree
 table(temp_data$TreeID)
 
@@ -96,72 +113,62 @@ range(temp_data$Temp)
 ```
 
 
-### Arithmetic - NEED TO REVISE EXAMPLES FOR THIS LESSON
+## Arithmetic
 
-We can also use functions to do arithmetic on numeric objects. These functions are *operators*, they don't use parentheses with arguments inside. Instead we just write out the calculation that we want R to perform.
+When summarizing data we often want to make calculations. The most basic calculations that R can perform are simple arithmatic. Doing arithmatic is fairly straightforward-- we just write out the calculation that we want R to perform.
 
 
 ```{r arithmetic}
-# Add two numbers
-2+3
-
-# Add the first two elements of fingers
-fingers[1] + fingers[2]
+# Addition 
+2 + 3 + 10
 
 # Subtraction
-monkey = 6 - 2
-monkey
+6 - 2
 
 # Division'
-monkey / 2
+20 / 2
 
 # Multiplication
-monkey*3
+10 * 3 * 2
+10*3*2
 
 # Exponents
+3 ^ 2
 3^2
 
 # Order of operations
-5+2*4^2
-(5+2)*4^2
-5+(2*4)^2
+5 + 2 * 4^2
+(5 + 2) * 4^2
+5 + (2 * 4)^2
+
+# Save the value of a calculation as an object named the_answer
+the_answer = (12 / 2) * (10 - 3)
+
+# Print the_answer
+the_answer
 
 ```
 
-These operations can also be used on vectors or matrices. In this case, the calculation is performed element by element.
+Arithmatic can also be used on vectors or matrices. In this case, the calculation is performed element by element.
 
 ```{r vector-arithmetic}
-# Create two vectors
-troupe = rep(monkey, 7)
-troupe
-bananas = seq(-3,3)
-bananas
+# Select the first and last five temperature observations and save them as two vectors
+first5 = temp_data[1:5, 'Temp']
+last5_rows = (nrow(temp_data)-4):nrow(temp_data) # figure out which row numbers are the last 5 rows
+last5 = temp_data[last5_rows, 'Temp']
 
-# Arithmetic with vectors and scalars
-bananas + 3
-bananas * 2
-bananas^2
+# View them, then add them together
+first5
+last5
+first5 + last5
 
-# Vector arithmetic
-troupe + bananas
-troupe - bananas
-troupe * bananas
-troupe / bananas
-troupe^bananas
+# More arithmatic with vectors
+last5 - 2
+3 * last5^2
 
 ```
 
-***YOUR TURN**: Add a column to `my_data` called `temp_F` which is the Fahrenheit equivalent of the Celcius temperature displayed in `temp_C`.
-
-
-
-
-
-
-
-
-
-**YOUR TURN**: Calculate the temperature difference between the highest and lowest recorded temperatures.
+**YOUR TURN**: Add a column to `my_data` called `temp_F` which is the Fahrenheit equivalent of the Celcius temperature displayed in `temp_C`. Recall that you can use `my_data$new_column_name = ` to add on a column called 'new\_column\_name' to a dataframe.
 
 ## Subsetting data
 
@@ -177,7 +184,7 @@ R Code   | Test
 `A >= B` | Is A greater than or equal to B?
 `A != B` | Is A not equal to B?
 
-So, in order to subset `temp_data` to only observations from Tree 1, first we need to test which rows correspond to Tree 1 and then use this vector of trues/falses to select the rows from Tree 1.
+So, in order to subset `temp_data` to only observations from Tree 1, first we need to test which rows correspond to Tree 1 and then use this vector of trues/falses to select the rows from Tree 1. You can select rows from a dataframe by using the square braces: `temp_data[get_these_rows, ]` or using the `subset()` function: `subset(temp_data, get_these_rows)`.
 
 ```{r}
 # Find which rows of temp_data are from Tree 1
@@ -193,26 +200,28 @@ nrow(temp_data)
 # Is t1_rows the same length as temp_data?
 length(t1_rows) == nrow(temp_data)
 
-# Select rows from temp_data when t1_rows is TRUE (e.g. row corresponds to tree 1)
+# Use the subset() function to select only rows from temp_data that correspond to when t1_rows is TRUE 
+# e.g. the row is from tree 1
 T1_data = subset(temp_data, t1_rows)
 
-# Another way to subset:
+# Or, subset the data using square braces
 T1_data = temp_data[t1_rows, ]
+
+# Print out the dataframe to look at it
+T1_data
 
 ```
 
-**Discuss with your partner**: How many rows should T1_data have? How can you check?
-
-We can also use subsets to find times when the iButtons recorded extreme temperatures. When you perform arithmetic with logicals, true counts as 1 and false counts as 0. This is can be useful for counting. 
+Let's make a subset of the data when the iButtons recorded extreme temperatures. When you perform arithmetic with logicals (TRUE/FALSE), true counts as 1 and false counts as 0. This is can be useful for counting. 
 
 ```{r}
 # Find observations when the recorded temperature was greater than 40 Celcius
 high_temps = temp_data$Temp > 40
 
-# How many temperature readings were greater than 40?
+# How many temperature readings were greater than 40? (How many TRUES in high_temps?)
 sum(high_temps)
 
-# Which rows correspond to temperatures greater than 40?
+# Which rows correspond to temperatures greater than 40? (Which elements in high_temps are TRUE?)
 which(high_temps)
 
 ```
@@ -220,16 +229,17 @@ which(high_temps)
 **YOUR TURN**:  
 
 1. Make a dataframe called high\_temp\_data containing only observations where the temperature was greater than 40&deg;C.
-2. Count the number of observations from each tree that had temperatures greater than 40&deg;C.
+2. Use the `table()` function to count the number of observations from each tree that had temperatures greater than 40&deg;C.
 
 It isn't necessary to save a vector of logicals before subsetting. You can do it all in one step:
 
 ```{r}
 # Find all observations where the temperature was less than 5 Celcius
+# When using the subset function you can just use the name of the column
 subset(temp_data, Temp < 5)
 
 # If subseting using [], you must specify the actual column, not just its name:
-temp_data[Temp < 5, ]
+temp_data[Temp < 5, ] # doesn't work because Temp doesn't exist as its own object
 temp_data[temp_data$Temp < 5, ]
 
 ```
@@ -241,16 +251,19 @@ R allows you to combine logical statements using `&` (and) and `|` (or).
 high_t3 = temp_data$TreeID == 'T3' & temp_data$Temp > 35
 which(high_t3)
 
-# Subset to these data
+# Subset to these data using the logical vector high_t3
 subset(temp_data, high_t3)
+
+# Subset to these data without using a saved vector
 subset(temp_data, TreeID == 'T3' & Temp > 35)
 
 # Find observations where the temperature was greater than 40 or less than 5 Celcius
 extreme_temps = temp_data$Temp > 40 | temp_data$Temp < 5
 
-# Subset to these data
-temp_data[extreme_temps, ]
-temp_data[temp_data$Temp > 40 | temp_data$Temp < 5, ]
+
+# Subset to these data (using the two different methods)
+temp_data[extreme_temps, ] # method 1
+temp_data[temp_data$Temp > 40 | temp_data$Temp < 5, ] # method 2
 
 
 ```
@@ -262,96 +275,35 @@ temp_data[temp_data$Temp > 40 | temp_data$Temp < 5, ]
 3. How many temperature observations from Tree 4 were less than 5&deg;C?
 4. Calculate the mean temperature from all data recorded at Tree 4. 
 
-
-## Summarizing data with dplyr
-
-Suppose we wanted to calculate the mean temperature for each tree. R has several functions that would allow us to do this, including `tapply()`, `aggregate()`, and `by()`. However, these can be tricky to use. From here on, we are going to switch over to using functions from an add-on package called dplyr. In order to use these these functions your must first install the package from the internet and then tell R to load the functions in the package.
-
-To install a package in R Studio you can click the 'Packages' tab in the upper right window, then click 'Install' and type 'dplyr' into the line marked 'Packages'. When you click install watch the console. Notice that `install.packages('dplyr')` appears. You could have also just typed this directly into the console to download and install the package.
-
-You only need to install a package once, but in order to use the functions in a package you need to load the functions each time you start R.
-
-```{r}
-# Load the package dplyr
-library(dplyr)
-```
-
-The functions in the dplyr can do a lot and we will learn just a little today. If you want to learn more there is a great introduction [here](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html). 
-
-In the dplyr package we use `filter()` instead of `subset()` to select rows where certain conditions are true. However, instead of using `&` to join multiple conditions, we just separate them with commas.
-
-```{r}
-# Find all observations where the temperature was less than 5 Celcius
-filter(temp_data, Temp < 5)
-
-# Find observations from Tree 3 where the temperature was greater than 35 Celcius
-filter(temp_data, Temp > 35, TreeID=='T3')
-
-```
-
-The `summarise` function allows us to calculate several summary statistics at once from a single dataframe. The first argument is the dataframe to be summarized and subsequent arguments have the form: `column_name = function_to_calculate()`.
-
-```{r}
-# Count the number of observations in temp_data
-summarise(temp_data, count=n())
-
-# Calculate the average temperature 
-summarise(temp_data, avgT = mean(Temp))
-
-# Do both at once
-summarise(temp_data, count = n(), avgT = mean(Temp))
-
-# Also calculate the maximum temperature
-summarise(temp_data, count = n(), avgT = mean(Temp), highT = max(Temp))
-
-```
-
-**YOUR TURN**: Modify the last line of code so that `lowT` containing the minimum temperature is also printed.
-
-The real power of dplyr is that is allows us to easily summarize groups of data using the `group_by()` function. The function creates a grouped table from a regular dataframe based on the specified variables. Then, when `summarise()` is applied to the grouped table, the summary statistics are printed for each group.
-
-```{r}
-# Create a grouped table of temp_data based on TreeID
-temp_byTree = group_by(temp_data, TreeID)
-
-# Summarize temperature data by tree
-tree_summary = summarise(temp_byTree, count = n(), avgT = mean(Temp), highT = max(Temp)) 
-
-# Which tree had the lowest mean temperature?
-filter(tree_summary, avgT == min(avgT))
-
-```
-
 ## Merging data tables
 
-The tree data table shows that trees were located in two regions within Jasper Ridge, the north and the south. Suppose we wanted to know whether temperature differeed between these regions. In order to use the data from tree\_data to summarize data in temp\_data, first we need to merge the two data sets by adding a column to temp\_data containin the regions each tree is located in. The function to do this is `merge()`. We supply the two data frames as the first two agruemnts and then include a `by=` argument to tell the function which column is the same between the two dataframes.
+The tree data table shows that trees were located in two regions within Jasper Ridge, the north and the south. Suppose we wanted to know whether temperature differed between these regions. In order to use the data from `tree_data` to summarize data in `temp_data`, first we need to merge the two data sets by adding a column to `temp_data` containing the region where each temperature measurement was taken. The function to do this is `merge()`. We supply the two data frames as the first two agruemnts and then include a `by=` argument to tell the function which column is the same between the two dataframes.
 
 ```{r}
 # Add the columns of tree_data onto temp_data based on TreeID
 merged_data = merge(temp_data, tree_data, by='TreeID')
 
-# Summarize temperature by region
-temp_byReg = group_by(merged_data, Region)
-reg_summary = summarise(temp_byReg, count = n(), avgT = mean(Temp), highT = max(Temp), lowT = min(Temp))
-reg_summary
+# Look at the first few rows of the new merged data
+# Notice that all of the columns from tree_data have been added on to temp_data
+head(merged_data)
 
+# Calculate the mean temperature in the north and south regions
+north_temps = subset(merged_data, Region == 'north')$Temp
+mean(north_temps)
+
+south_temps = subset(merged_data, Region == 'south')$Temp
+mean(south_temps)
 ```
 
-**Discuss with your partner**: Is one region cooler than the other? Why or why not?
+## Visualizing data with boxplots
 
-**YOUR TURN**: Summarize temperature differences between the two tree species. Name this summary table `species_summary`.
-
-## Visualizing data
-
-Today we will visualize the location and spread of data in R using boxplots. Visualizing data is an important tool for evaluating whether data collected from different groups of observations differ from one another. First let's use a boxplot to look at temperature variation in the entire data set. In a boxplot, the middle line is the median of the data while the box extends to the 1st and 3rd quartiles (e.g., 50% of the observations are inside the box).
+Today we will visualize data in R using boxplots. Visualizing data is an important tool for evaluating whether data collected from different groups of observations differ from one another. First let's use a boxplot to look at temperature variation in the entire data set. In a boxplot, the middle line is the median of the data while the box extends to the 1st and 3rd quartiles (e.g., 50% of the observations are inside the box).
 
 ```{r}
 # Make a boxplot of the temperature data from all trees
 boxplot(temp_data$Temp)
 
 ```
-
-**YOUR TURN**: Use `?` to figure out how to make the plot whiskers extend to the lowest an highest temperature values.
 
 We can make boxplots with data from each tree separately. To do this we will write a *formula* as the first argument. A formula tells R what to place on the y-axis and what to place on the x-axis. For example, to plot temperature (y-axis) as a function of tree identity (x-axis) the formula is: `Temp ~ TreeID`.
 
@@ -367,14 +319,14 @@ Notice that we had to include the agrument `data=` to tell R where to look for t
 boxplot(Temp ~ TreeID, data=temp_data, xlab='Tree', ylab=expression(Temperature~(degree*C)))
 ```
 
-Finally, let's add a line for the median across the entire data set so that we can tell which trees have warmer and cooler temperatures. 
+Finally, let's add a line for the median across the entire data set so that we can tell which trees have warmer and cooler temperatures. The function `abline()` tells R to add a line to an existing plot. The argument `h =` tells the function to add a horizontal line at the value following the `=`. 
 
 ```{r}
 # Add red horizontal dashed line at the median of the entire data set
 abline(h = median(temp_data$Temp), col='red', lty=2)
 ```
 
-**YOUR TURN**: Make two boxplots to determine whether temperature differ between regions and between tree species. Be sure to include axis labels on your plots. Use the `?` to figure out how to change the group labels below the boxes.
+**YOUR TURN**: Make two boxplots to compare how temperature differs (1) between regions and (2) between tree species. Be sure to include axis labels on your plots. Hint: you may want to use the `merged_data` dataframe that we created earlier. **BONUS**: Use the `?` to figure out how to change the group labels below the boxes.
 
 
 ## Let's Review
@@ -396,18 +348,5 @@ jrtrees[jrtrees$Region == 'north', ]
 
 
 sum(jrtrees$Species == 'Quercus_agrifolia' & jrtrees$Region == 'north')
-
-
-filter(temp_data, Temp <= mean(Temp) )
-
-
-tbt = group_by(temp_data, TreeID)
-meds = summarise(tbt, med = median(Temp))
-
-
-jr_merged = merge(jrtrees, meds, by='TreeID')
-
-
-boxplot(med ~ Species, data=jr_merged)
 
 ```
