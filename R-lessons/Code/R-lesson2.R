@@ -115,8 +115,8 @@ last5 - 2
 
 
 
-## YOUR TURN: Add a column to my_data called temp_F which is the Fahrenheit equivalent of the Celcius temperature displayed in temp_C. 
-## Recall that you can use 'my_data$new_column_name ='  to add on a column called 'new_column_name' to a dataframe.
+## YOUR TURN: Add a column to temp_data called temp_F which is the Fahrenheit equivalent of the Celcius temperature displayed in temp_C. 
+## Recall that you can use 'temp_data$new_column_name ='  to add on a column called 'new_column_name' to a dataframe.
 
 
 ## Subsetting data
