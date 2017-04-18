@@ -1,0 +1,253 @@
+---
+title: "Analyzing Categorical Data"
+author: "BIO 46, Winter 2017, Stanford University"
+date: "Week 6: February 14, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = '', eval=F)
+```
+
+## Lesson Goals
+
+The goal of this lesson is to introduce how to conduct basic statistical tests when you are interested in evaluating whether a response variable differs between discrete categories. We will be working with an artifical data table that is similar to the data table our class is constructing for fungi that emerged from *Evernia prunastri*. You should download the data file 'fungi\_example\_data.csv' and save it in your Data folder for this class.
+
+As you work through this lesson, be sure to run each line of code in the script (which corresponds to the code in the lesson). Remember- lines that begin with `#` are comments that tell you what the next line of code is supposed to do.
+If you can't tell how a whole line of code worked, try highlighting small pieces of the line of code and running them separately to see what they do. You only need to run each line of code once- any time that you assign an object a name, R will remember that object until you re-use that name for a different object. If you forget what objects you have created and named you can look in the Environment section of RStudio, which lists a description of each object you have created and assigned a name.
+
+In the **YOUR TURN** sections you should type code that accomplishes the required task. You do not need to change any code that is not in the **YOUR TURN** sections. If you get stuck on a task, move on and come back to it later. The **YOUR TURN** tasks do not depend on one another. When you complete the lesson, save your R script and upload it to the R Lesson 4 assignment on Canvas. 
+
+### Examining the data
+
+Let's load the data into a dataframe called `fungi`. 
+
+**YOUR TURN**: Modify the code below so that you can read the data table into your R work session.
+
+```{r}
+# Change the working directory
+setwd()
+
+# Read the data file fungi_example_data.csv into a dataframe named fungi
+fungi = read.csv('  ')
+
+# Print the contents of fungi
+fungi
+
+```
+
+The dataframe `fungi` has four columns. 'Isolate' is a unique code identifying a fungal isolate, 'Loc' is the thallus location from which the fungus was isolated. 'Morph' is a code the describe the morphotype of the fungal isolate. For example, isolates F2 and F3 both exihibited the same morphotype, M4. The 'Growth' column gives the daily radial growth rate in mm.
+
+### Categorical predictor and categorical response
+
+Suppose we wanted to know whether different morphotypes were isolated from base and tip sections of the lichen thalli. This is an example of a question where the predictor is categorical (tip vs base) and the response variable is also categorical (different morphotypes). To answer this question we should construct a contingency table and then use a statistical test to evaluate whether the frequencies of morphotypes differ between bases and tips.
+
+First let's construct the contingency table. We need to make a table that cross-tabulates the data and gives the counts of observations in each of the two locations and different morphotypes. The function to count the number of observations in different categories is `table()`.
+
+```{r}
+# Count the number of fungal isolates of each morphotype that came from each location
+morph_tab = table(fungi$Loc, fungi$Morph)
+
+# Print the table
+morph_tab
+```
+
+It looks like morphotypes were isolated at different frequencies. For example, M1 was isolated 23 times from base sections, but never from a tip section. We can visualize this data using a barplot.
+
+```{r}
+# Make a barplot from a table
+barplot(morph_tab)
+
+# Place the bars beside one another
+barplot(morph_tab, beside=T)
+
+# Make the plot prettier by rotating labels and adding axis labels.
+barplot(morph_tab, beside=T, ylab='Num. isolates', xlab='Morphotype', las=1)
+
+```
+
+We can use Pearson's chi-squared test to calculate the probability that we would have observed these different frequencies if in actuality there is no difference between the frequency at which different morphotypes infect tip and base sections. In R, the chi-squared test is performed using the function `chisq.test()`. The function will calculate the expected frequencies in the contingency table under the null hypothesis (that a fungal isolate's morphotypes is not associated with whether it came from a base or tip section), then calculate the chi-square statistic $\chi_{Pearson}^2 = \sum_{all~cells} \frac{(Observed - Expected)^2}{Expected}$ and compare it to the chi-square distribution with the appropriate degrees of freedom.
+
+```{r}
+# Conduct a chi-square test on the contingency table
+loc_morph_test = chisq.test(morph_tab)
+
+# View the results of the test
+loc_morph_test
+
+# View the expected frequencies under the null hypothesis
+loc_morph_test$expected
+
+```
+The test statistic was $44.901$ and had a P-value of $9.71 \times 10^{-10}$. Thus we conclude that it is very unlikely that base and tip sections constain similar frequencies of fungal morphotypes.
+
+
+### Categorical predictor and continuous response
+
+Suppose we now want to know whether growth rates of fungal isolates differ between fungi isolated from tips versus base sections or whether growth rates differ among morphotypes. These are both examples where the predictor variable is categorical (tip vs. base, or morphotype) and the response is ordered (i.e. growth rates can be ordered from slowest to fastest) and continuous (growth rates do not occur in separate discrete categories).
+
+Let's start with the question of whether growth rates differ between fungi isolated from tip and base sections. To answer this question we need to compare the mean growth rates of fungi from tips and bases and calculate the probability that this difference in means would have arisen by chance if growth rates were the same between tip and base fungi.
+
+First we will visualize the relationship between location and growth rate.
+
+**YOUR TURN**: Make a boxplot comparing growth rates of fungal isolates from bases versus tips.
+
+The boxplot shows that growth rates of fungi isolated from tip sections are about 3 mm / day faster than growth rates of fungi isolated from base sections. We can calculate the exact means across categories using the `group_by()` and `summarise()` functions from the `dplyr` package.
+
+```{r}
+# Load functions from the dplyr package
+library(dplyr)
+
+# Create a grouped dataframe
+fungi_byLoc = group_by(fungi, Loc)
+
+# Calculate mean growth rate and the standard devaition in growth rates by location
+summarise(fungi_byLoc, mean_growth = mean(Growth), std_growth = sqrt(var(Growth)))
+
+```
+
+The mean growth rate of fungi from tips was 7.99 mm/day and the mean growth rate of fungi from bases was 4.91 mm/day. The standard deviation in growth rates was calculated as the square-root of the variance and is similar between fungi from tips (1.04) and bases (0.83).
+
+We will use analysis of variance (ANOVA) to test whether growth rates differ between locations (tips/bases). In this case, ANOVA will partition the overall variation in observed growth rates into two parts: that which occurs among fungal isolates from the same location (e.g. variance within groups) and that which occurs among fungal isolates from different locations (e.g. variance among groups). To test whether the observed variation among groups is larger than we would expect if the groups were in fact the same, ANOVA calculates an F-ratio comparing the variation among groups to the variation within groups and then uses the F-distribution (with appropriate degrees of freedom) to calculate the probability of obtaining this F-ratio if there were no variation among groups.
+
+ANOVA can be performed in R using the function `aov()`. However we will use the linear model function (`lm()`) first because this allows use to estimate the mean difference in growth rates between fungi isolated from tips and bases. First we will fit a regression model with growth rate as the response variable and thallus location included as a predictor variable in the form of a factor (i.e. a discrete variable). The `lm()` function needs two arguments: a formula specifying the model and a data argument that tells the function which dataframe the variables are located in: `lm( y_var ~ x_var, data = dataframe_with_variables)`.
+
+```{r}
+# Fit a linear regression model with location as the predictor and growth rate as the response.
+mod_grw_loc = lm(Growth ~ Loc, data = fungi)
+
+# View the results of the linear model
+summary(mod_grw_loc)
+
+```
+
+The `summary()` function allows us to view the regression coefficients as well as a lot of other information. The coefficients table shows two rows for the two coefficients in the model: '(Intercept)' and 'Locbase'. 'Locbase' tells us that that growth rates of fungi from base sections are 3.07 mm/day *less* (hence negative sign) than growth rates of fungi from tips. '(Intercept)' is the mean growth rate of fungi from tip sections. Thus, to calculate the mean growth rate of fungi isolated from base sections we should add the two coefficients: $7.99 + -3.07 = 4.92$.
+
+The summary output also gives the F-statistic and its p-value with the appropriate degrees of freedom (1 and 105). This is the result of conducting an ANOVA, which we can do more explicitly by using the `anova()` function on the linear model object.
+
+```{r}
+# Calculate an ANOVA table for the linear model
+anova(mod_grw_loc)
+
+```
+
+The ANOVA table shows how the F ratio (F value) is calculated from the sums of squares (Sum Sq) and mean square (Mean Sq). Note that the P-value for the observed R ratio is so low that it is abbreviated to be $< 2.2 \times 10^{-16}$. This means that the observed differences in growth rates between fungi isolated from bases and tips are almost certainly not occuring by chance. 
+
+Now let's examine differences in growth rates of fungi exihibiting different morphotypes.
+
+```{r}
+# Make a boxplot comparing growth rates among morphotypes
+boxplot(Growth ~ Morph, data=fungi, xlab='Morphotype', ylab='Growth rate (mm / day)', las=1)
+
+```
+
+Visually, it looks like the growth rates of M1 are generally lower than growth rates of the others. It also appears that growth rates of M4 are higher than the others. Before conducting any statistical tests we should decide what comparison we are interested in testing. This will be determined by our hypothesis. If our hypothesis is that growth rates differ among morphotypes, then we should use ANOVA to test whether variation among groups is larger than variation within groups. However, if our hypothesis is that M1 grows slower than other fungi, we should use contrasts when conducting ANOVA to test this specific hypothesis.
+
+Let's first conduct an ANOVA to test whether growth rates differ among morphotypes.
+
+**YOUR TURN**
+
+1. Fit a linear model that tests whether growth rates differ between morphotypes. 
+2. Calculate an ANOVA table for the model in step 1.
+
+After conducting the ANOVA and seeing that the F statistic indicates that growth rates differ among morphotypes, we might be interested in calculating exactly which pairs of morphotypes differ. Because we are conducting multiple comparisons we need to decrease the P-value at which we conclude that a pair-wise comparison is 'significant'. One way to do this is using Tukey's honestly significant difference (HSD) method:
+
+```{r}
+# Fit the anova model using the aov function. (Because TukeyHSD() doesn't work with lm objects)
+mod_morph = aov(Growth ~ Morph, data = fungi)
+
+# Calculate all pair-wise comparisons between morphotypes
+TukeyHSD(mod_morph)
+```
+
+The test above shows that four of the six potential pairwise comparisons of growth rates between morphotypes are different at the 95% confidence level. The first column shows which two morphotypes are being compared. The `diff` column gives the mean difference between growth rates between the two indicated morphotypes. `lwr` and `upr` gives the 95% confidence intervals on this difference. `p adj` gives the adjusted P-value for the comparison. That is, the probability of observing this large of a difference if the growth rates were actually the same between the two morphotypes. Note that `TukeyHSD()` is doing T-tests. You can do your own T-test using the `t.test()` function in R.
+
+Many times we don't actually care about every single pair-wise comparison among groups and are actually more interested in one or two specific comparisons. In this case it is better to perform an *a priori* test of a specific hypothesis using contrasts. These hypotheses should be formulated *before* conducting an ANOVA. For our purposes, a contrast is a vector of integers that groups the morphotypes according the the hypothesis we want to test. It needs to follow three rules:
+
+1. It must sum to 0.
+2. Morphotypes that should be grouped together should have the same number.
+3. Morphotypes to be excluded from the comparison should be set to 0.
+
+Suppose our hypothesis is that M1 grows slower than other fungi. A contrast testing whether growth rates from M1 differ from all other morphotypes would be `c(3, -1, -1, -1)`.
+
+To conduct an ANOVA using this contrast, we first assign the data this new contrast and then conduct the anova.
+
+```{r}
+# Create a new data frame for playing with contrasts (so as not to mess up the original data)
+fungi2 = fungi
+
+# Define a contrast that tests whether M1 differs from other morphotypes
+cM1 = c(3, -1, -1, -1)
+
+# Assign this contrast to the Morph column in fungi2
+contrasts(fungi2$Morph) = cM1
+
+# Check how this changed the contrasts matrix
+# Notice that only the first contrast (1st column) corresponds to the hypothesis we are testing.
+contrasts(fungi2$Morph)
+
+# Fit a linear model with these new contrasts
+mod_M1 = lm(Growth ~ Morph, data = fungi2)
+
+# Examine the estimated effect of the contrast we are testing.
+summary(mod_M1)
+
+# Calculate the F-statistic for the contrast we are testing
+summary.aov(mod_M1, split = list( Morph = list('M1' = 1)))
+
+```
+
+In the first summary table above the results we want are listed under the effects of Morph1 because this corresponds to the 1st contrast, which was the one we changed. We see that the mean growth rates of M1 fungi are 0.55 mm / day lower than that of other morphotypes. We then used the `summary.aov()` function to calculate an F statistic for this comparison. We found the F statistic to be $37.26$ with a P-value of $1.84 \times 10^{-8}$, indicating that it is very unlikely that the growth rates of M1 were the same as the other fungi.
+
+If we wanted to conduct another hypothesis test, we would need to make sure that it is independent of our first hypothesis otherwise we risk increasing the probability that we will falsely detect a difference (which was why we had to use Tukey's method when comparing many pair-wise differences among groups). For example, we could use a second contrast to test whether growth rates of M4 fungi are different from M2 and M3 fungi, but we could not test whether M4 differs from all other morphotypes, since we have already compared M1 and M4 in the first hypothesis test. One way to check if hypotheses are independent is to calculate the cross-product of their contrasts. If the cross product is 0, then the hypotheses are independent and can be tested at the same time. To calculate the cross product multiple the contrast vectors term by term and then sum the result:
+
+```{r}
+# Make a contrast vector comparing M4 to M3 and M2
+cM4 = c(0, -1, -1, 2)
+
+# Calculate the cross product
+cM1*cM4
+sum(cM1*cM4)
+
+# Make a contrast vector comparing M4 to all other morphotypes
+cM4all = c(-1, -1, -1, 3)
+
+# Calculate the cross product
+cM1*cM4all
+sum(cM1*cM4all)
+
+```
+
+## Let's Review
+
+**YOUR TURN**: For each line of code below, write a comment above it describing what it does. Your comments should be preceeded by a `#` and occur above the line of code.
+
+
+```{r}
+
+new_fungi = subset(fungi, Morph != 'M4')
+
+
+loc_tab = table(new_fungi$Loc, new_fungi$Morph)
+
+
+loc_tab = loc_tab[,-4]
+
+
+chisq.test(loc_tab)
+
+
+barplot(loc_tab, beside=T)
+
+
+fungi$Growth_cm = fungi$Growth/10
+
+
+mod_cm = lm(Growth_cm ~ Loc, data=fungi)
+
+
+summary(mod_cm)
+
+```
+
+

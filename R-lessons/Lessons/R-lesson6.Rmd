@@ -1,0 +1,371 @@
+---
+title: "Planning Analyses"
+author: "BIO 46, Winter 2017, Stanford University"
+date: "Week 8: February 28, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = '', eval=F)
+```
+
+### Lesson Goals
+
+The goal of this lesson is for you to practice planning a set of analyses. By the end of this lesson you should have an R script containing `# comments` that will guide your analyses for your research project.
+
+The lesson will be divided into a series of steps that will help you write your analysis plan. There are no **YOUR TURN** sections- just complete each of the steps as it pertains to your research project. At the end of the lesson you will have an outline of a script that you can fill in to conduct your data analyses.
+
+Note that most of the text you type today will be in the form of comments that do not cause anything to happen in R. Comments are any line of text that begins with `#`.
+
+### Step 1: Heading
+
+Every R script should have a heading at the top that indicates:
+
+1. Title explaining what the script is for.
+2. When the script was written.
+3. Who wrote the script.
+4. Whether parts of the script were taken from other sources.
+5. Short description of what the code in the script will do and what data it uses.
+
+Create a new R Script using File > New File > R script. At the top of this script write a heading using the following format.
+
+```{r}
+#### Analysis script for BIO46 Team ___
+#### Writen by _____________________
+#### Winter Quarter 2017
+#### Short description (e.g. This script analyzes data on ______ collected by ______.)
+#### Short description continued.
+```
+
+### Step 2: Sections
+
+R scripts generally consist of two main parts. The first part loads libraries and data that will be used in the analyses. The second part contains the data analyses which are subdivided into sections based on either the question being addressed or the type of analysis being performed. 
+
+In this class we will divide the R script analyses into sections based on the three hypotheses you are evaluating in you project. 
+
+Everyone uses slightly different methods for delimiting sections. The main idea is that you should be able to quickly scroll through a script to find the different sections. In theis class we will divide sections using 
+
+`#--------------------------------------------------#`
+
+followed by a header that indicates what each section contains:
+
+`### Section Heading: This sections does XX ###`
+
+Add the following sections to your script:
+
+```{r}
+#----------------------------#
+### Load Data and Packages ###
+
+
+#-----------------------------------------------#
+### H1: (Type question for hypothesis 1 here) ###
+
+
+#-----------------------------------------------#
+### H2: (Type question for hypothesis 1 here) ###
+
+
+#-----------------------------------------------#
+### H3: (Type question for hypothesis 1 here) ###
+
+```
+
+### Step 3: Outline each analysis
+
+For each of the hypotheses, you will need to create an outline of the analyses you will perform to evaluate that hypothesis. One way to do this is to think about the final figure or statistical test you need to make/perform and then work backwards to the original data.
+
+In the outlines we will use three `###` to denote an analysis, two `##` to denote a step in the analysis and one `#` to describe what particular lines of code do. For today, you only need to write each step of the analysis using `##` comments without worrying about exactly what the code will look like. But, it you do put in placeholder code it will make the analysis easier.
+
+For example, suppose our hypothesis is that algal diversity in *Ramalina menziesii* is higher under canopies that allow more light to pass through. We could be planning two analyses to evaluate this hypothesis:
+
+1. Test whether the number of algal genotypes in a thallus is higher in lichens collected from deciduous trees (Valley oak and California buckeye) than evergreen trees (Coast live oak).
+2. Test whether the number of algal genotypes in a thallus increases with decreasing canopy cover.
+
+Then our initial layout would look like this:
+
+```{r}
+
+#-----------------------------------------------#
+### H1: Does algal diversity increase with light? ###
+
+
+### Test whether num. algal genotypes is higher on deciduous trees
+
+
+
+### Test whether num. algal genotypes increases with decreasing canopy cover
+```
+
+Working backwards, we first visualize what the figures that correspond to those two analyses as well as which statistical tests we would use. Then, add these steps in using two `##`.
+
+```{r}
+#-----------------------------------------------#
+### H1: Does algal diversity increase with light? ###
+
+
+### Test whether num. algal genotypes is higher on deciduous trees
+
+
+## Make a boxplot comparing num. algal genotypes between deciduous (Q. lobata and A. californica) and non-deciduous trees (Q. agrifolia)
+
+
+## ANOVA comparing num. algal genotypes between deciduous (Q. lobata and A. californica) and non-deciduous trees (Q. agrifolia)
+
+
+### Test whether num. algal genotypes increases with decreasing canopy cover
+
+## Make an x-y plot: Num. algal genotypes ~ Canopy cover
+
+## Fit a GLM testing: Num. algal genotypes ~ Canopy cover
+# Fit the model
+
+# Output the model results
+
+
+## Add the GLM model to the x-y plot
+```
+
+Next, think about how the data would need to be formated to make the plots or do the statistical tests. Usually you will need a dataframe where each row corresponds to a unit of observation and which also contains columns for each of the variables you want to compare. In our case a unit of observation is a single lichen and we want to compare the number of algal genotypes in each lichen to two variables: (1) whether a tree is deciduous or not, and (2) the canopy cover of the tree where it was collected.
+
+How will we get a dataframe into this format?
+
+We will need to merge the data tables that are available on the Google Drive database. Looking at the tables, we see that the *algae* table will contain one row for each genotype isolated from each lichen. We could use the `table()` function to count which genotypes were isolated from which lichen thalli and then add up the number of genotypes in each thallus. 
+
+Let's add this to the outline:
+
+```{r}
+#-----------------------------------------------#
+### H1: Does algal diversity increase with light? ###
+
+## Count the number of algal genotypes in each lichen thallus
+
+# table( vector of LichenIDs, vector of TaxonIDs)
+# result: table where rows are LichenIDs and columns are Taxon IDs and number in table show how many times
+#         each genotype was isolated from each Lichen
+
+# for each row, count the number of taxa that are not 0
+
+
+### Test whether num. algal genotypes is higher on deciduous trees
+
+
+## Make a boxplot comparing num. algal genotypes between deciduous (Q. lobata and A. californica) and non-deciduous trees (Q. agrifolia)
+
+
+## ANOVA comparing num. algal genotypes between deciduous (Q. lobata and A. californica) and non-deciduous trees (Q. agrifolia)
+
+
+### Test whether num. algal genotypes increases with decreasing canopy cover
+
+## Make an x-y plot: Num. algal genotypes ~ Canopy cover
+
+```
+
+
+We would then need to merge the number of algal genotypes in each lichen with a second dataframe that has the canopy cover of each tree as well as whether each tree is deciduous or not. The *lichens* table shows Which tree each lichen was collected from. The *trees* table contains information on the species of each tree while the *env_W17* table will contain data on the percent canopy cover for each tree. So there are four steps: (1) Make a new variable in the *trees* table that says whether a tree is deciduous or not. (2) Merge the *trees* and *env_W17* tables to get all of the predictor variables in one table. (3) Use the *lichens* table to match the variable containing the number of algal genotypes to the correct tree. (4) Merge the dataframe containing the number of algal genotypes to the dataframe containing the predictor variables.
+
+Let's add these steps to the outline:
+
+
+```{r}
+#---------------------------------------------------#
+### H1: Does algal diversity increase with light? ###
+
+## Count the number of algal genotypes in each lichen thallus from the algae table
+
+# table( vector of LichenIDs, vector of TaxonIDs)
+# result: table where rows are LichenIDs and columns are Taxon IDs and number in table show how many times
+#         each genotype was isolated from each Lichen
+
+# for each row, count the number of taxa that are not 0
+
+## Make a dataframe containing the num. algal genotypes in each lichen
+
+## Add a new variable to trees that shows whether a tree is deciduous
+
+## Merge the trees and env_W17 dataframes
+
+## Merge the environmental data and the dataframe with the num. algal genotypes
+
+
+### Test whether num. algal genotypes is higher on deciduous trees
+
+
+## Make a boxplot comparing num. algal genotypes between deciduous (Q. lobata and A. californica) and non-deciduous trees (Q. agrifolia)
+
+
+## ANOVA comparing num. algal genotypes between deciduous (Q. lobata and A. californica) and non-deciduous trees (Q. agrifolia)
+
+
+### Test whether num. algal genotypes increases with decreasing canopy cover
+
+## Make an x-y plot: Num. algal genotypes ~ Canopy cover
+
+```
+
+Now our outline for H1 is complete.
+
+### Step 4: Load and manipulate data
+
+After outlining the sections for each hypothesis, you should look through the parts of the outline where you prepare the data and determine whether there is any redundancy. For example, suppose our second hypothesis was that algal diversity is higher in trees with lower temperatures. Presumably, we would need the variable that shows the number of algal genotypes per lichen for this analysis as well. It therefore would make sense to do these data manipulations and calculations at the beginning of the script so that they could be used in each subsequent analysis.
+
+Move the redundant data manipulation sections to the first section of your analysis plan, under the *Load Data and Packages*. You should create a new heading using three `###` that indicates that you are creating a new dataframe to be used in the analyses (e.g. `anaylsis_data`).
+
+The outline would then look like this:
+
+```{r}
+#----------------------------#
+### Load Data and Packages ###
+
+
+
+### Prepare a data frame for analysis
+
+## Count the number of algal genotypes in each lichen thallus from the algae table
+
+# table( vector of LichenIDs, vector of TaxonIDs)
+# result: table where rows are LichenIDs and columns are Taxon IDs and number in table show how many times
+#         each genotype was isolated from each Lichen
+
+# for each row, count the number of taxa that are not 0
+
+## Make a dataframe containing the num. algal genotypes in each lichen
+
+## Add a new variable to trees that shows whether a tree is deciduous
+
+## Merge the trees and env_W17 dataframes
+
+## Merge the environmental data and the dataframe with the num. algal genotypes
+
+# final dataframe: analysis_data
+
+
+
+#---------------------------------------------------#
+### H1: Does algal diversity increase with light? ###
+
+
+### Test whether num. algal genotypes is higher on deciduous trees
+
+
+## Make a boxplot comparing num. algal genotypes between deciduous (Q. lobata and A. californica) and non-deciduous trees (Q. agrifolia)
+
+
+## ANOVA comparing num. algal genotypes between deciduous (Q. lobata and A. californica) and non-deciduous trees (Q. agrifolia)
+
+
+### Test whether num. algal genotypes increases with decreasing canopy cover
+
+## Make an x-y plot: Num. algal genotypes ~ Canopy cover
+
+
+
+
+#---------------------------------------------------------#
+### H2: Does algal diversity decrease with temperature? ###
+
+
+#------------------------------------------------------------#
+### H3: Is algal diversity related to bacterial diversity? ###
+
+```
+
+Finally, look through your outline and determine which data tables you will need to load into R. For this example we need the following: *algae*, *env_W17*, *trees*, and *lichens*. Add this to the script in the first section under a heading `### Load Data`. You should also include code that allows you to change the directory to the location where you will download and save these tables.
+
+
+```{r}
+#----------------------------#
+### Load Data and Packages ###
+
+### Load Data
+
+## Set the directory where data are saved
+
+## Read in the data
+
+# Table containing data on algal genotypes 
+algae = read.csv( )
+
+# Table containing data on environmental variables
+env = read.csv( )
+
+# Table containing data on the trees where lichens were sampled
+trees = read.csv( )
+
+# Table containing data on the lichen thalli that were sampled
+lichens = read.csv( )
+
+
+### Prepare a data frame for analysis
+
+## Count the number of algal genotypes in each lichen thallus from the algae table
+
+# table( vector of LichenIDs, vector of TaxonIDs)
+# result: table where rows are LichenIDs and columns are Taxon IDs and number in table show how many times
+#         each genotype was isolated from each Lichen
+
+# for each row, count the number of taxa that are not 0
+
+## Make a dataframe containing the num. algal genotypes in each lichen
+
+## Add a new variable to trees that shows whether a tree is deciduous
+
+## Merge the trees and env_W17 dataframes
+
+## Merge the environmental data and the dataframe with the num. algal genotypes
+
+# final dataframe: analysis_data
+
+```
+
+Once you  have added the section on the data tables, you may find it useful to go back through your outline and reference these dataframes by name where they are used. This is not required for the assignment.
+
+Save you final outline and submit it through Canvas. Use this outline when working on the analyses for your research project. Fill in the lines of code directly into it.
+
+### Let's Review
+
+When you make plots you should save them to your computer to use in your paper or presentation. In the Plots window click Export and select 'Save as Image'. The you can save it wherever you like.
+
+Here are some functions from previous R Lessons that you may find helpful in your analysis. You can use the Help `?` function to remember what they do.
+
+```{r}
+merge()
+
+table()
+
+subset()
+
+summarize() # in the dplyr package
+
+group_by() # in the dplyr package
+
+rowSums()
+
+lm()
+
+glm()
+
+anova()
+
+summary()
+
+aov()
+
+boxplot()
+
+plot()
+
+barplot()
+
+abline()
+
+vegdist()
+
+adonis()
+
+```
+
+
+
+

@@ -1,8 +1,11 @@
-## Name: [YOUR NAME HERE]
+### Code for R Lesson 3: Summarizing and Visualizing Data Part 2
+### BIO46  Winter 2017
+### Stanford University
 
 
 ## Task 1: Plot variation in temperature at one tree during Fall 2016
 
+## ------------------------------------------------------------------------
 # Stop R from automatically converting text to categorical variables when reading in data
 options(stringsAsFactors=F)
 
@@ -22,9 +25,9 @@ temp_data = read.table('iButtons_Fall2016.csv', header=TRUE, sep=',')
 tree_data = read.csv('JRTrees_Fall2016.csv')
 
 
-## YOUR TURN: Change the working directory in the code above so that the code will find the files you  saved on your computer.
+### YOUR TURN: Change the working directory in the code above so that the code will find the files you saved on your computer.
 
-
+## ------------------------------------------------------------------------
 # Look at the contents of the tree_data dataframe
 tree_data
 
@@ -38,9 +41,11 @@ head(focal_tree_data)
 # How many temperature observations are there?
 nrow(focal_tree_data)
 
+## ------------------------------------------------------------------------
 # Display the type of data stored in the Date_time column of focal_tree_data
 class(focal_tree_data$Date_time)
 
+## ----strptime------------------------------------------------------------
 # Make a vector of time points that corresponds to Date_time and is in a date format that R can understand
 time_points = strptime(focal_tree_data$Date_time, format='%m/%d/%y %I:%M:%S %p %z')
 
@@ -50,12 +55,15 @@ time_points
 # Display the type of data stored in the time_points vector - it is not 'character'
 class(time_points)
 
+## ----plot_time_series----------------------------------------------------
 # Plot temperature versus time using method 1:
 plot(time_points, focal_tree_data$Temp)
 
+## ----better_time_series--------------------------------------------------
 # Plot temperature vs time as a line and with axis labels
 plot(time_points, focal_tree_data$Temp, type='l', xlab='Date', ylab='Temperature (C)', las=1)
 
+## ------------------------------------------------------------------------
 # Define the cut-off date to remove data
 cutoff_date = strptime('2016-09-20 12:00:00 -0700', format='%Y-%m-%d %H:%M:%S %z')
 
@@ -69,14 +77,16 @@ analysis_data = subset(focal_tree_data, time_points > cutoff_date)
 nrow(analysis_data)
 
 
-## YOUR TURN: Calculate the number of temperature observations that were dropped from the analysis 
-## because they occured prior to the cutoff date.
+### YOUR TURN: Calculate the number of temperature observations that were dropped from the analysis because they 
+#   occured prior to the cutoff date.
 
 
 ## Task 2: Summarize the temperature data at one tree
 
+## ------------------------------------------------------------------------
 # Make a new vector of time_points that corresponds to the times in analysis_data
 analysis_times = strptime(analysis_data$Date_time, format='%m/%d/%y %I:%M:%S %p %z')
+
 
 # Plot temperature vs time as a line and with axis labels
 plot(analysis_times, analysis_data$Temp, type='l', xlab='Date', ylab='Temperature (C)', las=1)
@@ -87,22 +97,24 @@ abline(h = max(analysis_data$Temp), col='red')
 # Add a blue horizontal line at the minimum temperature measured
 abline(h = min(analysis_data$Temp), col='blue')
 
-## YOUR TURN: Add a purple horizontal line to the plot at the mean temperature value. 
-## Hint: the function for calculating the mean of a vector is `mean()`.
+### YOUR TURN: Add a purple horizontal line to the plot at the mean temperature value. 
+#   Hint: the function for calculating the mean of a vector is mean().
 
 
 ## Task 3: Summarize daily temperature data at one tree
 
+## ------------------------------------------------------------------------
 # Make a vector that gives the date of each temperature measurement without the time.
 analysis_dates = as.Date(analysis_times)
 
 # Plot the temperature measurements by date
 plot(analysis_dates, analysis_data$Temp, xlab='Date', ylab='Temperature (C)', las=1)
 
-
-# Load the package dplyr - this won't work unless you have installed the package.
+## ------------------------------------------------------------------------
+# Load the package dplyr
 library(dplyr)
 
+## ------------------------------------------------------------------------
 # Count the number of observations in analysis_data
 summarise(analysis_data, Num_obs=n())
 
@@ -112,6 +124,7 @@ summarise(analysis_data, avgT = mean(Temp))
 # Do both at once
 summarise(analysis_data, Num_obs = n(), avgT = mean(Temp))
 
+## ------------------------------------------------------------------------
 # Add the dates as a column in the analysis_data dataframe
 analysis_data$Date = analysis_dates
 
@@ -127,23 +140,26 @@ daily_temp_summary = summarise(grouped_data, Num_obs=n(), avgT=mean(Temp), maxT=
 # View the summary data
 daily_temp_summary
 
-## YOUR TURN: Modify the code that creates the `daily_temp_summary` dataframe so that it includes a column called 
-## 'minT' containing the minimum temperature measured each day.
 
+### YOUR TURN: Modify the code that creates the daily_temp_summary dataframe so that it includes a column 
+#   called 'minT' containing the minimum temperature measured each day.
 
+## ------------------------------------------------------------------------
 # Calculate the mean daily high temperature at this tree
 mean(daily_temp_summary$maxT)
 
-## YOUR TURN**: Calculate the mean daily low temperature at this tree
+
+### YOUR TURN: Calculate the mean daily low temperature at this tree.
 
 
 ## Task 4: Summarize daily temperature measurements at multiple trees
 
-## YOUR TURN: Change the `focal_tree` at the beginning of this R script so that subsequent code will analyze data 
-## from Tree 17. What was the mean daily maximum temperature at Tree 17? 
-## (Write your answer, don't copy down all of the code again.)
 
+### YOUR TURN: Change the focal_tree at the beginning of this R script so that subsequent 
+#   code will analyze data from Tree 17. What was the mean daily maximum temperature at Tree 17? 
+#   (Write your answer, don't copy down all of the code again.)
 
+## ------------------------------------------------------------------------
 # Make a vector of time points that corresponds to Date_time and is in a date format that R can understand
 time_points = strptime(temp_data$Date_time, format='%m/%d/%y %I:%M:%S %p %z')
 
@@ -175,14 +191,16 @@ subset(temp_summary_df, TreeID=='T14')
 # Calculate the average daily high temperature across all trees
 mean(temp_summary_df$maxT)
 
-## YOUR TURN**: Calculate the average daily low temperature across all trees.
 
+### YOUR TURN: Calculate the average daily low temperature across all trees.
 
+## ------------------------------------------------------------------------
 ## Let's Review
 
-## YOUR TURN: For each line of code below, write a comment above it describing what it does. 
-## You can assume that temp_summary_df is the same dataframe we just created in the code above, 
-## containing average and maximum daily temperatures for each tree on each day.
+### YOUR TURN: For each line of code below, write a comment above it describing what it does.
+#   You can assume that  temp_summary_df is the same dataframe we just created in the code above, 
+#   containing average and maximum daily temperatures for each tree on each day.
+
 
 plot(temp_summary_df$Date, temp_summary_df$maxT)
 
@@ -200,3 +218,4 @@ tree_groups = group_by(temp_summary_df, TreeID)
 
 
 summarise(tree_groups, mean_high=mean(maxT))
+

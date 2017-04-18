@@ -1,0 +1,160 @@
+---
+title: "R Lesson 5 Supplement: Creating Ecoplate Data for Analysis"
+author: "BIO 46, Winter 2017, Stanford University"
+date: "Week 7: February 21, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = '', eval=F)
+```
+
+## Lesson Supplement Goals
+
+The goal of this lesson supplement is to demonstrate how to combine three data tables from our class database into a table that can be used for analyzing carbon utilization data from the ecoplates. We will be working with three data tables from our class database: 
+
+1. *carbon_utilization*: a table derived from measurment of the ecoplates, giving the amount of each carbon substrate utilized at each time step by each microbial community sample
+2. *bacteria_plates*: a table indicated where each microbial community was sampled, including the tree, lichen species (*Ramalina menziesii* and *Evernia prunastri*), thallus location (internal vs. external), and infection status (healthy vs infected)
+3. *ecoplates*: a table linking the carbon\_utilization and bacteria\_plates tables
+
+You should download these files in csv format from our shared Google Drive database into your Data folder on your computer. 
+
+
+### Examining the data
+
+Let's load the carbon\_utilization.csv and bacteria\_plates.csv data tables into dataframes that we can work with in R.  
+
+**YOUR TURN**: Modify the code below so that you can read the two data tables into your R work session.
+
+```{r}
+# Change the working directory
+setwd('C:/Users/jrcoyle/Documents/Stanford/BIO46/GitHub/R-lessons/Data/')
+
+# Read the data file carbon_utilization.csv into a dataframe named Cdata
+Cdata = read.csv('carbon_utilization.csv')
+
+# Read the data file bacteria_plates.csv into a dataframe named sample_info
+sample_info = read.csv('bacteria_plates.csv')
+
+# Read the data file ecoplates.csv into a dataframe named eco
+eco = read.csv('ecoplates.csv')
+```
+
+### Data Wrangling
+
+The first thing we should do is decide how to summarize the carbon untilization profiles. Ecoplates were measured multiple times and we will want to just use amount of substrate utilized at the last measurement time. First we can examine the `Day` column of `Cdata` to see which days are the last for each plate. Then we can make a subset of teh dataframe that only contains those measurements.
+
+```{r}
+# Cross-tabulate which plates were measured on which days
+table(Cdata$EcoplateID, Cdata$DayNumber)
+```
+
+It looks the last day that plates E1 - E4 were measured is was Day 12, whereas plates E5 - E8 were last measured on Day 11. (Note that the table is filled with 3 and 0 because if a plate was measured, then all three of the samples on it were measured, which corresponds to three rows in `Cdata`. If a plate was not measured then there will be 0 rows.) Now we need to select day 12 for plates E1 - E4 and day 11 for plate E5 - E8. 
+
+To do this we will need to specify both the plate number and the Day in the subset. Notice that the `Plate` column tells us which plate each row corresponds to: Plate-1 is E1, Plate-2 is E2, etc. We can use the `paste()` function to automatically make a vector containing `'Plate-1', 'Plate-2', 'Plate-3', 'Plate-4'` without needing to type this all out. The `paste()` function puts text together in a line using the character given in the `sep=` argument to separate each piece.
+
+```{r}
+# Make a vector of plate numbers that we will select
+plate_1to4 = paste('Plate', 1:4, sep='-')
+
+plate_1to4
+```
+
+Then we can use the `A %in% B` operator which checks whether elements of `A` exist in elements of `B` to test whether each row of `Cdata` corresponds to Plate 1 through 4.
+
+```{r}
+# Test whether each element of the Plate column in Cdata is in keep_plates 
+# (i.e. equals Plate-1, Plate-2, Plate-3, or Plate-4)
+keep_rows = Cdata$Plate %in% plate_1to4
+
+keep_rows
+```
+
+Now we combine the vector telling us which rows correspond to plates 1 to 4 with a logical statement testing whether the measurement comes from Day 12.
+
+```{r}
+# Create a subset of the data
+E1to4_data = subset(Cdata, keep_rows & DayNumber == 12)
+
+# Check how many rows remain... there should be 3 samples * 4 plates * 8 groups = 96 rows
+nrow(E1to4_data)
+
+```
+
+Next we create a subset of data from plate 5 - 8 measured on day 11.
+
+```{r}
+# Make a vector of plate numbers that we will select
+plate_5to8 = paste('Plate', 5:8, sep='-')
+  
+# Make a vector that tests whether each row is in plate_5to8
+keep_rows = Cdata$Plate %in% plate_5to8
+  
+# Create a subset of the data 
+E5to8_data = subset(Cdata, keep_rows & DayNumber == 11)
+
+# Check whether there are the correct number of rows
+nrow(E5to8_data)
+
+```
+
+Now we will combine these two dataframes so that we have one set of data containing ecoplate measurements from the last day that each plate was measured. The `rbind()` function stacks the rows of two dataframes on top on one another, so long as the number of columns is the same in each.
+
+```{r}
+# Combine E1to4_data and E5to8_data
+Cdata_last = rbind(E1to4_data, E5to8_data)
+
+# Check the number of times each plate was measured using table()
+table(Cdata_last$EcoplateID, Cdata_last$DayNumber)
+
+```
+
+Now that we have focused on the data we want to analyze, the next thing that we need to do is link the information in the `sample_info` dataframe to the carbon utilization profiles in the `Cdata_last` dataframe. Click on the `Cdata_last` data table in the Environment window and look at the column headings. Then click on the `eco` and `sample_info` tables. The `Cdata_last` table only tells us whether a set of measurements is from 'Sample\_1', 'Sample\_2', or 'Sample\_3'. What we need to do is determine what was in those samples (e.g. internal bacteria from healthy vs. infected *R. menziesii*, or internal vs. external bacteria on *E. prunastri*). The *eco* table tells use which rows of `sample_info` correspond to which samples. There are three steps to linking these tables:
+
+1. Convert `eco` to a format with three columns: the EcoplateID, the Sample number, and the PlateID in that sample which corresponds to the `PlateID` column in `sample_info`. 
+  * To do this we will need to use a function `melt()` from the `reshape2` package.  
+2. Attach the `PlateID` column from the newly formated `eco` table to the `Cdata_last` dataframe by matching the `EcoplateID` and `Sample.ID` columns.
+  * To do this we will use the `merge()` function.
+3. Combine the columns of `sample_info` and `Cdata_last` based on the newly added `PlateID` column.
+  * To do this we will use the `merge()` function again.
+  
+First you will need to install the package `reshape2`. To install a package in R Studio you can click the 'Packages' tab in the upper right window, then click 'Install' and type 'reshape2' into the line marked 'Packages'. 
+
+
+```{r}
+# Load the functions from the package you just installed
+library(reshape2)
+
+# Step 1: convert the eco dataframe into a format with three columns
+eco_melted = melt(eco, id.vars='EcoplateID', measure.vars=c('Sample_1','Sample_2','Sample_3'))
+
+# Re-name the columns to names that are the same as in sample_info and Cdata_last
+names(eco_melted) = c('EcoplateID','Sample.ID','PlateID')
+
+# Examine the first few lines of the new table
+head(eco_melted)
+
+# Step 2: Attache the PlateID column from eco_melted to Cdata_last
+# The all.x = T tells the merge function to keep all of the rows in Cdata, even if there isn't a match
+Cdata_last = merge(Cdata_last, eco_melted, all.x=T)
+
+# Examine the first few lines of Cdata
+head(Cdata_last)
+
+# Notice that some samples did not have anything in them (PlateID = NONE)
+# Remove these samples
+Cdata_last = subset(Cdata_last, PlateID != 'NONE')
+
+# Step 3: Combine the columns of Cdata_last and sample_info and rename as analysis_data
+analysis_data = merge(Cdata_last, sample_info, all.x=T)
+
+# How many rows in analysis_data?
+nrow(analysis_data)
+
+
+# Save data to a file
+write.csv(analysis_data, file = 'merged_final_carbon_utilization_data.csv', row.names=F)
+
+```
+
+You should check that the final data table for analysis was saved correctly in the Data directory.

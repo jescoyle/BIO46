@@ -1,0 +1,221 @@
+---
+title: "R Function Summary Sheet"
+author: "BIO 46, Winter 2017, Stanford University"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(comment = '')
+knitr::opts_chunk$set(eval=F)
+```
+
+### Data Manipulation
+
+Set the directory where R reads and saves files
+
+`setwd('folder_path')`
+
+Read a data table from a file (in CSV format with a header row).
+
+`my_data = read.csv('file_name.csv')`
+
+
+Merge two data frames together based on a column (or multiple columns) that they share.
+
+`merge(data1, data2, by='column_name_in_common')`
+
+Only rows that have entries in both dataframes will be kept unless you specify:
+
+`merge(data1, data2, by='column_name_in_common', all=T)`
+
+in which case, if a row doesn't match, then it will not be dropped, but the missing data will be `NA`.
+
+
+### Making Objects
+
+**Vectors**: a set of numbers or text in order
+
+`my_vector = c(thing1, thing2, thing3)`
+
+Other shortcuts 
+
+
+**Dataframes**: a table where rows are observations and columns are charactersitics/variables
+
+`my_data = data.frame(col_name1 = column1, col_name2 = column2, col_name3 = column3)`
+
+
+You can rename the columns in a dataframe using `names(my_data) = new_names`, where `new_names` is a vector of all of the column names. You can change just one column name as well: `names(my_data)[1] = "new_name1"`
+
+
+
+### Selecting Parts of Dataframes and Vectors
+
+To select a specific column of a dataframe:
+
+`my_data$column_name` or `my_data[ , 'column_name']`
+
+To test a condition, use:
+
+ * `A > B`: is each element in A greater than value B?
+ * `A >= B`: is each element in A greater than of equal to value B?
+ * `A == B`: is each element in A equal to value B?
+ * `A != B`: is each element in A not equal to value B?
+ * `A %in% B` : is each element in A also in B?
+ 
+Use conditions to select parts of vectors or dataframes:
+
+* `my_vector[my_vector > value]` : all elements of `my_vector` that are greater than `value` 
+* `subset(my_data, column1 != value)` : all rows of `my_data` dataframe where the values in `column1` are not equal to `value`.
+* `subset(my_data, column2 %in% c('x1','x2','x3'))` : all rows of `my_data` dataframe where the values in `column2` are equal to either 'x1' 'x2' or 'x3'. 
+
+Use logical operators to connect multiple conditions:
+
+* `A & B`: are conditions A and B both true?
+* `A|B`: is condition A true or B true?
+
+For example:
+
+`subset(my_data, (column1 <= value1) & (column2 == value 2))` : all rows from `my_data` dataframe where the values in `column1` are less than or equal to `value1` and the values in `column2` are equal to `value2`.
+
+
+### Summarizing Data
+
+You can tally the number of observations that take on each value in a vector or dataframe using the `table()` function:
+
+* `table(X)`: Finds all of the different values in the vector `X` and reports how many times each one is present
+* `table(my_data$column2)` : Finds all of the different values in `column2` of `my_data` and reports how many times each one is present
+* `table(my_data$column2, my_data$column2)` : Finds all of the different combinations of values in `column2` and `column3` of `my_data` and reports how many times each combination occurs in a table format.
+
+The following functions work on dataframes:
+
+* `rowSums(my_data)` : Calculates the sum of values in each row of `my_data` dataframe.
+* `colSums(my_data)` : Calculates the sum of values in each column of `my_data` dataframe.
+* `rowMeans(my_data)` : Calculates the mean of values in each row of `my_data` dataframe.
+* `colMeans(my_data)` : Calculates the mean of values in each column of `my_data` dataframe.
+
+Two functions in the dplyr package are useful for summarizing data that is grouped into categories.
+
+`grouped_data = group_by(my_data, column1)` : group rows of `my_data` into categories based on `column1`.
+
+`summarise(grouped_data, new_col_name = summary_calculation_goes_here)` : do a summary calculation within groups.
+
+
+### Arithmetic
+
+Arithmetic on vectors of numbers works element by element. For example `A + B` would add the first element of `A` to the first element of `B` and the second element of `A` to the second element of `B`, and so on. It would return a vector the same length as `A`.
+
+R Code      | Usage
+----------------|---------------------------------
+`A + B`     | Vector `A` plus vector `B`.
+`A - B`     | Vector `A` minus vector `B`.
+`A * B`     | Vector `A` times vector `B`.
+`A / B`     | Vector `A` divided by vector `B`.
+`A^B`       | Vector `A` raised to the power of vector `B`
+
+
+
+### Other Useful Functions
+
+R Function      | Usage
+----------------|---------------------------------
+`rep(A, B)`     | Repeat each element in A, B times.
+`seq(A, B, C)`  | Make a sequence of numbers from A to B countin every C units. Can use length.out=D to specify that you want D numbers between A and B.
+`nrow(my_data)` | Reports the number of rows in `my_data` dataframe.
+`ncol(my_data)` | Reports the number of columns in `my_data` dataframe.
+`length(X)`     | Reports the number of elements in `A`
+`mean(X)`       | Calculates the mean of all numbers in `X`
+`min(X)`        | Calculates the minimum of all numbers in `X`
+`max(X)`        | Calculates the maximum of all numbers in `X`
+
+
+### Statistical Tests
+
+A Chi-square test to evaluate whether frequencies differ across groups:
+
+`chi.test(table_of_counts)`
+
+
+Fit a normal linear model that can be used for linear regression (if the x variable is continuous) or ANOVA (if the x variable is categorical):
+
+`lm_model = lm(y_var_name ~ x_var_name, data = my_data)` : fit the model with the data in `my_data`
+
+`summary(lm_model)` : view the results of the model
+
+`anova(lm_model)` : print an ANOVA table
+
+
+Fit a GLM if the response variable is not normal:
+
+`log_model = glm(y_var_name ~ x_var_name, data = my_data, family = binomial(link='logit'))` : fit a logistic regression to binary data
+
+`pois_model = glm(y_var_name ~ x_var_name, data = my_data, family = poisson(link='log'))` : fit a GLM with poisson errors (useful for count data)
+
+
+Post-hoc pair-wise comparison of categories in ANOVA:
+
+`aov_model = aov(y_var_name ~ x_var_name, data = my_data)` : do ANOVA comparing the y variable values across x variable categories
+`TukeyHSD(aov_model)` : calculate Tukey's honest significant difference test comparing all categories to one another.
+
+
+Generate predictions of a model for a new set of x valuse (useful for plotting). Notice that the first argument is the model and the second argument is a dataframe whose columns are named the same as the x variable in the orginal model and which contain the new x variable values.
+
+`predict(log_model, data.frame(x_var_name = new_x_values), type='response')`
+
+
+Print the coefficients estimated in a model:
+
+`coef(log_model)`
+
+
+### Dissimilarity Calculation
+
+The vegan package has several useful functions for examining community composition dissimilarity.
+
+`vegdist(community_data, method = 'dissimiarlity_measure_name')` : calculates the dissimilarity between rows of `community_data` based on the values in the columns accordning to the dissimilarity measure given. 
+
+
+
+
+### Plotting
+
+Make an x-y plot.
+
+`plot(x_variable, y_variable)` : using two vectors of numbers
+
+`plot(y_column_name ~ x_column_name, data = my_data)` : using the columns in a dataframe
+
+Use the following arguments to modify the plot:
+
+* `xlab = "x axis label"`
+* `ylab = "y axis label"`
+* `col = "point color"`
+* `pch = 16` : solid circles. Other numbers give other symbols
+
+
+Make a boxplot.
+
+`boxplot(y_column_name ~ x_column_name, data = my_data)` : using the columns in a dataframe, where x contains the categories
+
+
+Make a barplot.
+
+`barplot(table_data)` : using a table of values to be shown as bars
+
+
+Add a line to an existing plot.
+
+* `abline(h = y_value)` : adds a horizontal line at `y_value`
+* `abline(v = x_vale)` : adds a vertical line a `x_value`
+* `abline(lm_mod)` : adds a line of best fit from a linear regression model fit with `lm()`
+* `lines(x_values, y_values)` : draws a line between the points whose x and y-values are given. Useful for adding lines from GLMs.
+
+
+
+
+
+
+
+
+
