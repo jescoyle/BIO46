@@ -1,8 +1,32 @@
-This repository primarily contains lessons, code and data used to teach R in BIO 46: Research in Ecology and Evolution, taught at Stanford University.
-
-Lessons were initially developed by Jes Coyle for a pilot class during the Winter Quarter of 2017.
+This repository is for materials used in BIO 46: Research in Ecology and Evolution, taught at Stanford University in 2017 and 2018. It contains data sets collected by the class as well as lessons, code and data used to teach R. Lessons were initially developed by Jes Coyle.
 
 ## Table of Contents
+
+### 2018
+
+#### *Data*
+
+**BIO46_2018_sample_sites.csv** : Table describing sites where lichens were collected.
+
+| Column name | Description |
+|-------------|-------------|
+| Site | Unique site identifier |
+| Group | Group assigned to sample the site |
+| UTM_E | UTM east coordinate (zone 10) |
+| UTM_N | UTM north coordinate (zone 10) |
+
+#### Data analysis exercises
+
+This directory is set up as an R Studio project used to make the data analaysis exercises that teach students how to manipulate and visualize their data in R. Each exercise is an R markdown (.Rmd) file that has been rendered to an html file with the lesson instructions. The exercises are each accompanied by an R script file (.R) only containing the code as well as an answer key script.
+
+#### *code* : Contains extra code used to examine and manipulate data for the exercises.
+
+#### *data* : Contains data tables utilized in the exercises.
+
+
+### 2017
+
+#### *R-lessons*
 
 **R Lesson 1: Introduction to R**
 
