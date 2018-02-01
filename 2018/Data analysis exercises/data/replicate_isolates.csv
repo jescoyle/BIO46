@@ -1,0 +1,27 @@
+IsolateID,LichenID,Thallus_location,Growth_rate_mm_day,MorphotypeID,Sequence_result,TaxonID
+T15-L1-F18,W17-T15-L1,base,1.786,M26,Good,Nemania_serpens_gen1
+T15-L1-F24,W17-T15-L1,base,1.262,M26,,Nemania_serpens_gen1
+T16-L1-F22,W17-T16-L1,base,0.36,M26,Good,Nemania_serpens_gen1
+T24-L1-F11,W17-T24-L1,tip,0.178571429,M3B,Good,Cladosporium_sp1
+T24-L1-F13,W17-T24-L1,base,1.142857143,M26,Good,Nemania_serpens_gen2
+T25-L2-F12,W17-T25-L2,base,3.6,M26,Good,Nemania_serpens_gen2
+T26-L1-F19,W17-T26-L1,base,7.2,M32B,Good,Nemania_serpens_gen1
+T26-L3-F21,W17-T26-L3,base,1.119,M3A,Good,Cladosporium_sp1
+T26-L3-F23,W17-T26-L3,base,2.143,M26,Good,Nemania_serpens_gen1
+T26-L3-F7,W17-T26-L3,tip,1.929,M26,Good,Nemania_serpens_gen2
+T26-L3-F8,W17-T26-L3,tip,1.143,M17,Good,Nemania_serpens_gen2
+T27-L2-F2,W17-T27-L2,tip,1.43,M19,Acceptable,Pezizomycetes_sp2
+T32-L1-F24,W17-T32-L1,base,2,M26,Did not sequence,Nemania_serpens_gen1
+T32-L3-F3,W17-T32-L3,tip,2.476190476,M3A,Did not sequence,Cladosporium_sp1
+T32-L3-F13,W17-T32-L3,base,2.666666667,M26,Good,Nemania_serpens_gen1
+T32-L3-F17,W17-T32-L3,base,2.571428571,M3A,Good,Cladosporium_sp1
+T36-L2-F21,W17-T36-L2,base,1.071428571,M1,Good,Pezizomycetes_sp2
+T36-L3-F17,W17-T36-L3,base,1.9,M33,Good,Pezizomycetes_sp2
+T38-L1-F2,W17-T38-L1,base,4.3,M26,Good,Nemania_serpens_gen1
+T42-L3-F15,W17-T42-L3,tip,5.714285714,M7,Good,Pezizomycetes_sp2
+T42-L3-F8,W17-T42-L3,base,2,M24,Good,Nemania_serpens_gen2
+T4-L2-F14,W17-T4-L2,tip,1.892857143,M26,Did not sequence,Nemania_serpens_gen1
+T4-L2-F13,W17-T4-L2,base,3.2,M7,Good,Pezizomycetes_sp2
+T4-L2-F20,W17-T4-L2,tip,4.714285714,M33,Good,Pezizomycetes_sp2
+T49-L1-F17,W17-T54-L1,base,1.428571429,M18,Acceptable,Nemania_serpens_gen2
+T54-L1-F13,W17-T54-L1,base,2.261904762,M24,Acceptable,Nemania_serpens_gen2

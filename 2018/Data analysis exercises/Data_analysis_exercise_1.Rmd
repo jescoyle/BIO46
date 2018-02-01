@@ -1,0 +1,205 @@
+---
+title: "Data Analysis Exercise 1"
+subtitle: BIO 46, Winter 2018
+output:
+  html_document:
+    highlight: pygments
+    theme: readable
+  html_notebook:
+    highlight: pygments
+    theme: readable
+---
+
+## Lesson Goals
+
+In this exercise you will learn:
+
++ How to install and load packages with additional functions.
++ How to read data from a Google spreadsheet.
++ How a dataframe stores data.
++ How to subset the rows of a dataframe based on the values in the columns.
++ How to create a histogram and scatterplot using the `ggplot2` package.
+
+To complete this assignment you should download the R script that accompanies this lesson (data_analysis_exercise_1.R). Open this file in RStudio and type your name at the top. As you read through this exercise, run each line of code in the accompanying R script in RStudio and type your answers for each of the "Problems" into this file at the appropriate location. RStudio *will not* automatically save your work, so be sure to periodically click the save icon at the top of the code. Ask questions and check the Troubleshooting section at the bottom of this document if you get stuck.
+
+Let's get started.
+
+## Running code
+
+An *R script* (like data_analysis_exercise_1.R) is a text file that contains code that will *do something* when you execute it in R. By saving code in a file, you can access and re-run it at any time. In order for the code to do anything you must execute (or "run") it. To run a line of code in RStudio, place your cursor on the line and either click the "Run" button in the upper right part of the window or press Ctrl+Enter (Windows) or Cmd+Enter (Mac). You can highlight multiple lines of code to run them at sequentially. You can also highlight a portion of a line of code to run only the text you have highlighted. 
+
+Notice what happens in the "Console" window after you run code. The code that you run should appear in the Console, along with any output that the code generate. Try running the following code:
+
+```{r eval = FALSE}
+# Add 5 and 4
+5 + 4
+```
+
+In the code above the lines that begin with `#` are comments. Any text that follows `#` is not executed. If you try to run these lines nothing will happen. Comments are the most important part of code because they tell you what the code should do.
+
+
+## Installing and loading packages
+
+When you install R it comes with many basic functions for arithmatic, statistics, data manipulation and plotting. However the real power of R comes from all of the additional functions that users havre created and made available in "packages". In order to use the functions in a package that does not come with the basic R installation, you must first "install" the package and then "load" the package into your current R session. You only need to install each package once- doing so downloads the functions from an online repository to a folder on your computer. However, every time you start a new R session you will need to load the packages containing the functions you wish to use.
+
+In this exercise we will be working with several packages. `googlesheets` contains functions that will allow us to read data from a Google spreadsheet online.  `ggplot2` contains functions that will allow us to make pretty graphs. Run the following code to install and load these packages. You may see a window that pops up and asks you to select a "CRAN mirror". Select any of the available mirrors (the Cloud is probably best).
+
+
+```{r eval = FALSE}
+# Install packages- only run once
+install.packages("googlesheets")
+install.packages("ggplot2")
+
+# Load packages
+library(googlesheets)
+library(ggplot2)
+
+```
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+# Load packages
+library(googlesheets)
+library(ggplot2)
+```
+
+## Accessing data
+
+We will be using R to analyze data, so we need a way to access data in an R session. The process of taking data from a file or the internet and putting it into an object in R is called "reading in data". In our class we will be reading in data tables from spreadsheets in a shared Google Drive folder. You can also read in data that is saved as a csv file on your computer (we will do this in the next exercise).
+
+We will primarily be reading in data from google sheets and to do so will use the package `googlesheets`. More information about this package is located at https://github.com/jennybc/googlesheets.
+
+First you will need to authorize googlesheets to access your Stanford Google Drive account. The following code opens a browser window where you are asked to select the Google Drive account that you wish to authorize. Be sure to select you Stanford account.
+
+```{r message = FALSE}
+# Authorize googlesheets to access you Google Drive
+gs_auth()
+```
+
+Next you need to register the sheet which you would like to read data from. The following code registers the sheet which can be found at the url (in quotes) to an object called `lichens_gs`. 
+
+```{r}
+# Register the lichens data table
+lichens_gs <- gs_url("https://docs.google.com/spreadsheets/d/11d3-k-3OaIOfm8EfneUiNGiumfPBdMBHMViaTbVtzwY/edit?usp=sharing")
+
+# View the information stored in the lichens_gs object
+lichens_gs
+
+```
+
+The `lichens_gs` object has information about the title and author of the spreadsheet as well as when it was last edited, its size and the url where it can be accessed. In order to utilize the data in it we need to read it into R. The following code makes an object named `lichens` and stores the data in the `lichens_gs` googlesheet in it.
+
+```{r message = FALSE}
+# Read the lichens_gs googlesheet into R
+lichens <- gs_read(lichens_gs)
+
+```
+## Data table structure
+
+The object `lichens` is a type of data structure called a dataframe. Dataframes are 2 dimensional with rows and columns. Each row contains data for a single *observation*. In this case, each observation is a lichen that we collected during the first week of lab. Each column contains *attributes* of the observations. Each column in a dataframe is a *vector* and can only contain data that is of the same type (e.g. numbers vs. text vs. categories). Each row of a dataframe is a *list* because it can contain data of different types since it contains all attributes for a single observation.
+
+## Summarizing data
+
+We are going to examine whether there are any biases in the lichens we used in the growth experiment. To do this we will need to subset and summarize the `lichens` dataframe using functions in the `dplyr` and `tidyr` packages.
+
+> **Problem 1.** Fill in the blanks to install and load the dplyr and tidyr packages:
+>
+>     install.packages(      )
+>     install.packages(      )
+>     library(      )
+>     library(      )
+
+```{r include=FALSE}
+# install.packages("dplyr")
+# install.packages("tidyr")
+library(dplyr)
+library(tidyr)
+```
+
+Our goal is to examine the lichens used in the growth experiment in order to determine:
+
+1. Whether there are any outliers in terms of initial mass or number of ascomata.
+2. Whether there is an association between initial mass and number of ascomata.
+
+To do this we should first subset the data so that we are only examining lichens from the growth experiment. The following code creates this subset of the rows of `lichens` and saves it as a new dataframe named `lichens_grw`
+
+```{r}
+# Subset lichens to only those used in the growth experiment. Make a new data
+lichens_grw <- lichens %>%
+  subset(Experiment == "growth")
+
+# View the contents of lichens_grw
+lichens_grw
+```
+
+Next let's plot a histogram of the initial lichen masses to see whether there are any outliers. The code below uses the `ggplot()` function to create a plot from the data in `lichens_grw`. We use `aes()` function inside the `ggplot()` function map the `Mass_mg_init` column in `lichens_grw` to the x-axis of the plot. The `geom_histogram()` function creates a histogram. The `labs()` function allows us to specify text that labels the x- and y-axes.
+
+```{r}
+
+# Create a histogram
+lichens_grw %>%
+  ggplot(aes(x = Mass_mg_init)) +
+    geom_histogram(binwidth = 10) +
+    labs(x = "Initial mass (mg)",
+         y = "Number of lichens"
+    )
+
+```
+
+> **Problem 2.** Change `binwidth = 10` to `binwidth = 50`. What happens?
+
+> **Problem 3.** Create a histogram of the number of ascomata. Be sure to label the axes correctly.
+
+Next let's create a scatterplot to determine whether there is any association between the initial lichen mass and number of ascomata. In the plot below, each point corresponds to a row of `lichens_grw`, which is a single lichen used in the experiment. Notice that we accomplish this in the `aes()` function by mapping the x-axis to the `Mass_mg_init` column and the y-axis to the `Ascomata` column.
+
+```{r}
+# Create a scatterplot
+lichens_grw %>%
+  ggplot(aes(x = Mass_mg_init, y = Ascomata)) +
+    geom_point() +
+    labs(x = "Initial mass (mg)",
+         y = "Number of ascomata"
+    )
+```
+
+
+We can use linear regression to test whether there is an association between the initial mass and number of ascomata. The function `lm()` uses ordinary least squares to calculate the y-intercept and slope of a line of best fit through data points.
+
+```{r}
+# Fit a linear regression model with Ascomata as the respose (y variable) and Mass_mg_init as the predictor (x variable). 
+asco_vs_mass <- lm(Ascomata ~ Mass_mg_init, data = lichens_grw)
+
+# View the results of the linear regression
+summary(asco_vs_mass)
+```
+
+The output of the `summary()` function takes practice learning to interpret.
+
+The first line, "Call:" shows the linear model that we fit. 
+
+The table named "Coefficients" gives the estimated y-intercept and slope of the line of best fit. These values are in the column named "Estimate". The slope estimate here is in the row named "Mass_mg_init" because we are estimating the effect of `Mass_mg_init` (the x variable) on `Ascomata` (the y variable). The value 0.0057 means that for an increase of 1 mg in mass, we expect to find 0.0057 more/fewer ascomata. The "Std. Error" column gives the standard error of these estimates, which tells us how certain we should be that the estimate is accurate. The "Pr(>|t|)" column gives the p-value of the t statistic (column "t value")  comparing the estimate to zero. In other words, the p-value gives the probability of observing this large of a slope if the actual slope were in fact 0 (i.e. no relationship between the x and y variables).
+
+The "Adjusted R-squared" is a value less than 1 which can be interpreted as the proportion of the overall variability in the y variable which is explained by the fitted line. A high value (> 0.7 for ecologists) indicates that the values of the x variable is a good predictor of the values of y variable.
+
+We can add this line of best fit to our plot and include a band that shows the uncertainty associated with this estimated line. The `geom_smooth()` function adds a line that "smooths" the data. In this case we have told the function to use linear regression (`method = "lm"`) and to also add a band with the 95% confindence intervals.
+
+```{r}
+# Create a scatterplot
+lichens_grw %>%
+  ggplot(aes(x = Mass_mg_init, y = Ascomata)) +
+    geom_point() +
+    geom_smooth(method = "lm",
+                se = TRUE,
+                level = 0.95) +
+    labs(x = "Initial mass (mg)",
+         y = "Number of ascomata"
+    )
+```
+
+> **Problem 4.** Change the plot so that the line of best fit is shown with 75% confidence intervals.
+
+
+## Troubleshooting
+
++ If you get stuck and nothing is working, R may be waiting for input from you. Look in the Console window. If you see `+` instead of the prompt `>` then R is waiting for input. Press Esc or Ctrl+c to exit and get back to the prompt `>`.
++ R is case sensitive and doesn't understand typos. Make sure that what you have types is what you meant to type.
+

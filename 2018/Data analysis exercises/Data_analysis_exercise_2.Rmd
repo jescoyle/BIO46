@@ -1,0 +1,317 @@
+---
+title: "Data Analysis Exercise 2"
+subtitle: BIO 46, Winter 2018
+output:
+  html_document:
+      theme: readable
+      highlight: pygments
+  html_notebook: 
+      theme: readable
+      highlight: pygments
+---
+
+## Lesson Goals
+
+In this lesson you will be examining data on 18 fungi isolated from *Evernia prunastri* lichens during the Winter 2017 BIO46 class. In this week's lab you will be responsible for designing and conducting a competition experiment in which you grow these isolates together and in isolation in order to determine which ones can inhibit each other. You will also have access to two isolates each of the S1 and S2 fungal isolates that we used in the infection experiment and which were isolated from the ascomata of the fungal infection we are studying. However, S1 and S2 are not in this table because we don't yet know anything about them. As you work through the analysis of this data, think about what hypothesis you might want to test and which pairs of isolates you would need to compete against one another.  
+
+In this exercise you will learn:
+
++ How to read in data from your computer to a dataframe.
++ How to name objects correctly.
++ How to summarize data by a categorical variable in a dataframe.
++ How to make boxplots.
++ How to conduct an ANOVA.
++ How to add a column to a dataframe.
+
+Before we start, load the packages that we will be using.
+
+```{r, warning = FALSE, message = FALSE}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+```
+
+## Accessing data on your computer
+
+In this exercise you will be using a data file that you saved in your BIO46 folder. The file is named W4_isolates.csv and is in a format called *csv* (for *comma separated values*) which means that if you open the file a text editor, you will see that divisions between columns are denoted with commas. You should have saved this file in a folder named data inside your BIO46 folder. The *file path* to the csv file is therefore: "BIO46/data/W4_isolates.csv". In order for R to find a file on you computer you need to specify this *file path*.
+
+When you start RStudio, R starts out in a folder called the *working directory* (directory = folder). You can discover which folder that R thinks you are in by typing `getwd()` into the Console. "wd" stands for *working directory* . To change the working directory you type `setwd("/folder_name/sub_folder_name")`. When you are working on analyses for our class you should always set the working directory to be the file path to your BIO46 folder.
+
+Here is an example of how to do this. (Note: running this code probably will not work on your computer because the file path is not the same on your computer.)
+
+```{r, eval = FALSE}
+# Set the working directory on Windows
+setwd("C:/Users/your_username/Documents/BIO46")
+
+# Set the working directory on Mac
+setwd("/Users/your_username/Documents/BIO46")
+
+```
+
+> **Problem 1.** Change the code above to set the working directory to be the BIO46 folder on *your* computer. You will only need to use the line of code that is appropriate for your operating system (Mac/Windows).
+>
+> *Hint:* Need help figuring out what the file path is? Try searching: "find a file path on mac".
+
+Now that R knows which folder to start in, we can *read in* the csv file to a dataframe named `isolates`. Notice that we specify the path to the file *from the working directory*. Since we previously told R to change the working directory to the BIO46 folder, the following code tells R to look for a file named W4_isolates.csv that is inside a folder named data and to read the contents into a dataframe. The `read.table()` function expects this file to be a table of data in which the columns are separated by commas (`sep = ","`). The `header = TRUE` argument tells the function that the first row of the table contains column names.
+
+```{r}
+# Read in the csv file to a dataframe
+isolates <- read.table("data/W4_isolates.csv", header = TRUE, sep = ",")
+
+```
+
+You can examine this table by going to the Environment window and clicking on `isolates`. You should see that each row of the table corresponds to a single fungus that was isolated from an *Evernia prunastri* lichen in last year's BIO46 class. 
+
+|Column name          | Description                                 |
+|---------------------|---------------------------------------------|
+| IsolateID  | unique identifier for each fungal isolate |
+| TaxonID    | tentative taxonomic identification (e.g. which species it is) |
+| LichenID   | which lichen individual the isolate came from |
+| Thallus_location | whether the fungus was isolated from a tip or from the base |
+| Growth_rate_mm_day | growth rate on MEA media at standard lab conditions (mm day^-1^) |
+| Num_isolates | number of other fungi isolated from the same lichen |
+| Num_taxa | number of other fungal taxa isolated from the same lichen |
+| Class, Order, Family, Species | taxonomic placement* | 
+
+\* Notice that some isolates could only be identified to Class.
+
+## Naming objects
+
+When we read the data into R, we used the assignment operator  (`<-`) to create a new object named `isolates`. We could have chosen any name we want, with a few restrictions:
+
+1. Object names cannot have a space in them:
+    + BAD: `my dog`
+    + GOOD: `my_dog` or `my.dog` or `myDog`
+2. Object names cannot start with a number:
+    + BAD: `18fungi`
+    + GOOD: `fungi18` or `fungi_18`
+3. The best names only contain letters, numbers, periods, and underscores.
+4. Even better names describe what is in the object:
+    + BAD: `my_data`
+    + GOOD: `flower_data` or `flowers`
+5. Don't use the following object names because they already have a meaning in R:
+    + `c` or `t`
+    + `T` or `F`
+    + `data`
+    + `min`, `max`, `mean`, `sum`, `diff`, and other obvious arithmetic functions
+    + If you are unsure whether a name is taken, type it into the console and see if anything shows up. If you see `Error: object not found` then you can use the name.
+    
+Most of these rules also apply when you are naming columns in a dataframe.
+
+## Summarizing data
+
+Let's use R to summarize the data. First, how many isolates do we have for each taxon (i.e. putative "species")? Each row of `isolates` corresponds to a single fungal isolate and the `TaxonID` indicates which taxon each isolate belongs to. Therefore we need to group the rows of `isolates` by the values in `TaxonID` and then count the number of rows in each group. We can do this using the `group_by()` and `summarise()` functions in the `dplyr` package (which we already loaded).
+
+In the code below, the `%>%` is called a *pipe* and the way it works is to send the result of a computation on the left side into the first argument of the function on the right side (or on the next line). For example, `X %>% Y %>% Z` means "do `X` and send the result to `Y` and then send that result to Z. An alternative way to write this using function composition is `Z(Y(X))`.
+
+Here's what each line of the following code does, without the code present:
+
+1. Use the dataframe named `isolates`.
+2. Group the rows of this dataframe by the column named `TaxonID`.
+3. Count the number of rows within each group and save this count as a new column named `Available_isolates`.
+    + `n()` is a function that counts the number of rows.
+    + `summarise()` is a function that creates a new dataframe using the new column names and calculation that we specify.
+
+```{r}
+## How many isolates are there for each taxon?
+# Use the isolates data
+isolates %>%
+  # Group the rows of the data by TaxonID
+  group_by(TaxonID) %>%
+  # Count the rows and save as a new column named Available_isolates.
+  summarise(Available_isolates = n()) 
+
+```
+
+So, there are four taxa for which we have 3 independent isolates and four taxa for which we only have one isolate. What do you think the result will be if we remove the second line that groups the rows according to the TaxonID?
+
+```{r, eval = FALSE}
+# Use the isolates data
+isolates %>%
+  # Count the rows and save as a new column named Available_isolates.
+  summarise(Available_isolates = n()) 
+```
+
+Let's see how growth rates on MEA media vary among taxa. To do this we can modify the code above to also calculate the mean of the column `Growth_rate_mm_day` within each group.
+
+
+```{r}
+# Summarise the data within taxa
+isolates %>% 
+  group_by(TaxonID) %>%
+  summarise(Available_isolates = n(), 
+            Growth_rate_mm_day = mean(Growth_rate_mm_day)
+  )
+
+```
+
+Which taxon had the highest growth rate? Why?
+
+Let's use a different column to group the rows. What if we want to know whether growth rates differ between fungi isolated from the tips versus bases of the lichens? Try this yourself:
+
+> **Problem 2.** Modify the code above so that it counts the number of isolates and calculates the mean growth rate of isolates from the tips versus the bases of *Evernia prunastri*.
+>
+> *Hint:* What is the name of the column that indicates whether an isolate came from the tip or base?
+
+```{r, include = FALSE}
+# Summarise the data from tips versus bases
+isolates %>% 
+  group_by(Thallus_location) %>%
+  summarise(Available_isolates = n(), 
+            Growth_rate_mm_day = mean(Growth_rate_mm_day)
+  )
+
+```
+
+## ANOVA and Boxplots 
+
+We can see that growth rates differ between fungi isolated from tips and bases, but is this difference statistically significant? To test this we should conduct an ANOVA and plot the results. (Why is ANOVA the approriate analysis?)
+
+To conduct and ANOVA in R we use the `lm()` function to define a linear model and then use the `anova()` function on the result to calculate the F statistic and its p-value. Remember that the format is `lm(Y ~ X, data = dataframe_name)`.
+
+
+```{r}
+# Fit a linear model with growth rate as the response and thallus location as the predictor.
+mod_growth_loc <- lm(Growth_rate_mm_day ~ Thallus_location, data = isolates)
+
+# Calculate the F statistic and p-value
+anova(mod_growth_loc)
+```
+
+The low F value (`r signif(anova(mod_growth_loc)$'F value'[1], 2)`) means that the variance within groups is high relative to the variance between groups, which indicates that there is little difference in growth rates (the Y variable) between fungi from tips versus bases (the X grouping variable). The high p-value (`r signif(anova(mod_growth_loc)$'Pr(>F)'[1], 2)`) substantiates this.
+
+You should always plot the data! One reason is to check for outliers that may be skewing the results. Another reason is because statistical tests sometimes detect effects that aren't actually very large or meaningful.
+
+Boxplots are an easy way to show the variability of data within groups (e.g. when Y is continuous and X is categorical). To make a boxplot with `ggplot` we first specify the the data to use (`isolates`) and then specify the `x` and `y` variable columns within the `aes()` function. Then we add (`+`) the boxplot with `geom_boxplot()`. I also added (`+`) informative labels with the `labs()` function.
+
+```{r}
+
+# Make a boxplot of growth rates of isolates from different thallus locations
+ggplot(isolates, aes(x = Thallus_location, y = Growth_rate_mm_day)) +
+  geom_boxplot() +
+  labs(x = "Thallus location",
+       y = expression("Growth rate"~(mm~day^-1))
+  )
+
+
+```
+
+## Creating new columns
+
+Suppose we want to know whether growth rates differ between isolates that occured alone in the lichen versus those that co-occured with at least one other species. The column `Num_taxa` tells us how many other taxa occured within the same lichen, but what we need is a column that differentiates between isolates occuring with 1 species (themselves) and those occuring with more than 1 species.
+
+The `mutate()` function will add a column to a dataframe based on a calculation that you specify. The following code makes a new column named `Solo` that is `TRUE` if the isolate occured alone (with `Num_taxa == 1`) and is `FALSE` otherwise. Notice that the double `==` tests whether the left and right sides are equal to one another, whereas the single `=` assigns the calculation `Num_taxa == 1` to the column named `Solo`.
+
+```{r, warning = FALSE}
+# Add a column that indicates whether an isolate occurred alone in the lichen.
+isolates %>%
+  mutate(Solo = Num_taxa == 1)
+
+```
+
+We can see that a column named `Solo` containing `TRUE/FALSE` was added to the end, but the ouput is hard to read. Let's change the code so that it filters the data to only those rows where `Solo` is `TRUE`. The `filter()` function returns all rows for which the condition specified is true.
+
+```{r}
+# Display isolates that occurred alone in the lichen.
+isolates %>%
+  mutate(Solo = Num_taxa == 1) %>%
+  filter(Solo == TRUE)
+
+```
+
+We could have done this with fewer lines of code:
+
+```{r}
+# Display isolates that occured alone in the lichen
+isolates %>%
+  filter(Num_taxa == 1)
+
+```
+
+Better, but let's just select the columns we want to look at:
+
+```{r}
+# Display isolates that occured alone in the lichen
+isolates %>%
+  filter(Num_taxa == 1) %>%
+  select(IsolateID, TaxonID, Growth_rate_mm_day, Num_taxa)
+
+```
+
+
+> **Problem 3.** Modify the code above so that it returns just the taxa names for the isolates occuring with at least 5 other taxa.
+>
+> *Hint:* 
+> 
+
+ | Code symbol | Definition |
+ |-------------|------------|
+ | `==`        | equal to |
+ | `!=`        | not equal to |
+ | `>`         | greater than |
+ | `<`         | less than |
+ | `>=`        | greater than or equal to |
+ | `<=`        | less than or equal to |
+
+
+```{r, include = FALSE}
+# Display the TaxonIDs of isolates that occured with > 5 other taxa
+isolates %>%
+  filter(Num_taxa > 5) %>%
+  select(TaxonID)
+
+```
+
+
+## Final Challenge
+
+Now that you know how to group, summarize and filter data, solve the following problems.
+
+> *Problem 4.* Do growth rates differ among isolates belonging to different Classes? Answer this question by plotting the `isolates` data and conducting an appropriate statistical test. 
+>
+
+```{r, include = FALSE}
+# Make a table summarizing growth rates by Class
+# This is not technically necessary to complete the problem, but can be helpful.
+isolates %>%
+  group_by(Class) %>%
+  summarise(Available_isolates = n(),
+            Growth_rate_mm_day = mean(Growth_rate_mm_day))
+
+# Create a boxplot of growth rates within Classes
+ggplot(isolates, aes(x = Class, y = Growth_rate_mm_day)) +
+  geom_boxplot() +
+  labs(x = "Class",
+       y = expression("Growth rate"~(mm~day^-1))
+  )
+
+# Conduct ANOVA (even though variance not equal across groups)
+mod_growth_class <- lm(Growth_rate_mm_day ~ Class, data = isolates)
+anova(mod_growth_class)
+
+```
+
+
+> *Problem 5.* Do isolates from lichens with fewer other taxa have faster growth rates? Answer this question by plotting the data and conducting an appropriate statistical analysis.
+>
+> *Hint:* This *might* be a review question that requires you to use the last Data analysis exercise.
+
+```{r, include = FALSE}
+
+# Scatterplot of growth rates versus number of co-occuring taxa
+# Includes a line of best fit.
+ggplot(isolates, aes(x = Num_taxa , y = Growth_rate_mm_day)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+                se = TRUE,
+                level = 0.95) +
+  labs(x = "Number of co-occuring taxa",
+       y = expression("Growth rate"~(mm~day^-1))
+  )
+
+# Linear regression
+mod_growth_taxa <- lm(Growth_rate_mm_day ~ Num_taxa, data = isolates)
+summary(mod_growth_taxa)
+
+```
+
