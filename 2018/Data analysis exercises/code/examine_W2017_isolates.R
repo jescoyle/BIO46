@@ -1,6 +1,6 @@
 # Exploring BIO46 W2017 isolates
 
-fungi <- read.csv("data/BIO46_W2018_fungi.csv")
+fungi <- read.csv("data/BIO46_W2017_fungi.csv")
 
 library(tidyr)
 library(dplyr)

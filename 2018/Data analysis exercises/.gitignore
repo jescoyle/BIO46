@@ -3,3 +3,11 @@ desktop.ini
 .Rproj.user
 .Rproj
 .gdoc
+
+
+data/BIO46_W2017_fungi.csv
+data/competition_experiment_isolates.csv
+data/diverse_lichens.csv
+data/replicate_isolates.csv
+
+code/*
