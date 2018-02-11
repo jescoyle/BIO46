@@ -10,4 +10,5 @@ data/competition_experiment_isolates.csv
 data/diverse_lichens.csv
 data/replicate_isolates.csv
 
-code
+code/*
+
