@@ -1,0 +1,351 @@
+---
+title: "Data Analysis Exercise 3"
+subtitle: BIO 46, Winter 2018
+output:
+  html_document:
+      theme: readable
+      highlight: pygments
+  html_notebook: 
+      theme: readable
+      highlight: pygments
+---
+
+## Lesson Goals
+
+In this lesson you will be exploring infection prevalence at sites at Jasper Ridge using data you collected in weeks 1 and 5. By doing so, you will learn:
+
++ How to read in data from a web address.
++ How to join the contents of two data tables by an identifying variable.
++ How to color the points of a scatterplot by a variable.
++ How to make barplots.
++ How to conduct a Chi-squared test.
++ How to fit a logistic regression model.
+
+Complete each of the Problems in this exercise. You are not required to complete the Challenge problems. 
+
+Before we start, load the packages that we will be using.
+
+```{r, warning = FALSE, message = FALSE}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+```
+
+## Accessing data from a web address
+
+So far you have learned two ways to access data files:
+
+1. Reading in a Google Sheet (exercise 1)
+2. Reading in a file on your computer (exercise 2)
+
+Now you will learn third way- by reading a file directly from a web address. The data files from our class will be stored in two locations- on our shared Google Drive folder (you can find the link on Canvas) as well as in the GitHub repository at http://github.com/jescoyle/BIO46/master/2018/Data. You can choose to read files directly from the internet or download them to a data folder.
+
+The code below reads files directly from the GitHub repository. Note that `read.csv()` is a shortcut for `read.table()` that by default has a header row and columns separated by commas. 
+
+
+```{r}
+# Read in the infection prevalence csv file to a dataframe
+infection <- read.table("https://raw.githubusercontent.com/jescoyle/BIO46/master/2018/Data/infection_prevalence.csv", header = TRUE, sep = ",")
+
+# Read in the lichens csv file to a dataframe
+lichens <- read.csv("https://raw.githubusercontent.com/jescoyle/BIO46/master/2018/Data/lichens.csv")
+```
+
+You can examine these two tables by going to the Environment window and clicking on `infection` and `lichens`. You should see that each row of the `lichens` table corresponds to a lichen that we collected in week 1, whereas each row in the `infection` table corresponds to a site that we surveyed last week at Jasper Ridge. 
+
+For our analysis, we also need the locations of the sites that we surveyed last week. This information is in file named BIO46_2018_sample_sites.csv on the GitHub repository. Your first task is to read this file into R.
+
+To get the web address to a file on our GitHub data repository:
+
+  1. [Go to the repository](https://github.com/jescoyle/BIO46/tree/master/2018/Data)
+  2. Click on the file you want
+  3. Click the "Raw" button in the upper right corner.
+  4. Copy the address that you are directed to into the code below.
+
+> **Problem 1.** Fill in the code below so that it reads the file BIO46_2018_sample_sites.csv from the GitHub repository into a dataframe named `sites`.
+
+```{r, eval = FALSE}
+
+# Read in the site locations csv file to a dataframe
+sites <- read.csv(            )
+
+```
+
+```{r, include = FALSE}
+
+# Problem 1. Fill in the code below so that it reads the file BIO46_2018_sample_sites.csv from the GitHub repository into a dataframe named `sites`.
+
+sites <- read.csv("https://raw.githubusercontent.com/jescoyle/BIO46/master/2018/Data/BIO46_2018_sample_sites.csv")
+
+```
+
+
+## Joining two data tables
+
+Let's make a map that shows the locations of our sites at Jasper Ridge. The `UTM_N` and `UTM_E` columns of the `sites` data frame are locations of each site in the Universal Transverse Mercator coordinate system. In this system, the coordinates are in meters, so if we plot them in an x-y scatterplot, the distances between points in our map represent the actual distances between the sites in space. `UTM_N` is the north coordinate and `UTM_E` is the east coordinate, so we should plot `UTM_N` on the y-axis and `UTM_E` on the x-axis. `coord_fixed()` displays the plot so that one unit on the x axis is the same length as one unit on the y axis. (*Why do you think we did this?*)
+
+```{r}
+# Plot the locations of the BIO46 sites
+ggplot(sites, aes(x = UTM_E, y = UTM_N)) +
+  geom_point() +
+  coord_fixed() 
+
+```
+
+Now let's make the map more interesting by coloring the points according to the proportion of lichens at each site exhibiting symptoms of the infection we are studying. This is a multi-step process, so let's first outline what we need to do in comments before trying to fill in the code:
+
+```{r, eval = FALSE}
+# Calculate the proportion of infected lichens at each site
+
+# Join the site locations and the proportion of infected lichens into a single table
+
+# Map the site locations colored by the proportion of infected lichens
+
+```
+
+To calculate the proportion of infected lichens we need to add a new column to `infection` that is the proportion of infected lichens ( =  Number infected / Total number counted ). Recall from exercise 2 that the `mutate()` function will add a new column according to any calculation that we specify.
+
+```{r, message = FALSE, warning = FALSE}
+# Calculate the proportion of infected lichens at each site
+infection <- infection %>%
+  mutate(Prop_infected = Num_infected / (Num_infected + Num_healthy))
+```
+
+Next we need to combine the locations and the infection data. This is done using a join function. We will use the `left_join()` function that takes all of the rows from the dataframe in the left argument and returns all of the columns from both dataframes. The `by` argument specfies the name of the column that identifies which rows come from the same observations. In our case we join by `Site` because this is the column that identifies the site where we surveyed infection prevalence.
+
+```{r, message = FALSE, warning = FALSE}
+
+# Join the site locations and the proportion of infected lichens into a single table
+site_data <- left_join(sites, infection, by = "Site")
+
+```
+
+Notice that we created a new dataframe named `site_data` that contains both the data in `sites` and the data in `infection`. Click on `site_data` in the Environment tab to see which columns and rows it contains. Notice that some sites do not have infection prevalence data. Why do you think that is? What would happen if you switch the order of the two tables: `left_join(infection, sites, by = "Site")`?
+
+Finally, let's create the map with the points colored by the proportion of lichens infected. In the code below, we add the `aes(color = Prop_infected)` function inside the `geom_point()` function to tell R that the color of the points should correspond to the values in the `Prop_infected` column. We also added some easier to read labels using the `labs()` function. `x =` and `y =` give the text that we want to show next to the x and y axes. `color = ` gives the text that we want displayed over the color scale.
+
+```{r}
+# Map the site locations colored by the proportion of infected lichens
+ggplot(site_data, aes(x = UTM_E, y = UTM_N)) +
+  geom_point(aes(color = Prop_infected)) +
+  labs(color = "Proportion infected",
+       x = "UTM East",
+       y = "UTM North"
+  ) +
+  coord_fixed()
+
+
+```
+
+I find the default blue color scale difficult to see. Let's use some brighter colors by specifying our own color gradient with the `scale_color_gradient()` function.
+
+```{r}
+# Map the site locations colored by the proportion of infected lichens
+
+ggplot(site_data, aes(x = UTM_E, y = UTM_N)) +
+  geom_point(aes(color = Prop_infected)) +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(color = "Proportion infected",
+       x = "UTM East",
+       y = "UTM North"
+  ) +
+  coord_fixed()
+
+
+```
+
+Now we can see that the points for which we did not measure infection are colored grey because they have missing values in the `Prop_infection` column.
+
+> **Problem 2.** Create a map that shows the number of *Evernia prunastri* lichens at each site.
+
+```{r, include = FALSE}
+# Problem 2. Create a map that shows the number of Evernia prunastri lichens at each site.
+
+ggplot(site_data, aes(x = UTM_E, y = UTM_N)) +
+  geom_point(aes(color = Num_Eprunastri)) +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(color = "Number of E. prunastri",
+       x = "UTM East",
+       y = "UTM North"
+  ) +
+  coord_fixed()
+
+
+
+```
+
+## Analyses for categorical response variables
+
+### Logistic regression
+
+Let's evaluate whether sites with a greater abundance of *E. prunastri* are more likely to have infected individuals. In this case the independent predictor variable is the abundance of *E. prunastri* (`Num_Eprunastri`), but what is the dependent response variable? We could use the proportion of infected lichens or we could use a variable that indicates whether or not an infected lichen was found. We'll demonstrate the second approach first.
+
+First, let's use `mutate()` to create a variable that indicates whether a site has infected lichens
+
+```{r}
+# Add a column indicating whether infected lichens are present
+infection <- infection %>%
+  mutate(Infection_pres = Num_infected > 0)
+
+```
+
+Logistic regression models the probability that an event is observed as a function of a continuous predictor variable. In our case we are modeling the probability of finding at least one infected lichen. Logitistic regression is a type of generalized linear model (GLM)- a linear model where the response variable is not normally distributed. In R, GLMs are fit using the function `glm()`. The syntax is similar to linear regression (`lm(y_variable ~ x_variable, data = dataframe_name)`), but includes an arguement `family = ` that gives the distribution of the response variable. For logistic regression with a binary (True/False) response variable, we can supply the response variable as it is and specify a binomial distribution with the logit link function (`family = binomial(link = logit)`).
+
+```{r}
+# Fit a logistic regression model
+mod_infpres <- glm(Infection_pres ~ Num_Eprunastri, 
+                   data = infection, 
+                   family = binomial(link = "logit")
+)
+
+# View the results
+summary(mod_infpres)
+
+```
+
+The coefficient estimate for `Num_Eprunastri` is `r format(summary(mod_infpres)$coefficients[2,1], digits = 2)`, which is its effect on the log odds of at least one infected lichen being found. Log odds are difficult to think about, so we can exponentiate this number to convert the coeficient estimate to its effect on the odds. Odds of an event are defined as the ratio of the probability of that event occuring to the probability of the event not occuring. Or, in our case, the probability of at least one lichen being infected divided by the probability of no lichens being infected.
+
+
+```{r}
+# Exponentiate the coefficents to see effect on odds
+exp(coef(mod_infpres))
+
+```
+
+We see that the odds of at least one infected lichen being found is `r format(exp(coef(mod_infpres)[1]), digits = 2)` when no lichens are present (the y-intercept) and that these odds increase by approximately `r format(100*(exp(coef(mod_infpres)[2]) - 1), digits = 2)`% for each additional *E. prunastri*. However this change is not statistically significant, which we can see from Wald's z statistic and its associated P-value which were given in the coefficients table output. This statistic tests whether the estimated effect differs from zero, and here we see that it doesn't (P = `r format(summary(mod_infpres)$coefficients[2,4], digits = 2)`). 
+
+Now let's evaluate how the proportion of infected lichens varies with *E. prunastri* abundance.  In this case we are modeling the probability that a lichen is infected as a function of the number of *E. prunastri* present at a site. This is also a binomial GLM, but we will specify the response variable in a slightly different way to incorporate the additional information we have about how many lichens were surveyed for infection at each site. Instead of a single column for the y variable, we specify two columns using `cbind()`. The first column is the number of "successes" (number of infected lichens) and the second column is the number of "failures" (number of healthy lichens). The `glm()` function will use this information to model the probability of "success" (a lichen is infected).
+
+```{r}
+# Fit a logistic regression model to the proportion of infected lichens
+mod_infprob <- glm(cbind(Num_infected, Num_healthy) ~ Num_Eprunastri, 
+                   data = infection, 
+                   family = binomial(link = "logit")
+)
+
+# View the results
+summary(mod_infprob)
+```
+
+> **Problem 3.** Write one line of code that shows how the odds of a lichen being infected change with *E. prunastri* abundance.
+
+```{r, include = FALSE}
+# Problem 3. Write one line of code that shows how the odds of a lichen being infected change with E. prunastri abundance.
+exp(coef(mod_infprob))
+```
+
+What does this all look like? We should always plot the data along with the estimated model. In the code below, the `geom_point()` function adds points to the scatterplot. The `geom_smooth()` function is responsible for adding the logistic regression model.
+
+```{r, warning = FALSE}
+# Plot the proportion of lichens that are infected along with the fitted model
+ggplot(infection, aes(x = Num_Eprunastri, y = Prop_infected)) +
+  geom_point() +
+  geom_smooth(method = "glm", 
+    method.args = list(family = "binomial"), 
+    se = TRUE,
+    level = 0.95) +
+  labs(x = "Number of E. prunastri",
+       y = "Proportion of lichens infected"
+  )
+
+
+
+```
+
+There is clearly no relationship between *E. prunastri* abundance at a site at the probability of finding infected lichens.
+
+
+### Associations between categorical variables
+
+Pearson's chi-squared tests are used to test for an association between categorical variables. For example, let's evaluate whether there are more infected lichens on dead substrates than live substrates. The unit of observation is a lichen collected in week 1 (from the `lichens` table). The independent predictor is whether the lichen was collected from a living or dead substrate and the dependent response is whether or not the lichen was infected.
+
+First we need to add a column to the `lichens` data frame that indicates whether a lichen is infected or not.
+
+```{r}
+# Add an Infected column to lichens that is TRUE when there are > 0 ascomata
+lichens <- lichens %>%
+  mutate(Infected = Ascomata > 0)
+```
+
+Next we should create a barplot that shows how many lichens are infected or not on living or dead substrates. In the code below, `geom_bar()` creates a barplot that by default counts the number of rows in `lichens` in each category of `Substrate_status`. By giving it the argument `fill = Infected`, we tell the function to color separate bars for each category in the `Infected` column (in this case, TRUE or FALSE). The `position = "dodge"` argument causes the bars to appear next to each other rather than stacked.
+
+```{r}
+# Barplot of the number of infected/uninfected lichens on living/dead substrates
+ggplot(lichens, aes(x = Substrate_status)) +
+  geom_bar(aes(fill = Infected),
+           position = "dodge"
+  )
+
+```
+
+> **Challenge 1.** Use `group_by()` and `summarise()` to count the number of lichens that are shown in each of the categories displayed by the bars. 
+
+```{r, include = FALSE}
+
+lichens %>%
+  group_by(Substrate_status, Infected) %>%
+  summarise(Count = n())
+
+```
+
+From the barplot it looks like infected lichens are found less frequently on living substrates compared to dead substrates. We can use a chi-squared test to calculate the probability that we would have observed these different frequencies if in actuality there is no difference in infection frequency between living and dead substrates. In R, the chi-squared test is performed using the function `chisq.test()`. Inside the function we specify the two columns containing the categorical variables. The function will calculate the expected frequencies of infection in lichens on living versus dead substrates under the null hypothesis that infection is not associated with substrate status. Then the function calculates the chi-squared statistic $\chi_{Pearson}^2 = \sum_{all~cells} \frac{(Observed - Expected)^2}{Expected}$ and compares it to the chi-squared distribution with the appropriate degrees of freedom.
+
+Note that in the code below, we have to tell the `chisq.test()` function that the two columns are in the `lichens` dataframe using the `$` symbol.
+
+```{r, warning = FALSE}
+# Conduct a chi-square test 
+inf_substrate_test = chisq.test(lichens$Substrate_status, lichens$Infected) 
+
+# View the results of the test
+inf_substrate_test
+```
+The test statistic was `r format(inf_substrate_test$statistic, digits = 2)` and had a P-value of `r format(inf_substrate_test$p.value, digits = 2)`. Thus we conclude that there is no difference in infection frequency between lichens on living and dead substrates.
+
+> **Problem 4** 
+> 
+> A. Create a plot that shows the number of infected lichens found on shrubs versus trees, where substrate type is denoted by bars of different colors.
+>
+> B. Use an appropriate statistical test to determine whether infected lichens occur more frequently on trees versus shrubs.
+
+
+```{r, include = FALSE}
+## Problem 4
+
+# Create a plot that shows the number of infected lichens found on shrubs versus trees
+ggplot(lichens, aes(x = Infected)) +
+  geom_bar(aes(fill = Substrate_type),
+           position = "dodge"
+  )
+
+# Use an appropriate statistical test to determine whether infected lichens occur more frequently on trees versus shrubs.
+chisq.test(lichens$Substrate_type, lichens$Infected)
+
+```
+
+> **Challenge 2.** Create a map that shows the average number of ascomata found on a lichen at each site. Were there any sites from which we collected an infected lichen in week 1, but which had no infected lichens in our surveys last week?
+
+```{r, include = FALSE}
+## Challenge 2. Create a map that shows the average number of ascomata found on a lichen at each site.
+
+# Step 1. Calculate the avergae number of ascomata at each site
+lichens_bysite <- lichens %>%
+  group_by(Site) %>%
+  summarise(Ascomata = mean(Ascomata))
+
+# Step 2. Merge lichens_bysite with site_data
+site_data <- left_join(site_data, lichens_bysite)
+
+# Step 3. Create a map with the points colored by Ascomata.
+ggplot(site_data, aes(x = UTM_E, y = UTM_N)) +
+  geom_point(aes(color = Ascomata)) +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(color = "Mean number of ascomata",
+       x = "UTM East",
+       y = "UTM North"
+  ) +
+  coord_fixed()
+
+```
+
+
+
