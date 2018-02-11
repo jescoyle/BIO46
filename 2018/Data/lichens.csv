@@ -1,0 +1,33 @@
+Team,LichenID,Site,Substrate_type,Substrate_status,Ascomata,Experiment,Mass_mg_init
+1,G1-11,9,shrub,living,0,infection,
+1,G1-3,5,tree,dead,10,growth,118
+1,G1-4,5,tree,dead,14,growth,121
+1,G1-6,99,tree,living,2,growth,46
+1,G1-7,112,tree,living,0,infection,
+1,G1-8,112,tree,living,0,growth,171
+1,G1-9,112,tree,living,3,growth control,66
+2,G2-2,106,shrub,living,4,growth control,90
+2,G2-3,106,shrub,living,3,growth,28
+2,G2-4,47,tree,living,0,infection,
+2,G2-5,47,tree,dead,9,growth,391
+2,G2-7,74,tree,living,0,growth,50
+2,G2-8,74,shrub,living,0,infection,
+2,G2-9,18,tree,living,2,growth,47
+3,G3-1,49,tree,dead,0,growth,49
+3,G3-2,49,tree,dead,0,growth,64
+3,G3-3,49,tree,living,0,growth control,34
+3,G3-6,108,shrub,living,2,growth,174
+3,G3-9,9,tree,living,0,growth,29
+4,G4-1,51,shrub,dead,3,growth,277
+4,G4-10,109,shrub,dead,0,infection,
+4,G4-11,109,shrub,dead,0,infection,
+4,G4-2,51,shrub,dead,6,growth,317
+4,G4-4,43,tree,living,2,growth,587
+4,G4-5,43,tree,living,0,growth control,247
+4,G4-6,43,tree,living,1,growth,291
+5,G5-1,52,tree,living,1,growth control,22
+5,G5-2,61,tree,living,0,infection,
+5,G5-3,61,tree,living,0,growth,56
+5,G5-4,8,tree,living,3,growth,62
+5,G5-7,8,tree,living,0,growth,143
+5,G5-8,111,tree,living,0,infection,
