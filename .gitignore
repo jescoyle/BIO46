@@ -4,3 +4,6 @@
 *.Ruserdata
 *.httr-oauth
 
+
+2018/*.Rproj
+
