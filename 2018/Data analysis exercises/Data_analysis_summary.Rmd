@@ -1,0 +1,160 @@
+---
+title: "R Summary Sheet for BIO46"
+author: "Jes Coyle"
+output: 
+  html_document:
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+```{r, include = FALSE}
+
+# Remove XX from code chunk output display
+knitr::opts_chunk$set(comment = NA)
+
+# Cache chunk output for faster rendering
+knitr::opts_chunk$set(cache=TRUE)
+
+```
+
+
+```{r, warning = FALSE, message = FALSE}
+library(dplyr); library(tidyr) # packages for data manipulation
+library(ggplot2) # package for plotting
+library(Exact) # package for exact unconditional tests on contingency tables
+
+```
+
+
+# Data manipulation
+
+The following data tables are available for analysis:
+
+| Table name | Description | Google sheet key | GitHub address |
+|------------|-------------|------------------|----------------|
+| sites | Location and canopy cover of Jasper Ridge survey sites | 1LJj8BAngXFjBTvpOJv_0WXV_OwTXtEHk00p_WKsMuJ8 |  |
+| lichens | Info about lichens collected at Jasper Ridge, including outcomes of growth and infection experiments. | 11d3-k-3OaIOfm8EfneUiNGiumfPBdMBHMViaTbVtzwY |  |
+| fungi | Growth rates and identities of fungi isolated from lichens.  | 16ku-VRUHMZHz5XgHtD2ESDhdem401sBnbbPEEVeYtrg | |
+| infection_prevalence | Abundance of *E. prunastri* and infection prevalence at survey sites. | 1iJ1bM4qGkL8M068wJAr52BU801hHo6HldQClU75FCMc |  |
+| interaction_experiment_byplate| Outcome of fungal isolate interaction experiment for each plate. | 1m7gonWwxDjNyv28SU4bXuLBYWIirePeyv27koCnVY64 |  |
+| interaction_experiment_bycompetitor | Outcome of fungal isolate interaction experiment for each competitor on a plate. | 1AlC_50OX9hyvtLhjs8mlSNsaq-4eCaC1TO7t0xyOGMQ |  |
+| ibuttons | iButton temperature data from survey sites. |  |  |
+| humidity | EL-USB-2 humidity logger data from three survey sites. |  |  | 
+
+## Loading Data
+
+Three ways to load data:
+
+### From the Google Drive sheets
+
+```{r message = FALSE}
+# Load package
+library(googlesheets)
+
+# Authorize googlesheets to access you Google Drive
+gs_auth()
+
+# Register the lichens data table
+lichens_gs <- gs_key("11d3-k-3OaIOfm8EfneUiNGiumfPBdMBHMViaTbVtzwY")
+
+# Read the lichens_gs googlesheet into R
+lichens <- gs_read(lichens_gs)
+```
+
+### From the GitHub repository
+
+
+### From a file on your computer
+
+
+
+## Subsetting Data
+
+
+## Summarizing Data
+
+
+
+# Data visualization
+
+### Scatterplot
+
+
+### Boxplot
+
+
+### Barchart
+
+
+### Maps
+
+
+
+
+# Statistics
+
+## X categorical and Y categorical
+
+To apply the following tests, first create a contingeny table of the data that tabulates how many observations are from each combination of X and Y categories. These tests evaluate whether the counts in the rows of the contingency table are different from one another. 
+
+There are two methods to create contingency tables in R, depening on whether you prefer the base R or `dplyr` package to manipulate data.
+
+```{r contingency-table}
+
+# Example data
+dat <- data.frame(Treatment = rep(c("Control", "Manipulated"), each = 16),
+                  Symptoms = c(rep("Absent", 16), sample(c("Absent", "Present"), 16, replace = T))
+)
+
+# Create contingency table using base R
+dat_tab <- table(dat$Treatment, dat$Symptoms)
+  
+# Display table 
+dat_tab
+
+```
+
+Notice that the `table()` function creates a "table", which is basically a matrix of integers with row and column names. The order of the vectors supplied to the `table()` function determines which variables are in the rows and columns (or higher dimensions, if you supply more than two vectors to tabulate).
+
+### Chi-square test
+
+Use this test when you have many observations and the expected number of observations in each cell of the table is greater than five. This test is not valid when you have few observations.
+
+
+### Fisher's exact test
+
+Use this test when you have few observations and when you know ahead of time how many observations are in each category of X and each category of Y (e.g. the marginal sums are fixed). Statisticians recommend not using this test and instead using unconditional tests (see [Lydersen et al. 2009](http://dx.doi.org/10.1002/sim.3531)).
+
+```{r fisher-test}
+# Fisher's exact test with a two-sided hypothesis
+fisher.test(dat_tab)
+
+```
+
+### Unconditional exact tests
+
+Use this test when you have few observations and when you do not necessarily know ahead of time how many observations are in each category of X and each category of Y (e.g. the marginal sums are random). 
+
+```{r barnard-test, message = FALSE}
+
+# Barnard's test used when the number of observations in each category of X is known
+# X categories should be in the rows of the table, otherwise, specify, cond.row = FALSE
+# method = "CSM" specifies Barnard's method, but you can use other options
+barnard_test <- exact.test(dat_tab, model = "binomial", method = "CSM", cond.row = TRUE, to.plot = FALSE)
+
+# Boschloo's test used when the number of observations in each category is unknown for X or Y
+boschloo_test <- exact.test(dat_tab, model = "multinomial", method = "boschloo")
+
+# Print test results
+barnard_test
+boschloo_test
+
+```
+
+## X continuous and Y categorical
+
+### Logistic regression for two categories
+
+
