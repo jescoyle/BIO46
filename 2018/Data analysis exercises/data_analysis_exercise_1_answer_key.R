@@ -39,7 +39,7 @@ library(dplyr)
 
 # Subset lichens to only those used in the growth experiment. Make a new data
 lichens_grw <- lichens %>%
-  subset(Experiment == "growth")
+  filter(Experiment == "growth")
 
 # View the contents of lichens_grw
 lichens_grw

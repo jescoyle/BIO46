@@ -5,9 +5,6 @@ output:
   html_document:
     highlight: pygments
     theme: readable
-  html_notebook:
-    highlight: pygments
-    theme: readable
 ---
 
 ## Lesson Goals
@@ -125,7 +122,7 @@ To do this we should first subset the data so that we are only examining lichens
 ```{r}
 # Subset lichens to only those used in the growth experiment. Make a new data
 lichens_grw <- lichens %>%
-  subset(Experiment == "growth")
+  filter(Experiment == "growth")
 
 # View the contents of lichens_grw
 lichens_grw

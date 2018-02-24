@@ -200,7 +200,7 @@ lichens_gs &lt;-<span class="st"> </span><span class="kw">gs_url</span>(<span cl
 lichens_gs</code></pre></div>
 <pre><code>##                   Spreadsheet title: lichens
 ##                  Spreadsheet author: jrcoyle
-##   Date of googlesheets registration: 2018-01-21 19:49:15 GMT
+##   Date of googlesheets registration: 2018-02-23 23:42:30 GMT
 ##     Date of last spreadsheet update: 2018-01-21 18:51:24 GMT
 ##                          visibility: private
 ##                         permissions: rw
@@ -239,9 +239,9 @@ library(      )</code></pre>
 <p>To do this we should first subset the data so that we are only examining lichens from the growth experiment. The following code creates this subset of the rows of <code>lichens</code> and saves it as a new dataframe named <code>lichens_grw</code></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subset lichens to only those used in the growth experiment. Make a new data</span>
 lichens_grw &lt;-<span class="st"> </span>lichens %&gt;%
-<span class="st">  </span><span class="kw">subset</span>(Experiment ==<span class="st"> &quot;growth&quot;</span>)
-
-<span class="co"># View the contents of lichens_grw</span>
+<span class="st">  </span><span class="kw">filter</span>(Experiment ==<span class="st"> &quot;growth&quot;</span>)</code></pre></div>
+<pre><code>## Warning: package 'bindrcpp' was built under R version 3.3.3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># View the contents of lichens_grw</span>
 lichens_grw</code></pre></div>
 <pre><code>## # A tibble: 19 x 8
 ##     Team LichenID  Site Substrate_type Substrate_status Ascomata
