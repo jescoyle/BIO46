@@ -39,6 +39,10 @@ int_data <- int_data %>%
   unite(ID, ID_type, Competitor) %>%
   spread(key = ID, value = ID_value)
 
+# Remove - from culture type levels
+int_data <- int_data %>%
+  mutate(Culture_type = sub("-", "", Culture_type))
+
 # Save table locally and upload to Google Drive later
 write.csv(int_data, 
           file = "Data/interaction_experiment_byplate.csv",
