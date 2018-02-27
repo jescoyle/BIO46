@@ -101,6 +101,9 @@ sites <- read.csv(file.path(github_url, "BIO46_2018_sample_sites.csv"))
 #ibuttons <- read.csv(file.path(github_url, 'iButtons_Winter2018.csv'))
 ibuttons <- read.csv(file.path(local_dir, "iButtons_Winter2018.csv"))
 
+# Filter to sites used by BIO46 Winter 2018
+ibuttons <- subset(ibuttons, Site %in% sites$Site)
+
 # Read in relative humidity file
 rh <- read.csv(file.path(github_url, 'RH_Winter2018.csv'))
 
@@ -267,5 +270,140 @@ write.csv(env, file.path(local_dir, 'BIO46_W2018_env_dataloggers.csv'), row.name
 
 #############################################
 ### Environment data summary Table        ###
+
+# Load packages
+library(lubridate)
+library(ggplot2)
+library(dplyr)
+
+# Define url for github repository
+# Can alternatively read from local files
+github_url <- "https://raw.githubusercontent.com/jescoyle/BIO46/master/2018/Data/"
+local_dir <- "Data"
+
+# Read in sites data
+sites <- read.csv(file.path(github_url, "BIO46_2018_sample_sites.csv"))
+
+# Read in datalogger file
+#loggers <- read.csv(file.path(github_url, 'BIO46_W2018_env_dataloggers.csv'))
+loggers <- read.csv(file.path(local_dir, "BIO46_W2018_env_dataloggers.csv"))
+
+# Set dates as actual dates
+time_format <- '%Y-%m-%d %H:%M:%S %z'
+loggers$Date_time <- strftime(loggers$Date_time, format = time_format, tz = "Etc/GMT+8")
+
+## Examine humidity data for quality ##
+
+hist(loggers$VPD_est)
+hist(loggers$VPD_actual, add = T, col = "red")
+
+# Plot time series
+loggers %>%
+  filter(!is.na(VPD_est)) %>%
+  ggplot(aes(x = Date_time, y = VPD_est, group = Site)) +
+    geom_line(aes(color = Site)) +
+    geom_line(aes(y = VPD_actual), color = "red") +
+    geom_hline(yintercept = 0, color = "red") +
+    facet_wrap(~ RH_site)
+
+# Actual VPD is rarely much less than 0 so negative measurements are probably due to 
+# discrepancy between ibutton temperature and humidity logger.
+# Set negative VPD to 0
+loggers <- loggers %>%
+  mutate(VPD_est = ifelse(VPD_est > 0, VPD_est, 0))
+
+# Add a column to env that indicates which date the data was recorded
+loggers$Date = as.Date(loggers$Date_time)
+
+# A function that drops all NAs before calculating a given function or returns NA
+na_drop = function(x, fun){
+    if(length(na.omit(x) > 0)){
+      x <- na.omit(x)
+      y <- fun(x)
+    } else {
+      y <- NA
+    }
+  
+  y
+}
+
+# Calculate daily environmental summaries
+daily_env <- loggers %>%
+  select(Site, Date, Temp_ibutton, VPD_est) %>% # Choose which columns to keep
+  group_by(Site, Date) %>%
+  summarise(Num_obs = n(),
+            Temp_mean = mean(Temp_ibutton),
+            Temp_min = min(Temp_ibutton),
+            Temp_max = max(Temp_ibutton),
+            Temp_range = Temp_max - Temp_min,
+            VPD_mean = na_drop(VPD_est, mean),
+            VPD_min = na_drop(VPD_est, min),
+            VPD_max = na_drop(VPD_est, max),
+            VPD_range = VPD_max - VPD_min)
+
+# Drop days with fewer than 40 observations- usually from 10/31/2017
+daily_env = filter(daily_env, Num_obs > 40)
+
+# View distributions of daily measures
+par(mfrow=c(3,3))
+for(i in 4:11) hist(unlist(daily_env[,i]), main = names(daily_env)[i], xlab='')
+
+# Summarize environment across dates for each site within months
+month_summary <- daily_env %>%
+  mutate(Month = month(Date)) %>%
+  group_by(Site, Month) %>%
+  summarise(Temp_mean = mean(Temp_mean), 
+            Temp_min = mean(Temp_min), 
+            Temp_max = mean(Temp_max), 
+            Temp_range = mean(Temp_range),
+            VPD_mean = na_drop(VPD_mean, mean), 
+            VPD_min = na_drop(VPD_min, mean), 
+            VPD_max = na_drop(VPD_max, mean), 
+            VPD_range = na_drop(VPD_range, mean))
+
+# Summarize environment across dates for each site within weeks
+week_summary <- daily_env %>%
+  mutate(Week = week(Date)) %>%
+  group_by(Site, Week) %>%
+  summarise(Temp_mean = mean(Temp_mean), 
+            Temp_min = mean(Temp_min), 
+            Temp_max = mean(Temp_max), 
+            Temp_range = mean(Temp_range),
+            VPD_mean = na_drop(VPD_mean, mean), 
+            VPD_min = na_drop(VPD_min, mean), 
+            VPD_max = na_drop(VPD_max, mean), 
+            VPD_range = na_drop(VPD_range, mean))
+
+# Summarize environment across dates for all available measurements
+winter_summary <- daily_env %>%
+  group_by(Site) %>%
+  summarise(Temp_mean = mean(Temp_mean), 
+            Temp_min = mean(Temp_min), 
+            Temp_max = mean(Temp_max), 
+            Temp_range = mean(Temp_range),
+            VPD_mean = na_drop(VPD_mean, mean), 
+            VPD_min = na_drop(VPD_min, mean), 
+            VPD_max = na_drop(VPD_max, mean), 
+            VPD_range = na_drop(VPD_range, mean))
+
+# Combine all tables
+winter_summary <- winter_summary %>%
+  mutate(Time_period = "All")
+
+month_summary <- month_summary %>%
+  mutate(Time_period = paste("Month", Month)) %>%
+  select(-Month)
+
+week_summary <- week_summary %>%
+  mutate(Time_period = paste("Week", Week)) %>%
+  select(-Week)
+
+env_summary <- bind_rows(winter_summary, month_summary) %>%
+  bind_rows(week_summary) %>%
+  select(Time_period, Site , starts_with("Temp"), starts_with("VPD"))
+  
+
+# Save data frame
+write.csv(env_summary, file.path(local_dir, 'env_logger_summary.csv'), row.names=F)
 
 

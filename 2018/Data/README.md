@@ -89,14 +89,21 @@ Outcome of fungal isolate interaction experiment for each competitor on a plate.
 
 **Columns**:
 
-### env_dataloggers
 
-**File name**: BIO46_W2018_env_dataloggers.csv
+### env_logger_summary
+
+**File name**: env_logger_summary.csv
 
 **Description**:
 
-Temperature and humidity data logged at each site. Humidity estimated at all but three sites based on measured values at nearest logger. Humidity data may be suspect since there were substantial discrepancies in temperature between ibuttons and EL-2-USB loggers at teh same site.
+Summaries of daily mean, min, max and range of temperature and vapor pressure deficit (VPD) for Nov 2017 - Feb 2018.
 
+**Details**:
+
+Daily mean, min, max and range values for temperature (C) and VPD are averaged for all time points measured (Time_period = "All") and within each month and week.
+
+
+**Columns**:
 
 ## Raw data tables
 
@@ -114,7 +121,6 @@ iButton temperature data from survey sites.
 **Columns**:
 
 
-
 ### humidity
 
 **File name**: RH_Winter2018.csv
@@ -122,6 +128,20 @@ iButton temperature data from survey sites.
 **Description**:
 
 EL-USB-2 humidity logger data from three survey sites.
+
+**Details**:
+
+
+**Columns**:
+
+
+### env_dataloggers
+
+**File name**: BIO46_W2018_env_dataloggers.csv
+
+**Description**:
+
+Temperature and humidity data logged at each site. Humidity estimated at all but three sites based on measured values at nearest logger. Humidity data may be suspect since there were substantial discrepancies in temperature between ibuttons and EL-2-USB loggers at teh same site.
 
 **Details**:
 
