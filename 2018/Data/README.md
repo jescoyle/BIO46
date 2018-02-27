@@ -95,7 +95,7 @@ Outcome of fungal isolate interaction experiment for each competitor on a plate.
 
 ### ibuttons
 
-**File name**: ibuttons.csv
+**File name**: iButtons_Winter2018.csv
 
 **Description**:
 
@@ -110,7 +110,7 @@ iButton temperature data from survey sites.
 
 ### humidity
 
-**File name**: humidity.csv
+**File name**: RH_Winter2018.csv
 
 **Description**:
 

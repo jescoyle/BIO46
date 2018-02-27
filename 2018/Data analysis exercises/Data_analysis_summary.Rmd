@@ -62,8 +62,8 @@ The following data tables are available for analysis:
 | infection_prevalence | 1iJ1bM4qGkL8M068wJAr52BU801hHo6HldQClU75FCMc | infection_prevalence.csv |
 | interaction_experiment_byplate| 12T786FWYpMjUjyIDvUdAMYvCt1aqiLXp2Fv7JN6z1JY | interaction_experiment_byplate.csv |
 | interaction_experiment_bycompetitor | 1OCld3RCIxtCitBDNKhF7OHrtl4B0sN4OitQ3hvp5arU | interaction_experiment_bycompetitor.csv |
-| ibuttons |  |  |
-| humidity |  |  | 
+| ibuttons | not a google sheet | iButtons_Winter2018.csv |
+| humidity | not a google sheet | RH_Winter2018.csv | 
 
 Three ways to load these data:
 
