@@ -12,3 +12,6 @@ data/replicate_isolates.csv
 
 code/*
 
+Data_analysis_summary_cache
+Data_analysis_summary_files
+
