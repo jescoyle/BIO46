@@ -1,0 +1,248 @@
+---
+title: "Planning Analyses"
+subtitle: BIO 46, Winter 2018
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = '', eval=F)
+```
+
+### Overview
+
+The goal of this activity is for you to create and R script from scratch and plan the data analysis for your research project. By the end of this lesson you should have an R script containing `# comments` that will guide your analysis.
+
+The activity is divided into a series of steps that will help you write your analysis plan. Complete each of the steps as it pertains to your research project. At the end you will have an outline of a script that you can fill in to conduct your data analysis. You will turn in the final R script as a part of your Research Paper.
+
+Note that most of the text you type today will be in the form of comments that do not cause anything to happen in R. Comments are any line of text that begins with `#`.
+
+### Step 1: Heading
+
+Every R script should have a heading at the top that indicates:
+
+1. Title explaining what the script is for.
+2. When the script was written.
+3. Who wrote the script.
+4. Whether parts of the script were taken from other sources.
+5. Short description of what the code in the script will do and what data it uses.
+
+Create a new R Script using File > New File > R script. At the top of this script write a heading using the following format.
+
+```{r}
+#### Analysis script for BIO46 Team ___
+#### Writen by _____________________
+#### Winter Quarter 2018
+#### Short description (e.g. This script analyzes data on ______ collected by ______.)
+#### Short description continued.
+```
+
+### Step 2: Sections
+
+R scripts usually consist of two main parts. The first part loads packages and data that will be used in the analyses. The second part contains the data analyses which are subdivided into sections based on either the question being addressed or the type of analysis being performed. 
+
+In this class we will divide the R script analyses into sections based on the hypotheses you are evaluating in your project. 
+
+Everyone uses slightly different methods for delimiting sections. The main idea is that you should be able to quickly scroll through a script to find the different sections. In this class we will divide sections using 
+
+`#--------------------------------------------------#`
+
+followed by a header that indicates what each section contains:
+
+`### Section Heading: This sections does XX ###`
+
+**DO THIS:** Add the following sections to your script, including one section for each distinct hypothesis:
+
+```{r}
+#----------------------------#
+### Load Data and Packages ###
+
+
+#-----------------------------------------------#
+### H1: (Type question for hypothesis 1 here) ###
+
+
+#-----------------------------------------------#
+### H2: (Type question for hypothesis 1 here) ###
+
+
+#-----------------------------------------------#
+### H3: (Type question for hypothesis 1 here) ###
+
+```
+
+### Step 3: Outline each analysis
+
+For each of the hypotheses, you will need to create an outline of the analyses you will perform to evaluate that hypothesis. One way to do this is to think about the final figure or statistical test you need to make/perform and then work backwards to the original data.
+
+In the outline we will organize the code using three `###` to denote an analysis, two `##` to denote a step in the analysis and one `#` to describe what particular lines of code do. For today, you only need to write each step of the analysis using `##` comments without worrying about exactly what the code will look like. But, if you do put in placeholder code it will make the analysis easier.
+
+For example, suppose our hypothesis is that *Evernia prunastri* growing on trees are more heavily infected than those growing on shrubs and that we plan to test this hypothesis with two analyses:
+
+1. Test whether the proportion of *E. prunastri* that are infected is higher on trees than on shrubs.
+2. Test whether infected *E. prunastri* on trees have more ascomata than infected *E. prunastri* on shrubs.
+
+Then our initial layout would look like this:
+
+```{r}
+
+#-------------------------------------------------------------------------#
+### H1: Are E. prunastri on trees more heavily infected than on shrubs? ###
+
+
+### Test whether prop infected E. prun. is higher on trees than shrubs
+
+
+
+### Test whether infected E. prun. have more ascomata on trees than shrubs
+```
+
+**DO THIS:** In your outline, add the analyses you think you will do for each hypothesis using `###`.
+
+Next we need to work backwards and visualize what the figures that correspond to the analyses would look like as well as which statistical tests we would use. Then, we add these steps using two `##`.
+
+```{r}
+#-------------------------------------------------------------------------#
+### H1: Are E. prunastri on trees more heavily infected than on shrubs? ###
+
+
+### Test whether prop infected E. prun. is higher on trees than shrubs
+
+## FIGURE: Barchart comparing
+## X categories: trees and shrubs
+## Y values : number of lichens in each category
+## Bar colors: infected vs uninfected 
+
+## STATS: Chi-sq test of num. infected or uninfected lichens on trees vs shrubs
+
+
+### Test whether infected E. prun. have more ascomata on trees than shrubs
+
+## FIGURE: Boxplot comparing
+## X categories: trees and shrubs
+## Y values: num. ascomata
+
+## STATS: t-test comparing
+## Y: num ascomata
+## X: substrate type: tree vs shrub
+
+```
+
+**DO THIS:** In your outline, add the figures and statistical tests you think you will use for each analysis using `##`.
+
+Next, think about how the data would need to be formatted to make the plots or do the statistical tests. Usually you will need a dataframe containing columns for each variable and in which each row corresponds to a unit of observation. In our case a unit of observation is a single lichen and we want to compare the substrate that the lichen was collected from (tree / shrub) to: (1) whether the lichen is infected or not, and (2) the number of ascomata.
+
+How will we get a dataframe into this format? Which data tables do we need?
+
+Look in our class Google Drive database and determine which tables you will need to use for each analysis. In this example, all of the information we need is already in the `lichens` table, but we will need to create a new column that indicates whether each lichen is infected or not. We will also need to tabulate the number of lichens that are infected/uninfected on trees/shrubs into a contingency table in order to do a chi-squared test. To do the second analysis, we will need to subset the data to only the infected lichens.
+
+Let's add these steps to the outline.
+
+```{r}
+#-------------------------------------------------------------------------#
+### H1: Are E. prunastri on trees more heavily infected than on shrubs? ###
+
+
+### Test whether prop infected E. prun. is higher on trees than shrubs
+
+# Use lichens data table
+
+# Add column indicating whether lichen is infected or not
+
+## FIGURE: Barchart comparing
+## X categories: trees and shrubs
+## Y values : number of lichens in each category
+## Bar colors: infected vs uninfected
+
+
+## STATS: Chi-sq test of num. infected or uninfected lichens on trees vs shrubs
+
+# Tabulate contingency table: infection status vs substrate type
+
+
+### Test whether infected E. prun. have more ascomata on trees than shrubs
+
+# Subset data to only infected lichens
+
+## FIGURE: Boxplot comparing
+## X categories: trees and shrubs
+## Y values: num. ascomata
+
+## STATS: t-test comparing
+## Y: num ascomata
+## X: substrate type: tree vs shrub
+
+```
+
+**DO THIS**: Think about the individual steps you will need to format the data for your analysis and add them to your outline using `#`:
+
+  + Which tables do you need?
+  + Do you need to merge data from two tables?
+  + Do you need to calculate new columns?
+  + Do you need to make subsets?
+  + Do you need to summarize the data?
+
+
+### Step 4: Load and manipulate data
+
+After outlining the sections for each hypothesis, you should look through the parts of the outline where you prepare the data and determine whether there is any redundancy. Are you performing the same manipulations of the data for two different hypotheses? If so, move the redundant data manipulation sections to the first section of your analysis plan, under the *Load Data and Packages*. 
+
+Finally, look through your outline and determine which data tables you will need to load into R. For this example we just use the `lichens` table. Add this to the script in the first section under a heading `### Load Data`. We also will be needing to load packages, so we should make a section for that as well.
+
+```{r}
+#----------------------------#
+### Load Data and Packages ###
+
+### Load packages
+
+### Load data
+
+# Read in lichens table
+
+### Prepare a data frame for analysis
+
+# Using lichens data, add column indicating whether lichen is infected or not
+
+
+#-------------------------------------------------------------------------#
+### H1: Are E. prunastri on trees more heavily infected than on shrubs? ###
+
+
+### Test whether prop infected E. prun. is higher on trees than shrubs
+
+# Use lichens data table
+
+# Add column indicating whether lichen is infected or not
+
+## FIGURE: Barchart comparing
+## X categories: trees and shrubs
+## Y values : number of lichens in each category
+## Bar colors: infected vs uninfected
+
+
+## STATS: Chi-sq test of num. infected or uninfected lichens on trees vs shrubs
+
+# Tabulate contingency table: infected vs substrate type
+
+
+### Test whether infected E. prun. have more ascomata on trees than shrubs
+
+# Subset data to only infected lichens
+
+## FIGURE: Boxplot comparing
+## X categories: trees and shrubs
+## Y values: num. ascomata
+
+## STATS: t-test comparing
+## Y: num ascomata
+## X: substrate type: tree vs shrub
+
+
+```
+
+**DO THIS**: Add `### Load packages`, `### Load data`, and `### Prepare data for analysis` sections to your outline and fill comments for the details that you know using `#` or `##`.
+
+Save you final outline to use when working on the analyses for your research project. Fill in the lines of code directly into it.
+
+### How do I fill in the R Code?
+
+You can find a summary of things we learned in the three R data analysis exercises [here](https://jescoyle.github.io/BIO46/2018/Data%20analysis%20exercises/Data_analysis_summary.html) or on Canvas in a document titled Data_analysis_summary.html.

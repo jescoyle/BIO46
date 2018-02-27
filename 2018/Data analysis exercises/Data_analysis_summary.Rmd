@@ -1,12 +1,13 @@
 ---
-title: "R Summary Sheet for BIO46"
-author: "Jes Coyle"
+title: "R Summary Sheet"
+subtitle: BIO 46, Winter 2018
 output: 
   html_document:
     highlight: pygments
     toc: true
+    toc_depth: 2
     toc_float:
-      collapsed: false
+      collapsed: true
 ---
 
 ```{r, include = FALSE}
@@ -17,37 +18,56 @@ knitr::opts_chunk$set(comment = NA)
 # Cache chunk output for faster rendering
 knitr::opts_chunk$set(cache=TRUE)
 
+# Do not display warning messages
+knitr::opts_chunk$set(warning=FALSE)
+
+# Increase the width of the console for printing output
+options(width = 200)
+
 ```
 
+I usually include this code at the top of scripts so that R doesn't automatically read text as factors.
 
-```{r, warning = FALSE, message = FALSE}
-library(dplyr); library(tidyr) # packages for data manipulation
-library(ggplot2) # package for plotting
-library(Exact) # package for exact unconditional tests on contingency tables
+```{r, warning = FALSE, message = FALSE, include = FALSE}
+# Read in text as text and not factors
+options(stringsAsFactors = FALSE)
 
 ```
 
 
 # Data manipulation
 
-The following data tables are available for analysis:
-
-| Table name | Description | Google sheet key | GitHub address |
-|------------|-------------|------------------|----------------|
-| sites | Location and canopy cover of Jasper Ridge survey sites | 1LJj8BAngXFjBTvpOJv_0WXV_OwTXtEHk00p_WKsMuJ8 |  |
-| lichens | Info about lichens collected at Jasper Ridge, including outcomes of growth and infection experiments. | 11d3-k-3OaIOfm8EfneUiNGiumfPBdMBHMViaTbVtzwY |  |
-| fungi | Growth rates and identities of fungi isolated from lichens.  | 16ku-VRUHMZHz5XgHtD2ESDhdem401sBnbbPEEVeYtrg | |
-| infection_prevalence | Abundance of *E. prunastri* and infection prevalence at survey sites. | 1iJ1bM4qGkL8M068wJAr52BU801hHo6HldQClU75FCMc |  |
-| interaction_experiment_byplate| Outcome of fungal isolate interaction experiment for each plate. | 1m7gonWwxDjNyv28SU4bXuLBYWIirePeyv27koCnVY64 |  |
-| interaction_experiment_bycompetitor | Outcome of fungal isolate interaction experiment for each competitor on a plate. | 1AlC_50OX9hyvtLhjs8mlSNsaq-4eCaC1TO7t0xyOGMQ |  |
-| ibuttons | iButton temperature data from survey sites. |  |  |
-| humidity | EL-USB-2 humidity logger data from three survey sites. |  |  | 
-
 ## Loading Data
 
-Three ways to load data:
+The following data tables are available for analysis:
 
-### From the Google Drive sheets
+**Table Descriptions**
+
++ **sites**:  Location and canopy cover of Jasper Ridge survey sites.
++ **lichens**: Info about lichens collected at Jasper Ridge, including outcomes of growth and infection experiments. 
++ **fungi**: Growth rates and identities of fungi isolated from lichens.
++ **infection_prevalence**: Abundance of *E. prunastri* and infection prevalence at survey sites. 
++ **interaction_experiment_byplate**: Outcome of fungal isolate interaction experiment for each plate.
++ **interaction_experiment_bycompetitor**: Outcome of fungal isolate interaction experiment for each competitor on a plate.
++ **ibuttons**: iButton temperature data from survey sites.
++ **humidity**: EL-USB-2 humidity logger data from three survey sites.
+
+**Table locations**
+
+| Table name | Google sheet key | GitHub filename |
+|------------|------------------|----------------|
+| sites | 1LJj8BAngXFjBTvpOJv_0WXV_OwTXtEHk00p_WKsMuJ8 | BIO46_2018_sample_sites.csv |
+| lichens | 11d3-k-3OaIOfm8EfneUiNGiumfPBdMBHMViaTbVtzwY | lichens.csv |
+| fungi | 16ku-VRUHMZHz5XgHtD2ESDhdem401sBnbbPEEVeYtrg | |
+| infection_prevalence | 1iJ1bM4qGkL8M068wJAr52BU801hHo6HldQClU75FCMc | infection_prevalence.csv |
+| interaction_experiment_byplate| 12T786FWYpMjUjyIDvUdAMYvCt1aqiLXp2Fv7JN6z1JY | interaction_experiment_byplate.csv |
+| interaction_experiment_bycompetitor | 1OCld3RCIxtCitBDNKhF7OHrtl4B0sN4OitQ3hvp5arU | interaction_experiment_bycompetitor.csv |
+| ibuttons |  |  |
+| humidity |  |  | 
+
+Three ways to load these data:
+
+**1) From the Google Drive sheets**
 
 ```{r message = FALSE}
 # Load package
@@ -63,98 +83,534 @@ lichens_gs <- gs_key("11d3-k-3OaIOfm8EfneUiNGiumfPBdMBHMViaTbVtzwY")
 lichens <- gs_read(lichens_gs)
 ```
 
-### From the GitHub repository
+**2) From the GitHub repository**
 
+```{r}
+# Define the URL of the data repository
+github_url <- "https://raw.githubusercontent.com/jescoyle/BIO46/master/2018/Data/"
 
-### From a file on your computer
-
-
-
-## Subsetting Data
-
-
-## Summarizing Data
-
-
-
-# Data visualization
-
-### Scatterplot
-
-
-### Boxplot
-
-
-### Barchart
-
-
-### Maps
-
-
-
-
-# Statistics
-
-## X categorical and Y categorical
-
-To apply the following tests, first create a contingeny table of the data that tabulates how many observations are from each combination of X and Y categories. These tests evaluate whether the counts in the rows of the contingency table are different from one another. 
-
-There are two methods to create contingency tables in R, depening on whether you prefer the base R or `dplyr` package to manipulate data.
-
-```{r contingency-table}
-
-# Example data
-dat <- data.frame(Treatment = rep(c("Control", "Manipulated"), each = 16),
-                  Symptoms = c(rep("Absent", 16), sample(c("Absent", "Present"), 16, replace = T))
-)
-
-# Create contingency table using base R
-dat_tab <- table(dat$Treatment, dat$Symptoms)
-  
-# Display table 
-dat_tab
+# Read in the csv file using the url and the specific file name
+# The following reads in three different tables
+interactions <- read.csv(file.path(github_url, "interaction_experiment_bycompetitor.csv"))
+sites <- read.csv(file.path(github_url, "BIO46_2018_sample_sites.csv"))
+infection <- read.csv(file.path(github_url, "infection_prevalence.csv"))
 
 ```
 
-Notice that the `table()` function creates a "table", which is basically a matrix of integers with row and column names. The order of the vectors supplied to the `table()` function determines which variables are in the rows and columns (or higher dimensions, if you supply more than two vectors to tabulate).
+**3) From a file on your computer**
 
-### Chi-square test
+First download the files to your BIO46 folder.
+
+```{r eval = FALSE}
+# Set the working directory
+setwd("C:/Users/your_username/Documents/BIO46")
+
+# Read in a csv file that you downloaded to that directory
+read.csv("lichens.csv")
+
+```
+
+## Manipulating Data {.tabset}
+
+Functions for manipulating dataframes are in the `dplyr` and `tidyr` packages. Be sure to load them once before using these functions.
+
+```{r message = FALSE, warning = FALSE}
+# Load the packages
+library(dplyr)
+library(tidyr)
+```
+
+
+### Subsetting
+
+Use `select` to choose specific columns and `filter` to choose specific rows based on the values in the columns. In the code below, the resulting dataframe is saved to an object named `shrub_inf` that can be used later.
+
+```{r}
+# Show the site and lichen number of lichens on shrubs that have more than 0 ascomata (i.e. infected)
+shrub_inf <- lichens %>%
+  filter(Ascomata > 0 & Substrate_type == "shrub") %>%
+  select(LichenID, Site, Ascomata)
+
+
+shrub_inf
+```
+
+### Summarizing
+
+Summarize values in columnes with the `summarise` function. Use `group_by` to specify the columns used to group data before calculating summary statistics. In the code examples below, the resulting dataframes are saved to an objects named `substrate_summary` and `mean_growth` that can be used later.
+
+```{r message = FALSE, warning = FALSE}
+# For lichens on different substrates,
+# Count the number of lichens found 
+#  and calculate mean and maximum number of ascomata
+substrate_summary <- lichens %>%
+  group_by(Substrate_type) %>%
+  summarise(Num_lichens  = n(),
+            Ascomata = mean(Ascomata),
+            Ascomata_max = max(Ascomata)
+  )
+
+substrate_summary
+```
+
+```{r}
+# Calculate the mean radial growth of each isolate growing solo or in co-culture
+mean_growth <- interactions %>%
+  group_by(IsolateID, Culture_type) %>%
+  summarise(Radius_mm_day7 = mean(Radius_mm_day7),
+            Radius_mm_day14 = mean(Radius_mm_day14)
+  )
+
+mean_growth
+```
+
+### Stacking columns
+
+To combine multiple columns into the same column, use the `gather` function. `key =` is the name of a new column that will identify which column the data originally came from. `value = ` is the name of a new column that will contain the values that were originally in separate columns. 
+
+```{r}
+# Put the radius measurements from day 7 and day 14 into a single column (named Radius_mm)
+mean_growth_long <- mean_growth %>%
+  gather(key = Measurement_day, value = Radius_mm, Radius_mm_day7, Radius_mm_day14)
+
+mean_growth_long
+```
+
+
+### Calculating new columns
+
+Add new columns based on calculations with other columns using `mutate`.
+
+```{r}
+# Add a new column to lichens that indicates whether it is infected (ascomata > 0)
+lichens <- lichens %>%
+  mutate(Infected = Ascomata > 0) 
+
+# Display the LichenID, Ascomata and Infected columns
+lichens %>%
+    select(LichenID, Ascomata, Infected)
+```
+
+```{r}
+# Add columns to mean_growth_long that indicate the number of days
+# and then calculate growth rate (mm per day)
+mean_growth_long <- mean_growth_long %>%
+  mutate(Days = ifelse(Measurement_day == "Radius_mm_day7", 7, 14), 
+         Growth_mm_day = Radius_mm / Days
+  )
+         
+mean_growth_long
+```
+
+### Combining tables
+
+Merge the columns of two dataframes using a `join` function. `left_join` keeps all of the rows of the left dataframe. `right_join` keeps all of the rows of the right dataframe. `full_join` keeps all rows in both dataframes. The function will use the column names that are the same in both dataframes to match up the rows.
+
+```{r message = FALSE}
+# Select some columns from the site data
+sites_light <- sites %>%
+  select(Site, Canopy_openness_pct)
+
+# Add infection prevalence data to the abbreviated site data
+inf_sites <- left_join(sites_light, infection)
+
+inf_sites
+```
+
+# Data visualization {.tabset}
+
+We will use functions from the `ggplot2` package for data visualization.
+
+```{r}
+# Load the package
+library(ggplot2)
+```
+
+## Scatterplot
+
+A scatterplot shows how two variable relate to one another. Each point corresponds to a row in a dataframe. You can include a linear regression line using `geom_smooth(method = "lm")` or a logistic regression line using `geom_smooth(method = "glm")`.
+
+```{r warning = FALSE, message = FALSE}
+# Plot the number of ascomata versus a lichen's initial mass
+lichens %>%
+  ggplot(aes(x = Mass_mg_init, y = Ascomata)) +
+    geom_point() +
+    labs(x = "Initial mass (mg)",
+         y = "Number of ascomata"
+    )
+```
+
+```{r}
+# Create the same plot with a linear regression line.
+lichens %>%
+  ggplot(aes(x = Mass_mg_init, y = Ascomata)) +
+    geom_point() +
+    geom_smooth(method = "lm",
+                se = TRUE,
+                level = 0.95) +
+    labs(x = "Initial mass (mg)",
+         y = "Number of ascomata"
+    )
+```
+
+```{r warning = FALSE}
+# Create a plot of infectedion status versus initial mass
+# including a logistic regression line
+lichens %>%
+  mutate(Infected = as.numeric(Infected)) %>% # convert to 0 or 1
+  ggplot(aes(x = Mass_mg_init, y = Infected)) +
+    geom_point() +
+    geom_smooth(method = "glm",
+                method.args = list(family = "binomial"),
+                se = TRUE,
+                level = 0.95) +
+    labs(x = "Initial mass (mg)",
+         y = "Infected"
+    )
+
+```
+
+## Histogram
+
+A histogram shows the frequency of observed X values.
+
+```{r}
+# Create a histogram that counts how many lichens have different numbers of ascomata
+lichens %>%
+  ggplot(aes(x = Ascomata)) +
+    geom_histogram(binwidth = 5, boundary = 5) +
+    labs(x = "Num. ascomata",
+         y = "Number of lichens"
+    )
+```
+
+## Boxplot
+
+A boxplot shows the distribution (median and quartiles) of Y values in different X categories.
+
+The following boxplot uses data from the `mean_growth_long` dataframe created above in the Manipulating data -> Stacking columns section. Here are the first 10 rows...
+
+```{r echo = FALSE}
+knitr::kable(mean_growth_long[1:10,], digits = 2)
+```
+
+```{r warning = FALSE, message = FALSE}
+# Boxplot of the growth rates of fungal isolates growing solo and in co-culture
+mean_growth_long %>%
+  ggplot(aes(x = Culture_type, y = Growth_mm_day)) +
+    geom_boxplot() +
+    labs(x = "Culture type",
+         y = "Growth rate (mm / day)"
+    )
+```
+
+
+## Barchart
+
+Barcharts can show the number of observations in different categories.
+
+```{r}
+# Plot the number of infected vs. uninfected lichens on trees vs. shrubs
+lichens %>%
+  ggplot(aes(x = Substrate_type)) +
+    geom_bar(aes(fill = Infected),
+             position = "dodge" # remove this if you want the bars stacked
+    ) +
+    labs(x = "Host plant",
+         y = "Num. lichens"
+    )
+
+```
+
+Barcharts can also show the mean and standard devation of observations in different categories.
+
+```{r warning = FALSE, message = FALSE}
+# Calculate mean and sd of growth on day 7 across taxa 
+rad7_summary <- interactions %>%
+  group_by(TaxonID, Culture_type) %>%
+  summarise(Radius_mm = mean(Radius_mm_day7),
+            Radius_sd = sd(Radius_mm_day7)
+  )
+
+
+# Plot the mean and sd of different taxa 
+# growing solo versus in co-culture
+rad7_summary %>%
+  ggplot(aes(x = TaxonID, y = Radius_mm, fill = Culture_type)) +
+    geom_col(position = "dodge") +
+    geom_errorbar(aes(ymin = Radius_mm - Radius_sd,
+                      ymax = Radius_mm + Radius_sd),
+                  position = position_dodge(width = 0.9),
+                  width = 0.5
+    ) +
+    labs(x = "",
+         y = "Colony radius day 7 (mm)",
+         fill = "Culture type"
+    ) +
+    theme(axis.text.x = element_text(angle=90, 
+                                     vjust = 0.5, 
+                                     hjust = 1
+                        )
+    )
+```
+
+## Saving Figures
+
+To save a figure, click the "Export" button in the Plots window of RStudio. 
+
+Alternatively, save the figure directly from your code by running the following immediately after generating a figure. Change the extension to .pdf or .svg if you prefer a vector format image.
+
+```{r eval = FALSE}
+# Save the last plot as my_file_name.png in the current working directory.
+ggsave("my_file_name.png")
+
+```
+
+
+# Statistics 
+
+## Y categorical {.tabset}
+
+We'll use the `lichens` dataframe downloaded above to demonstrate analyses for when Y is categorical. Here are the first 10 rows...
+
+```{r echo = FALSE}
+knitr::kable(lichens[1:10,])
+```
+
+### X categorical
+
+To apply the following tests, first create a contingeny table of the data that tabulates how many observations are from each combination of X and Y categories. These tests evaluate whether the counts in the rows of the contingency table are different from one another. 
+
+```{r contingency-table}
+# Count the number of infected vs. uninfected lichens on trees vs shrubs
+lichen_count <- table(lichens$Substrate_type, lichens$Infected)
+  
+# Display table 
+lichen_count
+
+```
+
+#### Chi-square test
 
 Use this test when you have many observations and the expected number of observations in each cell of the table is greater than five. This test is not valid when you have few observations.
 
+```{r}
+# Test whether infection frequency is different between trees and shrubs
+chisq.test(lichen_count)
 
-### Fisher's exact test
+```
+
+#### Fisher's exact test
 
 Use this test when you have few observations and when you know ahead of time how many observations are in each category of X and each category of Y (e.g. the marginal sums are fixed). Statisticians recommend not using this test and instead using unconditional tests (see [Lydersen et al. 2009](http://dx.doi.org/10.1002/sim.3531)).
 
 ```{r fisher-test}
 # Fisher's exact test with a two-sided hypothesis
-fisher.test(dat_tab)
+fisher.test(lichen_count)
 
 ```
 
-### Unconditional exact tests
+#### Unconditional exact tests
 
 Use this test when you have few observations and when you do not necessarily know ahead of time how many observations are in each category of X and each category of Y (e.g. the marginal sums are random). 
 
-```{r barnard-test, message = FALSE}
+```{r}
+# Load the package containing the function
+library(Exact)
+```
 
+```{r barnard-test, message = FALSE}
 # Barnard's test used when the number of observations in each category of X is known
 # X categories should be in the rows of the table, otherwise, specify, cond.row = FALSE
 # method = "CSM" specifies Barnard's method, but you can use other options
-barnard_test <- exact.test(dat_tab, model = "binomial", method = "CSM", cond.row = TRUE, to.plot = FALSE)
-
-# Boschloo's test used when the number of observations in each category is unknown for X or Y
-boschloo_test <- exact.test(dat_tab, model = "multinomial", method = "boschloo")
+barnard_test <- exact.test(lichen_count, 
+                           model = "binomial", 
+                           method = "CSM", 
+                           cond.row = TRUE, 
+                           to.plot = FALSE)
 
 # Print test results
 barnard_test
+```
+
+```{r}
+# Boschloo's test used when the number of observations in each category is unknown for X or Y
+boschloo_test <- exact.test(lichen_count, 
+                            model = "multinomial", 
+                            method = "boschloo")
+
+# Print test results
 boschloo_test
+```
+
+### X continuous
+
+#### Logistic regression
+
+Use this form of logistic regression when the dependent response variable has two outcomes (e.g. False / True, Absent / Present).
+
+```{r}
+# Fit a logistic regression model with:
+# Y = whether a lichen is infected
+# X = the initial mass of the lichen
+mod_infVmass <- glm(Infected ~ Mass_mg_init, 
+                   data = lichens, 
+                   family = binomial(link = "logit")
+)
+
+# View the results
+summary(mod_infVmass)
+
+# Exponentiate the mode coeffifients (intercept and slope)
+# to see the effect of mass on the odds of being infected
+exp(coef(mod_infVmass))
 
 ```
 
-## X continuous and Y categorical
 
-### Logistic regression for two categories
+## Y continuous {.tabset}
+
+### X categorical 
+
+We'll use the `interactions` dataframe downloaded above to demonstrate ANOVA and t-tests. Here are the first 10 rows... 
+
+```{r echo = FALSE}
+knitr::kable(interactions[1:10,])
+```
+
+#### ANOVA
+
+Use ANOVA when you want to test whether a normally-distributed dependent variable differs among categories. ANOVA assumes that the variance within groups is the same across groups.
+
+```{r}
+# Replace unknown (NA) taxon names with their isolate ID (e.g. S1-A)
+int_noNAtaxa <- interactions %>%
+  mutate(TaxonID = ifelse(is.na(TaxonID), IsolateID, TaxonID))
+
+# ANOVA testing whether day 7 radius differs among taxa
+# Fit model
+mod_rad7Vtaxa <- lm(Radius_mm_day7 ~ factor(TaxonID), data = int_noNAtaxa)
+
+# Perform ANOVA
+anova(mod_rad7Vtaxa)
+```
+
+**Post-hoc t-test**
+
+ANOVA only tells you whether the categories are different from one another (variance between categories >  variance within categories). If you want to know which categories differ from one another, use Tukey's Honest Significant Difference test after performing an ANOVA to determine whether the pairs of categories have different means. 
+
+```{r}
+# First fit an AOV (analysis of variance) object
+aov_rad7Vtaxa <- aov(mod_rad7Vtaxa)
+
+# Then computed Tukey's HSD
+TukeyHSD(aov_rad7Vtaxa)
+```
+
+#### t-test
+
+Use a t-test whether you want to test whether the mean of a normally-distributed dependent  variable differs between two categories.
+
+The arguments in the `t.test` function can be used to specify whether the variances should be assumed equal among groups (Student's t-test, `var.equal = TRUE`) or unequal (Welch's t-test, `var.equal = FALSE`). The `paired` arguments determines whether you want an independent sample or dependent sample test. Use a dependent sample test (`paired = TRUE`) when you have measured  the same individuals in both categories. 
+
+We'll use the `interactions` data to demonstrate and test whether the radius measured on day 7 differed from the radius measured on day 14.
+
+```{r}
+# Student's t-test, two-sided hypothesis
+t.test(interactions$Radius_mm_day14, 
+       interactions$Radius_mm_day7,
+       var.equal = TRUE)
+
+```
+
+```{r}
+# Student's t-test, one-sided hypothesis
+t.test(interactions$Radius_mm_day14, 
+       interactions$Radius_mm_day7,
+       var.equal = TRUE,
+       alternative = "greater")
+
+```
+```{r}
+# Welch's t-test (unequal variance), one-sided hypothesis
+t.test(interactions$Radius_mm_day14, 
+       interactions$Radius_mm_day7,
+       var.equal = FALSE,
+       alternative = "greater")
+```
+
+Since measurements are not independent- we measured the same plates on day 7 and day 14, a paired test is more appropriate. Note that the two columns must have "individuals" in the same order.
+
+```{r}
+# Paired Welch's t-test treating plates as individuals
+t.test(interactions$Radius_mm_day14, 
+       interactions$Radius_mm_day7,
+       var.equal = FALSE,
+       alternative = "greater",
+       paired = TRUE)
+```
+
+### X continuous
+
+We'll use the `inf_sites` dataframe created above in the Manipulating Data section to demonstrate fitting linear regression models. Here are the first 20 rows...
+
+```{r echo = FALSE}
+knitr::kable(inf_sites[1:20,])
+```
+
+
+#### Linear regression
+
+Use normal linear regression when the dependent variable is continuous and (mostly) normally distributed.
+
+```{r}
+# Linear regression of number of E prunastri vs. canopy openness
+mod_eprunVcanopy <- lm(Num_Eprunastri ~ Canopy_openness_pct, data = inf_sites)
+
+# View the results
+summary(mod_eprunVcanopy)
+
+```
+
+#### Count (Poisson) regression
+
+Poisson regression is useful when the dependent variable is a discrete count. The number of *E. prunastri* is a count, not actually continuous and since there are many zeros and low counts (see histogram below) we may want to use Poisson regression instead. 
+
+```{r}
+# Histogram to view the distribution of Num_Eprunastri
+inf_sites %>%
+  ggplot(aes(x = Num_Eprunastri)) +
+    geom_histogram(binwidth = 5, boundary = 5)
+
+```
+
+```{r}
+# Fit a Poisson regression
+mod_eprunVcanopy_pois <- glm(Num_Eprunastri ~ Canopy_openness_pct, 
+                             data = inf_sites,
+                             family = "poisson"
+)
+
+# View the results
+summary(mod_eprunVcanopy_pois)
+
+```
+
+```{r}
+# Create a scatterplot
+# fitted Poisson regression line in blue
+# fitted linear regression line in red
+inf_sites %>%
+  ggplot(aes(x = Canopy_openness_pct, y = Num_Eprunastri)) +
+    geom_point() +
+    geom_smooth(method = "glm",
+                method.args = list(family = "poisson"),
+                color = "blue") +
+    geom_smooth(method = "lm",
+                color = "red")
+```
+
+
+
 
 
