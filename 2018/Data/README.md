@@ -89,6 +89,13 @@ Outcome of fungal isolate interaction experiment for each competitor on a plate.
 
 **Columns**:
 
+### env_dataloggers
+
+**File name**: BIO46_W2018_env_dataloggers.csv
+
+**Description**:
+
+Temperature and humidity data logged at each site. Humidity estimated at all but three sites based on measured values at nearest logger. Humidity data may be suspect since there were substantial discrepancies in temperature between ibuttons and EL-2-USB loggers at teh same site.
 
 
 ## Raw data tables
