@@ -192,7 +192,7 @@ infection <- infection %>%
 Logistic regression models the probability that an event is observed as a function of a continuous predictor variable. In our case we are modeling the probability of finding at least one infected lichen. Logitistic regression is a type of generalized linear model (GLM)- a linear model where the response variable is not normally distributed. In R, GLMs are fit using the function `glm()`. The syntax is similar to linear regression (`lm(y_variable ~ x_variable, data = dataframe_name)`), but includes an arguement `family = ` that gives the distribution of the response variable. For logistic regression with a binary (True/False) response variable, we can supply the response variable as it is and specify a binomial distribution with the logit link function (`family = binomial(link = logit)`).
 
 ```{r}
-# Fit a logistic regression model
+# Fit a logistic regression model 
 mod_infpres <- glm(Infection_pres ~ Num_Eprunastri, 
                    data = infection, 
                    family = binomial(link = "logit")
