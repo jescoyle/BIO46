@@ -129,7 +129,46 @@ $(document).ready(function () {
 <p><strong>Description</strong>:</p>
 <p>Location and environmental data for Jasper Ridge survey sites.</p>
 <p><strong>Details</strong>:</p>
+<p>Each row corresponds to one site that was sampled for lichens in the BIO46 class. Site numbers correspond to the same plant numbers used by the BIO47 course. Canopy cover variables are from Gap Light Analyzer (GLA) analysis of hemispherical digital photographs of taken at each site in April - May of 2017 (for the BIO 47 class).</p>
 <p><strong>Columns</strong>:</p>
+<table>
+<colgroup>
+<col width="16%"></col>
+<col width="83%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Site</td>
+<td>Unique site number. Corresponds to the same Plant numbers used in BIO 47.</td>
+</tr>
+<tr class="even">
+<td>Canopy_openness_pct</td>
+<td>Percent canopy openness. 100 = 100% open sky.</td>
+</tr>
+<tr class="odd">
+<td>LAI_75deg</td>
+<td>Leaf area index within 75 degree zenith angle.</td>
+</tr>
+<tr class="even">
+<td>Group</td>
+<td>Group number assigned to survey the site.</td>
+</tr>
+<tr class="odd">
+<td>UTM_E &amp; UTM_N</td>
+<td>Location of the site in UTM coordinates (zone 10).</td>
+</tr>
+<tr class="even">
+<td>RH_site</td>
+<td>Site whose humidity logger was used to estimate humidity at this site.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="lichens" class="section level3">
 <h3>lichens</h3>
@@ -137,11 +176,66 @@ $(document).ready(function () {
 <p><strong>Description</strong>:</p>
 <p>Lichens collected at Jasper Ridge, including outcomes of growth and infection experiments.</p>
 <p><strong>Details</strong>:</p>
+<p>Each row corresponds to a lichen collected at Jasper Ridge on January 11, 2018. Lichens were used in two experiments: 1) a growth experiment in which the change in mass and health of lichens was observed before and after growing in a growth chamber for 6 weeks (at 22 C with 14 / 10 hr light / dark cycle) and 2) an infection experiment in which lichens the health of lichens was observed after infection with different fungal isolates (see infection_experiment table).</p>
 <p><strong>Columns</strong>:</p>
+<table>
+<colgroup>
+<col width="16%"></col>
+<col width="83%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Team</td>
+<td>Team that collected the lichen.</td>
+</tr>
+<tr class="even">
+<td>LichenID</td>
+<td>Unique code identifying a lichen individual.</td>
+</tr>
+<tr class="odd">
+<td>Site</td>
+<td>Site where lichen was collected.</td>
+</tr>
+<tr class="even">
+<td>Substrate_type</td>
+<td>Whether lichen was collected from a tree or shrub.</td>
+</tr>
+<tr class="odd">
+<td>Substrate_status</td>
+<td>Whether the substrate from which the lichen was collected was alive or dead.</td>
+</tr>
+<tr class="even">
+<td>Ascomata</td>
+<td>Number of ascomata of <em>Unguiculariopsis lettaui</em> observed present under a dissecting microscope.</td>
+</tr>
+<tr class="odd">
+<td>Experiment</td>
+<td>Which experiment the lichens was used for.</td>
+</tr>
+<tr class="even">
+<td>Mass_mg_init</td>
+<td>Initial mass in mg. Recorded only for lichens in the growth experiment.</td>
+</tr>
+<tr class="odd">
+<td>Mass_mg_6weeks</td>
+<td>Mass after 6 weeks in the growth experiment.</td>
+</tr>
+<tr class="even">
+<td>Health</td>
+<td>Categorical variable recording health status after 6 weeks. 1 = most healthy, 3 = least healthy. All lichens were initially at health status 1.</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="fungi" class="section level3">
-<h3>fungi</h3>
-<p><strong>File name</strong>: fungi.csv</p>
+<div id="fungal_isolates" class="section level3">
+<h3>fungal_isolates</h3>
+<p><strong>File name</strong>: NOT YET PRESENT</p>
 <p><strong>Description</strong>:</p>
 <p>Growth rates and identities of fungi isolated from lichens.</p>
 <p><strong>Details</strong>:</p>
@@ -153,7 +247,42 @@ $(document).ready(function () {
 <p><strong>Description</strong>:</p>
 <p>Abundance of <em>E. prunastri</em> and infection prevalence at survey sites.</p>
 <p><strong>Details</strong>:</p>
+<p>Site were surveyed for <em>Evernia prunastri</em> abundance by searching for all <em>E. prunastri</em> present within a 1 x 3 meter plot centered on the station holding the ibutton. Lichens were not surveyed from branches that had fallen on the ground. The prevalence of <em>Unguiculariopsis lettaui</em> infecting <em>E. prunastri</em> was estimated by randomly choosing nine lichen thalli and inspecting them for ascomata with a 10x hand lens.</p>
 <p><strong>Columns</strong>:</p>
+<table>
+<colgroup>
+<col width="16%"></col>
+<col width="83%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Site</td>
+<td>Unique site number.</td>
+</tr>
+<tr class="even">
+<td>Date</td>
+<td>Date when the site was surveyed.</td>
+</tr>
+<tr class="odd">
+<td>Num_Eprunastri</td>
+<td>Number of <em>Evernia prunastri</em> thalli.</td>
+</tr>
+<tr class="even">
+<td>Num_infected</td>
+<td>Number of <em>Evernia purnastri</em> with ascomata from <em>Unguiculariopsis lettaui</em>.</td>
+</tr>
+<tr class="odd">
+<td>Num_healthy</td>
+<td>Number of <em>Evernia prunastri</em> that were not infected.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="interaction_experiment_byplate" class="section level3">
 <h3>interaction_experiment_byplate</h3>
@@ -161,7 +290,59 @@ $(document).ready(function () {
 <p><strong>Description</strong>:</p>
 <p>Outcome of fungal isolate interaction experiment for each plate.</p>
 <p><strong>Details</strong>:</p>
-<p><strong>Columns</strong>:</p>
+<p>Fungal isolates were grown alone (“solo”) or in competition with one other isolate (“co-culture”) on 9 cm petri dishes filled with solid MEA media. To start te experiment, plugs of agar filled with fungal mycelia from the growing edge of a fresh culture were transfered with a plastic drinking straw to positions 3 cm apart from one another in the center of the plates. Culture grew for 1 - 2 weeks and the radius of each culture in the direction of the other culture was recorded each week. At the conclusion, the “winner” of the interaction was the isolate that was able to grow over the other isolate. If neither isolate grew over the other then the interaction was recorded as a “draw”.</p>
+<p>IsolateIDs correspond to fungal isolates described in the BIO46_W2017_fungi.csv table which can be found in <a href="https://raw.githubusercontent.com/jescoyle/BIO46/master/2018/Data%20analysis%20exercises/data/BIO46_W2017_fungi.csv">2018/Data analysis exercises/data</a>. See the taxa table for information on TaxonIDs.</p>
+<p>This table has one row for each plate in the experiment.</p>
+<table>
+<colgroup>
+<col width="16%"></col>
+<col width="83%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>PlateID</td>
+<td>Unique code identifying a plate.</td>
+</tr>
+<tr class="even">
+<td>Culture_type</td>
+<td>Whether the isolate grew aone (“solo”) or in competition with one other isolate (“co-culture”).</td>
+</tr>
+<tr class="odd">
+<td>Isolate1_radius_mm_day7</td>
+<td>Radius of isolate 1 after 7 days in mm.</td>
+</tr>
+<tr class="even">
+<td>Isolate1_radius_mm_day14</td>
+<td>Radius of isolate 1 after 14 days in mm.</td>
+</tr>
+<tr class="odd">
+<td>Isolate2_radius_mm_day7</td>
+<td>Radius of isolate 2 after 7 days in mm. Recorded only for co-culture plates.</td>
+</tr>
+<tr class="even">
+<td>Isolate2_radius_mm_day14</td>
+<td>Radius of isolate 2 after 14 days in mm. Recorded only for co-culture plates.</td>
+</tr>
+<tr class="odd">
+<td>Isolate1_outcome and Isolate2_outcome</td>
+<td>Whether isolate 1 or isolate 2 “won” or “lost” the interaction by growing over the other isolate.</td>
+</tr>
+<tr class="even">
+<td>IsolateID_1 and IsolateID_2</td>
+<td>Codes identifying isolates 1 and 2.</td>
+</tr>
+<tr class="odd">
+<td>TaxonID_1 and TaxonID_2</td>
+<td>Tentative taxa assigned to isolates 1 and 2 based on ITS sequences.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="interaction_experiment_bycompetitor" class="section level3">
 <h3>interaction_experiment_bycompetitor</h3>
@@ -169,43 +350,134 @@ $(document).ready(function () {
 <p><strong>Description</strong>:</p>
 <p>Outcome of fungal isolate interaction experiment for each competitor on a plate.</p>
 <p><strong>Details</strong>:</p>
-<p><strong>Columns</strong>:</p>
+<p>See the descriprion for the interaction_experiment_byplate table. Each row in this table corresponds to a single isolate on a plate.</p>
+<table>
+<colgroup>
+<col width="16%"></col>
+<col width="83%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>IsolateID</td>
+<td>Unique code identifying the isolate.</td>
+</tr>
+<tr class="even">
+<td>TaxonID</td>
+<td>Tentative taxon assigned to the isolate based on ITS sequence.</td>
+</tr>
+<tr class="odd">
+<td>Radius_mm_day7</td>
+<td>Radius after 7 days in mm.</td>
+</tr>
+<tr class="even">
+<td>Radius_mm_day14</td>
+<td>Radius after 14 days in mm.</td>
+</tr>
+<tr class="odd">
+<td>Competitor_isolate</td>
+<td>IsolateID of the fungal isolate that this isolate was plated with. Only reported for co-culture plates.</td>
+</tr>
+<tr class="even">
+<td>Competitor_taxon</td>
+<td>TaxonID of the fungal isolate that this isolate was plated with. Only reported for co-culture plates.</td>
+</tr>
+<tr class="odd">
+<td>Culture_type</td>
+<td>Whether the isolate was grown alone (“solo”) or in competition with another isolate (“co-culture”)</td>
+</tr>
+<tr class="even">
+<td>PlateID</td>
+<td>Code identifying which plate this data is from.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="env_logger_summary" class="section level3">
 <h3>env_logger_summary</h3>
 <p><strong>File name</strong>: env_logger_summary.csv</p>
 <p><strong>Description</strong>:</p>
-<p>Summaries of daily mean, min, max and range of temperature and vapor pressure deficit (VPD) for Nov 2017 - Feb 2018.</p>
+<p>Summaries of daily mean, min, max and range of temperature and vapor pressure deficit (VPD) for Nov 2017 - Feb 2018 at each site.</p>
 <p><strong>Details</strong>:</p>
-<p>Daily mean, min, max and range values for temperature (C) and VPD are averaged for all time points measured (Time_period = “All”) and within each month and week.</p>
-<p><strong>Columns</strong>:</p>
+<p>Daily mean, min, max and range values for temperature (C) and VPD are averaged for all time points measured (Time_period = “All”) and within each month and week. For example, Month1 = January, Month2 = February and Week1 = the first week of the year, Week2 = the second week of the year, etc.</p>
+<p>Vapor pressure deficit difference between the vapor pressure of water in the air and the vapor pressure of water in air that is completely saturated. It is a measure of humidity and higher values correspond to drier air. Here we estimate VPD at each site using the Magnus equation to calculate VPD from actual temperature measured at each site and the the dewpoint temperature measured at three sites around Jasper Ridge. The humidity logger closest to the site was used to assign a dewpoint temperature, since this was only measured at three sites (see the sites table for which humidity loggers were assigned to each site). See <a href="https://jescoyle.github.io/BIO46/2018/Code/make_database_tables.R">2018/Code/make_databases_tables.R</a> for more information.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Time_period</td>
+<td>Time period over which daily summary values were averaged.</td>
+</tr>
+<tr class="even">
+<td>Site</td>
+<td>Site where temperature data was recorded.</td>
+</tr>
+<tr class="odd">
+<td>Temp_mean</td>
+<td>Average daily mean temperature in Celcius.</td>
+</tr>
+<tr class="even">
+<td>Temp_min</td>
+<td>Average daily minimum temperature in Celcius.</td>
+</tr>
+<tr class="odd">
+<td>Temp_max</td>
+<td>Average daily maximum temperature in Celcius.</td>
+</tr>
+<tr class="even">
+<td>Temp_range</td>
+<td>Average daily temperature range in Celcius.</td>
+</tr>
+<tr class="odd">
+<td>VPD_mean</td>
+<td>Average daily mean VPD in Pascals.</td>
+</tr>
+<tr class="even">
+<td>VPD_min</td>
+<td>Average daily minimum VPD in Pascals.</td>
+</tr>
+<tr class="odd">
+<td>VPD_max</td>
+<td>Average daily maximum VPD in Pascals.</td>
+</tr>
+<tr class="even">
+<td>VPD_range</td>
+<td>Average daily VPD range in Pascals.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="raw-data-tables" class="section level2">
 <h2>Raw data tables</h2>
+<p>These tables were store data logger measurements and were used to calculate the summary environmental data in the env_logger_summary table. <a href="https://jescoyle.github.io/BIO46/2018/Code/make_database_tables.R">2018/Code/make_databases_tables.R</a> for more information.</p>
 <div id="ibuttons" class="section level3">
 <h3>ibuttons</h3>
 <p><strong>File name</strong>: iButtons_Winter2018.csv</p>
 <p><strong>Description</strong>:</p>
 <p>iButton temperature data from survey sites.</p>
-<p><strong>Details</strong>:</p>
-<p><strong>Columns</strong>:</p>
 </div>
 <div id="humidity" class="section level3">
 <h3>humidity</h3>
 <p><strong>File name</strong>: RH_Winter2018.csv</p>
 <p><strong>Description</strong>:</p>
 <p>EL-USB-2 humidity logger data from three survey sites.</p>
-<p><strong>Details</strong>:</p>
-<p><strong>Columns</strong>:</p>
 </div>
 <div id="env_dataloggers" class="section level3">
 <h3>env_dataloggers</h3>
 <p><strong>File name</strong>: BIO46_W2018_env_dataloggers.csv</p>
 <p><strong>Description</strong>:</p>
-<p>Temperature and humidity data logged at each site. Humidity estimated at all but three sites based on measured values at nearest logger. Humidity data may be suspect since there were substantial discrepancies in temperature between ibuttons and EL-2-USB loggers at teh same site.</p>
-<p><strong>Details</strong>:</p>
-<p><strong>Columns</strong>:</p>
+<p>Combines data from iButton and humidity data loggers. Humidity estimated at all but three sites based on measured values at nearest logger. Humidity data may be suspect since there were substantial discrepancies in temperature between ibuttons and EL-2-USB loggers at teh same site.</p>
 </div>
 </div>
 </div>
