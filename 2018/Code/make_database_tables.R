@@ -83,6 +83,37 @@ write.csv(int_data_long,
           row.names = FALSE)
 
 
+## Make tables for Clare and Gabi
+
+cg_data <- read.csv("Data/interaction_experiment_byplate_CG.csv")
+
+comp1 <- cg_data %>%
+  transmute(IsolateID = IsolateID_1, 
+            TaxonID = TaxonID_1,
+            Radius_mm_day7 = Isolate1_radius_mm_day7,
+            Radius_mm_day14 = Isolate1_radius_mm_day14,
+            Competitor_isolate = IsolateID_2,
+            Competitor_taxon = TaxonID_2,
+            Culture_type = Culture_type,
+            PlateID = PlateID)
+
+comp2 <- cg_data %>%
+  transmute(IsolateID = IsolateID_2, 
+            TaxonID = TaxonID_2,
+            Radius_mm_day7 = Isolate2_radius_mm_day7,
+            Radius_mm_day14 = Isolate2_radius_mm_day14,
+            Competitor_isolate = IsolateID_1,
+            Competitor_taxon = TaxonID_1,
+            Culture_type = Culture_type,
+            PlateID = PlateID) %>%
+  filter(Culture_type == "co-culture")
+
+cg_data_long <- bind_rows(comp1, comp2)
+
+write.csv(int_data_long, 
+          file = "Data/interaction_experiment_bycompetitor_CG.csv",
+          row.names = FALSE)
+
 #############################################
 ### Environment data loggers Table        ###
 

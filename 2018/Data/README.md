@@ -12,9 +12,19 @@ Location and environmental data for Jasper Ridge survey sites.
 
 **Details**:
 
+Canopy cover variables are from Gap Light Analyzer (GLA) analysis of hemispherical digital photographs of taken at each site in April - May of 2017 (for the BIO 47 class).
+
 
 **Columns**:
 
+| Column name | Description |
+|-------------|-------------|
+| Site | Unique site number. Corresponds to the same Plant numbers used in BIO 47. |
+| Canopy_openness_pct | Percent canopy openness. 100 = 100% open sky.|
+| LAI_75deg | Leaf area index within 75 degree zenith angle. |
+| Group | Group number assigned to survey the site. |
+| UTM_E & UTM_N | Location of the site in UTM coordinates (zone 10). |
+| RH_site | Site whose humidity logger was used to estimate humidity at this site. |
 
 
 ### lichens
@@ -27,11 +37,25 @@ Lichens collected at Jasper Ridge, including outcomes of growth and infection ex
 
 **Details**:
 
+Each row corresponds to a lichen collected at Jasper Ridge on January 11, 2018. Lichens were used in two experiments: 1) a growth experiment in which the change in mass and health of lichens was observed before and after growing in a growth chamber for 6 weeks (at 22 C with 14 / 10 hr light / dark cycle) and 2) an infection experiment in which lichens the health of lichens was observed after infection with different fungal isolates (see infection_experiment table). 
 
 **Columns**:
 
+| Column name | Description |
+|-------------|-------------|
+| Team | Team that collected the lichen. |
+| LichenID | Unique code identifying a lichen individual. |
+| Site | Site where lichen was collected. |
+| Substrate_type |  Whether lichen was collected from a tree or shrub. |
+| Substrate_status |  Whether the substrate from which the lichen was collected was alive or dead. |
+| Ascomata | Number of ascomata of *Unguiculariopsis lettaui* observed present under a dissecting microscope. |
+| Experiment | Which experiment the lichens was used for. |
+| Mass_mg_init | Initial mass in mg. Recorded only for lichens in the growth experiment. |
+| Mass_mg_6weeks |  Mass after 6 weeks in the growth experiment. |
+| Health | Categorical variable recording health status after 6 weeks. 1 = most healthy, 3 = least healthy. All lichens were initially at health status 1. |
 
-### fungi
+
+### fungal_isolates
 
 **File name**: fungi.csv
 

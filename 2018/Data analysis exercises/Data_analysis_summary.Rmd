@@ -45,12 +45,13 @@ The following data tables are available for analysis:
 
 + **sites**:  Location and canopy cover of Jasper Ridge survey sites.
 + **lichens**: Info about lichens collected at Jasper Ridge, including outcomes of growth and infection experiments. 
-+ **fungi**: Growth rates and identities of fungi isolated from lichens.
++ **fungal_isolates**: Growth rates and identities of fungi isolated from lichens.
 + **infection_prevalence**: Abundance of *E. prunastri* and infection prevalence at survey sites. 
 + **interaction_experiment_byplate**: Outcome of fungal isolate interaction experiment for each plate.
 + **interaction_experiment_bycompetitor**: Outcome of fungal isolate interaction experiment for each competitor on a plate.
-+ **ibuttons**: iButton temperature data from survey sites.
-+ **humidity**: EL-USB-2 humidity logger data from three survey sites.
++ **env_loggers_summary**: Temperature and humidity summary data for each site.
++ **infection_experiment**: Results of infection experiment.
+
 
 **Table locations**
 
@@ -58,12 +59,12 @@ The following data tables are available for analysis:
 |------------|------------------|----------------|
 | sites | 1LJj8BAngXFjBTvpOJv_0WXV_OwTXtEHk00p_WKsMuJ8 | BIO46_2018_sample_sites.csv |
 | lichens | 11d3-k-3OaIOfm8EfneUiNGiumfPBdMBHMViaTbVtzwY | lichens.csv |
-| fungi | 16ku-VRUHMZHz5XgHtD2ESDhdem401sBnbbPEEVeYtrg | |
+| fungal_isolates | 16ku-VRUHMZHz5XgHtD2ESDhdem401sBnbbPEEVeYtrg | |
 | infection_prevalence | 1iJ1bM4qGkL8M068wJAr52BU801hHo6HldQClU75FCMc | infection_prevalence.csv |
-| interaction_experiment_byplate| 12T786FWYpMjUjyIDvUdAMYvCt1aqiLXp2Fv7JN6z1JY | interaction_experiment_byplate.csv |
-| interaction_experiment_bycompetitor | 1OCld3RCIxtCitBDNKhF7OHrtl4B0sN4OitQ3hvp5arU | interaction_experiment_bycompetitor.csv |
-| ibuttons | not a google sheet | iButtons_Winter2018.csv |
-| humidity | not a google sheet | RH_Winter2018.csv | 
+| interaction_experiment_byplate| 1ty7Wz0oiEIFJcfSCy8FFIVd3eyiwI0iMc0AyGVdFrpY | interaction_experiment_byplate.csv |
+| interaction_experiment_bycompetitor | 16YxUnW2o1WfYYab5IUNTzxFVcrKVvwerbR7pGLJzHZQ | interaction_experiment_bycompetitor.csv |
+| env_loggers_summary | 1ktSM1PYOnazM663Fg_bdTYRPA8yUlHH2VYFriHFleEo | env_loggers_summary.csv |
+| infection_experiment | 1RwIhDQNeAWcLI9ZlrlpekDWQ0cjPM_UkBgb5FFBDiM8 | infection_experiment.csv |
 
 Three ways to load these data:
 

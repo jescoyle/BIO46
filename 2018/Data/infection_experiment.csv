@@ -1,0 +1,40 @@
+Team,LichenID,FragmentID,Treatment,Infection
+2,G2-4,G2-4-B,control,
+2,G2-4,G2-4-C,Nemania serpens gen. 2,no
+2,G2-4,G2-4-D,S1,
+2,G2-4,G2-4-E,S2,
+2,G2-8,G2-8-G,control,
+2,G2-8,G2-8-H,Nemania serpens gen. 2,
+2,G2-8,G2-8-I,S1,yes
+2,G2-8,G2-8-J,S2,yes
+3,G3-7,G3-7-A,Nemania serpens gen. 2,no
+3,G3-7,G3-7-B,S1,no
+3,G3-7,G3-7-C,S2,yes
+3,G3-7,G3-7-D,control,no
+3,G3-8,G3-8-A,Nemania serpens gen. 2,no
+3,G3-8,G3-8-B,S1,yes
+3,G3-8,G3-8-C,S2,yes
+3,G3-8,G3-8-D,control,
+4,G4-10,G4-10-A,Nemania serpens gen. 2,no
+4,G4-10,G4-10-B,S1,no
+4,G4-10,G4-10-C,S2,yes
+4,G4-10,G4-10-D,control,
+4,G4-11,G4-11-A,Nemania serpens gen. 2,no
+4,G4-11,G4-11-B,S1,
+4,G4-11,G4-11-C,S2,no
+4,G4-11,G4-11-E,control,no
+5,G5-2,G5-2-A,control,no
+5,G5-2,G5-2-B,S1,yes
+5,G5-2,G5-2-C,S2,yes
+5,G5-8,G5-8-A,control,no
+5,G5-8,G5-8-B,S1,yes
+5,G5-8,G5-8-C,S2,yes
+5,G5-8,G5-8-D,Nemania serpens gen. 2,yes
+1,G1-11,G1-11-A,Nemania serpens gen. 2,
+1,G1-11,G1-11-B,S1,
+1,G1-11,G1-11-C,S2,
+1,G1-11,G1-11-E,control,
+1,G1-7,G1-7-A,Nemania serpens gen. 2,no
+1,G1-7,G1-7-B,S1,
+1,G1-7,G1-7-C,S2,
+1,G1-7,G1-7-E,control,no
