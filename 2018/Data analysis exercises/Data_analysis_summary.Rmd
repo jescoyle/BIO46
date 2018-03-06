@@ -51,7 +51,7 @@ The following data tables are available for analysis:
 + **interaction_experiment_bycompetitor**: Outcome of fungal isolate interaction experiment for each competitor on a plate.
 + **env_loggers_summary**: Temperature and humidity summary data for each site.
 + **infection_experiment**: Results of infection experiment.
-
++ **taxa**: Table of taxonomic names of fungal isolates.
 
 **Table locations**
 
@@ -65,6 +65,7 @@ The following data tables are available for analysis:
 | interaction_experiment_bycompetitor | 16YxUnW2o1WfYYab5IUNTzxFVcrKVvwerbR7pGLJzHZQ | interaction_experiment_bycompetitor.csv |
 | env_loggers_summary | 1ktSM1PYOnazM663Fg_bdTYRPA8yUlHH2VYFriHFleEo | env_loggers_summary.csv |
 | infection_experiment | 1RwIhDQNeAWcLI9ZlrlpekDWQ0cjPM_UkBgb5FFBDiM8 | infection_experiment.csv |
+| taxa | 14lrkEsWE7A2jRFKakI5M0C_fn1BSDBlRF4GbxPmEMI0 |   |
 
 Three ways to load these data:
 
