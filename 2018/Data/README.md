@@ -64,7 +64,7 @@ Growth rates and identities of fungi isolated from lichens.
 
 **Details**:
 
-Lichens were surface steriled in falcon tubes ( 95% ethanol for 30 sec, 70% bleach for 2 min, 70% ethanol for 2 min) and then allowed to dry on sterile petri dishes before cutting into 2x2 mm sections and plating on slants containing solid MEA media (in 1.5 mL eppendorf tubes). Each fungus that emerged was given a unique IsolateID and replated onto a petri dish with solid MEA media to measure growth. The radius was measured after 7 and 14 days of growth in three directions and then averaged.
+Lichens were surface steriled in falcon tubes ( 95% ethanol for 30 sec, 70% bleach for 2 min, 70% ethanol for 2 min) and then allowed to dry on sterile petri dishes before cutting into twelve 2x2 mm sections and plating on slants containing solid MEA media (in 1.5 mL eppendorf tubes). Each fungus that emerged was given a unique IsolateID and replated onto a petri dish with solid MEA media to measure growth. The radius was measured after 7 and 14 days of growth in three directions and then averaged.
 
 After at least 7 days of growth mycelia from the growing edge of each culture were collected and DNA was extracted using Sigma Plant Extract-N-Amp kit. The ITS region of the rDNA gene was amplified with primers ITS1F and ITS4 and Sanger sequenced with ITS1F. TaxonIDs were then assigned using T-BAS (Carbone et al. 2016) and the RDP Classifier tool (Wang et al. 2007) with the Warcup fungal ITS training set (Deshpande et al. 2015). Sequences were inspected by eye to determine whether they should be assigned to the same TaxonID or Species. TaxonIDs with "gen1", "gen2", etc indicate that these sequences differ by only a couple base pairs, whereas TaxonIDs assigned to different species differ by several based pairs.
 
@@ -100,6 +100,25 @@ TaxonIDs were assigned to fungal isolates (see fungal_isolates table) according 
 | Genus | Genus assigned by RDP Classified. If blank the taxon could not be assigned to a Genus with 80% confidence.
 | Species | The first two names in the TaxonID. These names do not correspond to actual fungal species. |
 | Notes | Additional information including whether the sequence matched a particular taxon in the Warcup database. |
+
+### site_by_species_tables
+
+
+
+**Description**:
+
+These tables show whether different fungal taxa were present or absent in different lichens and at different sites. Each row is a lichen or a site and the columns are the different taxa. See [2018/Code/make_databases_tables.R](https://jescoyle.github.io/BIO46/2018/Code/make_database_tables.R) for how the tables were generated. A 1 indicates that the taxon was isolated from a given lichen or from a lichen at a given site. Note tat different numbers of lichens were sampled at sites (see lichens and sites tables).
+
+**File names**:
+
+| File name   | Description                                                          |
+|-------------|----------------------------------------------------------------------|
+| taxaXlichen.csv | Presence / absence of TaxonIDs within lichens. |
+| taxaXsite.csv | Presence / absence of TaxonIDs at sites. |
+| speciesXlichen.csv | Presence / absence of species within lichens. |
+| speciesXsite.csv | Presence / absence of species at sites. |
+| classXlichen.csv | Presence / absence of fungal classes within lichens. |
+| classXsite.csv | Presence / absence of fungal classes at sites. |
 
 
 ### infection_prevalence

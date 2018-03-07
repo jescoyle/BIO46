@@ -239,7 +239,7 @@ $(document).ready(function () {
 <p><strong>Description</strong>:</p>
 <p>Growth rates and identities of fungi isolated from lichens.</p>
 <p><strong>Details</strong>:</p>
-<p>Lichens were surface steriled in falcon tubes ( 95% ethanol for 30 sec, 70% bleach for 2 min, 70% ethanol for 2 min) and then allowed to dry on sterile petri dishes before cutting into 2x2 mm sections and plating on slants containing solid MEA media (in 1.5 mL eppendorf tubes). Each fungus that emerged was given a unique IsolateID and replated onto a petri dish with solid MEA media to measure growth. The radius was measured after 7 and 14 days of growth in three directions and then averaged.</p>
+<p>Lichens were surface steriled in falcon tubes ( 95% ethanol for 30 sec, 70% bleach for 2 min, 70% ethanol for 2 min) and then allowed to dry on sterile petri dishes before cutting into twelve 2x2 mm sections and plating on slants containing solid MEA media (in 1.5 mL eppendorf tubes). Each fungus that emerged was given a unique IsolateID and replated onto a petri dish with solid MEA media to measure growth. The radius was measured after 7 and 14 days of growth in three directions and then averaged.</p>
 <p>After at least 7 days of growth mycelia from the growing edge of each culture were collected and DNA was extracted using Sigma Plant Extract-N-Amp kit. The ITS region of the rDNA gene was amplified with primers ITS1F and ITS4 and Sanger sequenced with ITS1F. TaxonIDs were then assigned using T-BAS (Carbone et al. 2016) and the RDP Classifier tool (Wang et al. 2007) with the Warcup fungal ITS training set (Deshpande et al. 2015). Sequences were inspected by eye to determine whether they should be assigned to the same TaxonID or Species. TaxonIDs with “gen1”, “gen2”, etc indicate that these sequences differ by only a couple base pairs, whereas TaxonIDs assigned to different species differ by several based pairs.</p>
 <table>
 <colgroup>
@@ -330,6 +330,46 @@ $(document).ready(function () {
 <tr class="odd">
 <td>Notes</td>
 <td>Additional information including whether the sequence matched a particular taxon in the Warcup database.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="site_by_species_tables" class="section level3">
+<h3>site_by_species_tables</h3>
+<p><strong>Description</strong>:</p>
+<p>These tables show whether different fungal taxa were present or absent in different lichens and at different sites. Each row is a lichen or a site and the columns are the different taxa. See <a href="https://jescoyle.github.io/BIO46/2018/Code/make_database_tables.R">2018/Code/make_databases_tables.R</a> for how the tables were generated. A 1 indicates that the taxon was isolated from a given lichen or from a lichen at a given site. Note tat different numbers of lichens were sampled at sites (see lichens and sites tables).</p>
+<p><strong>File names</strong>:</p>
+<table>
+<thead>
+<tr class="header">
+<th>File name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>taxaXlichen.csv</td>
+<td>Presence / absence of TaxonIDs within lichens.</td>
+</tr>
+<tr class="even">
+<td>taxaXsite.csv</td>
+<td>Presence / absence of TaxonIDs at sites.</td>
+</tr>
+<tr class="odd">
+<td>speciesXlichen.csv</td>
+<td>Presence / absence of species within lichens.</td>
+</tr>
+<tr class="even">
+<td>speciesXsite.csv</td>
+<td>Presence / absence of species at sites.</td>
+</tr>
+<tr class="odd">
+<td>classXlichen.csv</td>
+<td>Presence / absence of fungal classes within lichens.</td>
+</tr>
+<tr class="even">
+<td>classXsite.csv</td>
+<td>Presence / absence of fungal classes at sites.</td>
 </tr>
 </tbody>
 </table>
