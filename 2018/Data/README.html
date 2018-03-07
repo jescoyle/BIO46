@@ -235,11 +235,104 @@ $(document).ready(function () {
 </div>
 <div id="fungal_isolates" class="section level3">
 <h3>fungal_isolates</h3>
-<p><strong>File name</strong>: NOT YET PRESENT</p>
+<p><strong>File name</strong>: fungal_isolates.csv</p>
 <p><strong>Description</strong>:</p>
 <p>Growth rates and identities of fungi isolated from lichens.</p>
 <p><strong>Details</strong>:</p>
-<p><strong>Columns</strong>:</p>
+<p>Lichens were surface steriled in falcon tubes ( 95% ethanol for 30 sec, 70% bleach for 2 min, 70% ethanol for 2 min) and then allowed to dry on sterile petri dishes before cutting into 2x2 mm sections and plating on slants containing solid MEA media (in 1.5 mL eppendorf tubes). Each fungus that emerged was given a unique IsolateID and replated onto a petri dish with solid MEA media to measure growth. The radius was measured after 7 and 14 days of growth in three directions and then averaged.</p>
+<p>After at least 7 days of growth mycelia from the growing edge of each culture were collected and DNA was extracted using Sigma Plant Extract-N-Amp kit. The ITS region of the rDNA gene was amplified with primers ITS1F and ITS4 and Sanger sequenced with ITS1F. TaxonIDs were then assigned using T-BAS (Carbone et al. 2016) and the RDP Classifier tool (Wang et al. 2007) with the Warcup fungal ITS training set (Deshpande et al. 2015). Sequences were inspected by eye to determine whether they should be assigned to the same TaxonID or Species. TaxonIDs with “gen1”, “gen2”, etc indicate that these sequences differ by only a couple base pairs, whereas TaxonIDs assigned to different species differ by several based pairs.</p>
+<table>
+<colgroup>
+<col width="16%"></col>
+<col width="83%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LichenID</td>
+<td>Code identifying the lichen that the fungus was isolated from.</td>
+</tr>
+<tr class="even">
+<td>IsolateID</td>
+<td>Unique code identifying a fungal isolate.</td>
+</tr>
+<tr class="odd">
+<td>Date_emerged</td>
+<td>Date that fungal isolate was transfered from a slant to a plate with solid media to measure growth.</td>
+</tr>
+<tr class="even">
+<td>Radius_mm_day7</td>
+<td>Radius after growing for 7 days.</td>
+</tr>
+<tr class="odd">
+<td>Radius_mm_day14</td>
+<td>Radius after growing for 14 days.</td>
+</tr>
+<tr class="even">
+<td>TaxonID</td>
+<td>Tentative taxon name. Corresponds to taxa table.</td>
+</tr>
+<tr class="odd">
+<td>Notes</td>
+<td>Additional information.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="taxa" class="section level3">
+<h3>taxa</h3>
+<p><strong>File name</strong>: taxa.csv</p>
+<p><strong>Description</strong>:</p>
+<p>Descriptions of TaxonIDs used to classify fungal isolates.</p>
+<p><strong>Details</strong>:</p>
+<p>TaxonIDs were assigned to fungal isolates (see fungal_isolates table) according to differences in their rDNA ITS sequences. Names were tentatively assigned using T-BAS (Carbone et al. 2016) and the RDP Classifier tool (Wang et al. 2007) with the Warcup fungal ITS training set (Deshpande et al. 2015). T-BAS was primarily used to identify unique OTUS whereas the RDP Classifier was used to assign names. Sequences were inspected by eye to determine whether they should be assigned to the same TaxonID or Species. TaxonIDs with “gen1”, “gen2”, etc indicate that these sequences differ by only a couple base pairs, whereas TaxonIDs assigned to different species differ by several based pairs. Variation in bases on the ends of sequences were ignored since difference are likely due to errors in the sequencing process. Chromatograms were inspected to verify that single nucleotide differences between genotypes were actual substitutions and not errors in sequencing.</p>
+<table>
+<colgroup>
+<col width="16%"></col>
+<col width="83%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>TaxonID</td>
+<td>Unique name identifying a unique ITS sequence.</td>
+</tr>
+<tr class="even">
+<td>Class</td>
+<td>Class assigned by RDP Classifier. If blank, the taxon could not be assigned to a Class with 80% confidence.</td>
+</tr>
+<tr class="odd">
+<td>Order</td>
+<td>Order assigned by RDP Classifier. If blank, the taxon could not be assigned to an Order with 80% confidence.</td>
+</tr>
+<tr class="even">
+<td>Family</td>
+<td>Family assigned by RDP Classifier. If blank the taxon could not be assigned to a Family with 80% confidence.</td>
+</tr>
+<tr class="odd">
+<td>Genus</td>
+<td>Genus assigned by RDP Classified. If blank the taxon could not be assigned to a Genus with 80% confidence.</td>
+</tr>
+<tr class="even">
+<td>Species</td>
+<td>The first two names in the TaxonID. These names do not correspond to actual fungal species.</td>
+</tr>
+<tr class="odd">
+<td>Notes</td>
+<td>Additional information including whether the sequence matched a particular taxon in the Warcup database.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="infection_prevalence" class="section level3">
 <h3>infection_prevalence</h3>
@@ -456,6 +549,7 @@ $(document).ready(function () {
 </tr>
 </tbody>
 </table>
+<hr />
 </div>
 </div>
 <div id="raw-data-tables" class="section level2">
@@ -478,6 +572,15 @@ $(document).ready(function () {
 <p><strong>File name</strong>: BIO46_W2018_env_dataloggers.csv</p>
 <p><strong>Description</strong>:</p>
 <p>Combines data from iButton and humidity data loggers. Humidity estimated at all but three sites based on measured values at nearest logger. Humidity data may be suspect since there were substantial discrepancies in temperature between ibuttons and EL-2-USB loggers at teh same site.</p>
+<hr />
+</div>
+<div id="references" class="section level3">
+<h3>References</h3>
+<ul>
+<li>Carbone, I. White, J. B., Miadlikowska, J., Arnold, A. E., Miller, M. A., Kauff, F., U′Ren, J. M., May, G. and F. Lutzoni. 2016. T-BAS: Tree-Based Alignment Selector toolkit for phylogenetic-based placement, alignment downloads, and metadata visualization: an example with the Pezizomycotina tree of life. Bioinformatics 2016, doi: 10.1093/bioinformatics/btw808 (<a href="https://academic.oup.com/bioinformatics/article/2730230/T-BAS-Tree-Based-Alignment-Selector-toolkit-for" class="uri">https://academic.oup.com/bioinformatics/article/2730230/T-BAS-Tree-Based-Alignment-Selector-toolkit-for</a>)</li>
+<li>Deshpande et al. 2015. Fungal identification using a Bayesian Classifier and the ‘Warcup’ training set of Internal Transcribed Spacer sequences. Mycologia (108(1): 1-5. <a href="doi:10.3852/14-293" class="uri">doi:10.3852/14-293</a></li>
+<li>Wang, Q, G. M. Garrity, J. M. Tiedje, and J. R. Cole. 2007. Naïve Bayesian Classifier for Rapid Assignment of rRNA Sequences into the New Bacterial Taxonomy. Appl Environ Microbiol. 73(16):5261-7.</li>
+</ul>
 </div>
 </div>
 </div>

@@ -438,3 +438,103 @@ env_summary <- bind_rows(winter_summary, month_summary) %>%
 write.csv(env_summary, file.path(local_dir, 'env_logger_summary.csv'), row.names=F)
 
 
+#############################################
+### Make site X species tables            ###
+
+# Load packages
+library(dplyr)
+library(tidyr)
+
+
+# Define url for github repository
+# Can alternatively read from local files
+github_url <- "https://raw.githubusercontent.com/jescoyle/BIO46/master/2018/Data/"
+local_dir <- "Data"
+
+# Read in sites data
+sites <- read.csv(file.path(github_url, "BIO46_2018_sample_sites.csv"))
+
+# Read in lichens data
+lichens <- read.csv(file.path(github_url, "lichens.csv"))
+
+# Read in fungal isolates data
+isolates <- read.csv(file.path(github_url, "fungal_isolates.csv"))
+
+# Read in taxa table
+taxa <- read.csv(file.path(github_url, "taxa.csv"))
+
+# Merge sites and lichens data with fungi
+fungi <- lichens %>%
+  select(-Team) %>%
+  right_join(isolates)
+
+fungi <- sites %>%
+  select(-Group, -RH_site) %>%
+  right_join(fungi)
+
+fungi <- taxa %>%
+  select(-Notes) %>%
+  right_join(fungi)
+
+# Tabulate occurence of diffent TaxonIDs in lichens and at sites
+taxaXlichen <- fungi %>%
+  group_by(TaxonID, LichenID) %>%
+  summarise(Count  = n()) %>%
+  filter(TaxonID != "") %>%
+  mutate(Count = Count > 0) %>%
+  spread(key = TaxonID, value = Count, fill = 0)
+
+taxaXsite <- fungi %>%
+  group_by(TaxonID, Site) %>%
+  summarise(Count  = n()) %>%
+  filter(TaxonID != "") %>%
+  mutate(Count = Count > 0) %>%
+  spread(key = TaxonID, value = Count, fill = 0)
+
+# Tabulate occurence of diffent species in lichens and at sites
+speciesXlichen <- fungi %>%
+  group_by(Species, LichenID) %>%
+  summarise(Count  = n()) %>%
+  filter(Species != "") %>%
+  mutate(Count = Count > 0) %>%
+  spread(key = Species, value = Count, fill = 0)
+
+speciesXsite <- fungi %>%
+  group_by(Species, Site) %>%
+  summarise(Count  = n()) %>%
+  filter(Species != "") %>%
+  mutate(Count = Count > 0) %>%
+  spread(key = Species, value = Count, fill = 0)
+
+# Tabulate occurence of diffent classes of fungi in lichens and at sites
+classXlichen <- fungi %>%
+  group_by(Class, LichenID) %>%
+  summarise(Count  = n()) %>%
+  filter(Class != "") %>%
+  mutate(Count = Count > 0) %>%
+  spread(key = Class, value = Count, fill = 0)
+  
+classXsite <- fungi %>%
+  group_by(Class, Site) %>%
+  summarise(Count  = n()) %>%
+  filter(Class != "") %>%
+  mutate(Count = Count > 0) %>%
+  spread(key = Class, value = Count, fill = 0)
+
+# Save the output
+
+write.csv(taxaXlichen, file.path(local_dir, "site_X_species_tables", "taxaXlichen.csv"), row.names = FALSE)
+write.csv(taxaXsite, file.path(local_dir, "site_X_species_tables", "taxaXsite.csv"), row.names = FALSE)
+write.csv(speciesXlichen, file.path(local_dir, "site_X_species_tables", "speciesXlichen.csv"), row.names = FALSE)
+write.csv(speciesXsite  , file.path(local_dir, "site_X_species_tables", "speciesXsite.csv"), row.names = FALSE)
+write.csv(classXlichen, file.path(local_dir, "site_X_species_tables", "classXlichen.csv"), row.names = FALSE)
+write.csv(classXsite  , file.path(local_dir, "site_X_species_tables", "classXsite.csv"), row.names = FALSE)
+
+
+
+
+
+
+
+
+

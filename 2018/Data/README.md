@@ -56,7 +56,7 @@ Each row corresponds to a lichen collected at Jasper Ridge on January 11, 2018. 
 
 ### fungal_isolates
 
-**File name**: NOT YET PRESENT
+**File name**: fungal_isolates.csv
 
 **Description**:
 
@@ -64,9 +64,42 @@ Growth rates and identities of fungi isolated from lichens.
 
 **Details**:
 
+Lichens were surface steriled in falcon tubes ( 95% ethanol for 30 sec, 70% bleach for 2 min, 70% ethanol for 2 min) and then allowed to dry on sterile petri dishes before cutting into 2x2 mm sections and plating on slants containing solid MEA media (in 1.5 mL eppendorf tubes). Each fungus that emerged was given a unique IsolateID and replated onto a petri dish with solid MEA media to measure growth. The radius was measured after 7 and 14 days of growth in three directions and then averaged.
 
-**Columns**:
+After at least 7 days of growth mycelia from the growing edge of each culture were collected and DNA was extracted using Sigma Plant Extract-N-Amp kit. The ITS region of the rDNA gene was amplified with primers ITS1F and ITS4 and Sanger sequenced with ITS1F. TaxonIDs were then assigned using T-BAS (Carbone et al. 2016) and the RDP Classifier tool (Wang et al. 2007) with the Warcup fungal ITS training set (Deshpande et al. 2015). Sequences were inspected by eye to determine whether they should be assigned to the same TaxonID or Species. TaxonIDs with "gen1", "gen2", etc indicate that these sequences differ by only a couple base pairs, whereas TaxonIDs assigned to different species differ by several based pairs.
 
+| Column name | Description                                                          |
+|-------------|----------------------------------------------------------------------|
+| LichenID | Code identifying the lichen that the fungus was isolated from. |
+| IsolateID | Unique code identifying a fungal isolate. |
+| Date_emerged | Date that fungal isolate was transfered from a slant to a plate with solid media to measure growth. |
+| Radius_mm_day7 | Radius after growing for 7 days. |
+| Radius_mm_day14| Radius after growing for 14 days. |
+| TaxonID | Tentative taxon name. Corresponds to taxa table. |
+| Notes | Additional information. |
+
+
+### taxa
+
+**File name**: taxa.csv
+
+**Description**:
+
+Descriptions of TaxonIDs used to classify fungal isolates.
+
+**Details**:
+
+TaxonIDs were assigned to fungal isolates (see fungal_isolates table) according to differences in their rDNA ITS sequences. Names were tentatively assigned using T-BAS (Carbone et al. 2016) and the RDP Classifier tool (Wang et al. 2007) with the Warcup fungal ITS training set (Deshpande et al. 2015). T-BAS was primarily used to identify unique OTUS whereas the RDP Classifier was used to assign names. Sequences were inspected by eye to determine whether they should be assigned to the same TaxonID or Species. TaxonIDs with "gen1", "gen2", etc indicate that these sequences differ by only a couple base pairs, whereas TaxonIDs assigned to different species differ by several based pairs. Variation in bases on the ends of sequences were ignored since difference are likely due to errors in the sequencing process. Chromatograms were inspected to verify that single nucleotide differences between genotypes were actual substitutions and not errors in sequencing.
+
+| Column name | Description                                                          |
+|-------------|----------------------------------------------------------------------|
+| TaxonID | Unique name identifying a unique ITS sequence. |
+| Class | Class assigned by RDP Classifier. If blank, the taxon could not be assigned to a Class with 80% confidence. |
+| Order | Order assigned by RDP Classifier. If blank, the taxon could not be assigned to an Order with 80% confidence. |
+| Family | Family assigned by RDP Classifier. If blank the taxon could not be assigned to a Family with 80% confidence. |
+| Genus | Genus assigned by RDP Classified. If blank the taxon could not be assigned to a Genus with 80% confidence.
+| Species | The first two names in the TaxonID. These names do not correspond to actual fungal species. |
+| Notes | Additional information including whether the sequence matched a particular taxon in the Warcup database. |
 
 
 ### infection_prevalence
@@ -173,6 +206,8 @@ Vapor pressure deficit difference between the vapor pressure of water in the air
 | VPD_range | Average daily VPD range in Pascals. |
 
 
+-----------------
+
 ## Raw data tables
 
 These tables were store data logger measurements and were used to calculate the summary environmental data in the env_logger_summary table.  [2018/Code/make_databases_tables.R](https://jescoyle.github.io/BIO46/2018/Code/make_database_tables.R) for more information.
@@ -203,3 +238,12 @@ EL-USB-2 humidity logger data from three survey sites.
 **Description**:
 
 Combines data from iButton and humidity data loggers. Humidity estimated at all but three sites based on measured values at nearest logger. Humidity data may be suspect since there were substantial discrepancies in temperature between ibuttons and EL-2-USB loggers at teh same site.
+
+
+-----------------
+
+### References
+
++ Carbone, I. White, J. B., Miadlikowska, J., Arnold, A. E., Miller, M. A., Kauff, F., U′Ren, J. M., May, G. and F. Lutzoni. 2016. T-BAS: Tree-Based Alignment Selector toolkit for phylogenetic-based placement, alignment downloads, and metadata visualization: an example with the Pezizomycotina tree of life. Bioinformatics 2016, doi: 10.1093/bioinformatics/btw808 (https://academic.oup.com/bioinformatics/article/2730230/T-BAS-Tree-Based-Alignment-Selector-toolkit-for)
++ Deshpande et al. 2015. Fungal identification using a Bayesian Classifier and the 'Warcup' training set of Internal Transcribed Spacer sequences. Mycologia (108(1): 1-5. doi:10.3852/14-293
++ Wang, Q, G. M. Garrity, J. M. Tiedje, and J. R. Cole. 2007. Naïve Bayesian Classifier for Rapid Assignment of rRNA Sequences into the New Bacterial Taxonomy. Appl Environ Microbiol. 73(16):5261-7.
