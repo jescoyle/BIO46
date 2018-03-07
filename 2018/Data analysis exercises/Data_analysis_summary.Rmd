@@ -65,7 +65,7 @@ The following data tables are available for analysis:
 | interaction_experiment_bycompetitor | 16YxUnW2o1WfYYab5IUNTzxFVcrKVvwerbR7pGLJzHZQ | interaction_experiment_bycompetitor.csv |
 | env_loggers_summary | 1ktSM1PYOnazM663Fg_bdTYRPA8yUlHH2VYFriHFleEo | env_loggers_summary.csv |
 | infection_experiment | 1RwIhDQNeAWcLI9ZlrlpekDWQ0cjPM_UkBgb5FFBDiM8 | infection_experiment.csv |
-| taxa | 14lrkEsWE7A2jRFKakI5M0C_fn1BSDBlRF4GbxPmEMI0 |   |
+| taxa | 1pbttwIAHZ8jijHdB9rvwkdxkh0rkLfKoegm07PxjB9Y | taxa.csv |
 
 Three ways to load these data:
 
