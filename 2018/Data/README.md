@@ -4,7 +4,7 @@
 
 ### sites
 
-**File name**: BIO46_sample_sites.csv
+**File name**: [BIO46_sample_sites.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/BIO46_sample_sites.csv)
 
 **Description**:
 
@@ -28,7 +28,7 @@ Each row corresponds to one site that was sampled for lichens in the BIO46 class
 
 ### lichens
 
-**File name**: lichens.csv
+**File name**: [lichens.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/lichens.csv)
 
 **Description**: 
 
@@ -56,7 +56,7 @@ Each row corresponds to a lichen collected at Jasper Ridge on January 11, 2018. 
 
 ### fungal_isolates
 
-**File name**: fungal_isolates.csv
+**File name**: [fungal_isolates.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/fungal_isolates.csv)
 
 **Description**:
 
@@ -81,7 +81,7 @@ After at least 7 days of growth mycelia from the growing edge of each culture we
 
 ### taxa
 
-**File name**: taxa.csv
+**File name**: [taxa.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/taxa.csv)
 
 **Description**:
 
@@ -101,9 +101,7 @@ TaxonIDs were assigned to fungal isolates (see fungal_isolates table) according 
 | Species | The first two names in the TaxonID. These names do not correspond to actual fungal species. |
 | Notes | Additional information including whether the sequence matched a particular taxon in the Warcup database. |
 
-### site_by_species_tables
-
-
+### site_X_species_tables
 
 **Description**:
 
@@ -113,17 +111,17 @@ These tables show whether different fungal taxa were present or absent in differ
 
 | File name   | Description                                                          |
 |-------------|----------------------------------------------------------------------|
-| taxaXlichen.csv | Presence / absence of TaxonIDs within lichens. |
-| taxaXsite.csv | Presence / absence of TaxonIDs at sites. |
-| speciesXlichen.csv | Presence / absence of species within lichens. |
-| speciesXsite.csv | Presence / absence of species at sites. |
-| classXlichen.csv | Presence / absence of fungal classes within lichens. |
-| classXsite.csv | Presence / absence of fungal classes at sites. |
+| [taxaXlichen.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/site_X_species_tables/taxaXlichen.csv) | Presence / absence of TaxonIDs within lichens. |
+| [taxaXsite.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/site_X_species_tables/taxaXsite.csv) | Presence / absence of TaxonIDs at sites. |
+| [speciesXlichen.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/site_X_species_tables/speciesXlichen.csv) | Presence / absence of species within lichens. |
+| [speciesXsite.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/site_X_species_tables/speciesXsite.csv) | Presence / absence of species at sites. |
+| [classXlichen.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/site_X_species_tables/classXlichen.csv) | Presence / absence of fungal classes within lichens. |
+| [classXsite.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/site_X_species_tables/classXsite.csv) | Presence / absence of fungal classes at sites. |
 
 
 ### infection_prevalence
 
-**File name**: infection_prevalence.csv
+**File name**: [infection_prevalence.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/infection_prevalence.csv)
 
 **Description**: 
 
@@ -146,7 +144,7 @@ Site were surveyed for *Evernia prunastri* abundance by searching for all *E. pr
 
 ### interaction_experiment_byplate
 
-**File name**: interaction_experiment_byplate.csv
+**File name**: [interaction_experiment_byplate.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/infection_experiment_byplate.csv)
 
 **Description**: 
 
@@ -176,7 +174,7 @@ This table has one row for each plate in the experiment.
 
 ### interaction_experiment_bycompetitor
 
-**File name**: interaction_experiment_bycompetitor.csv
+**File name**: [interaction_experiment_bycompetitor.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/infection_experiment_bycompetitor.csv)
 
 **Description**:
 
@@ -199,7 +197,7 @@ See the descriprion for the interaction_experiment_byplate table. Each row in th
 
 ### env_logger_summary
 
-**File name**: env_logger_summary.csv
+**File name**: [env_logger_summary.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/env_logger_summary.csv)
 
 **Description**:
 
@@ -231,10 +229,11 @@ Vapor pressure deficit difference between the vapor pressure of water in the air
 
 These tables were store data logger measurements and were used to calculate the summary environmental data in the env_logger_summary table.  [2018/Code/make_databases_tables.R](https://jescoyle.github.io/BIO46/2018/Code/make_database_tables.R) for more information.
 
+These are somewhat larger files (~20 MB) with many rows, so take care when downloading.
 
 ### ibuttons
 
-**File name**: iButtons_Winter2018.csv
+**File name**: [iButtons_Winter2018.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/iButtons_Winter 2018.csv)
 
 **Description**:
 
@@ -243,7 +242,7 @@ iButton temperature data from survey sites.
 
 ### humidity
 
-**File name**: RH_Winter2018.csv
+**File name**: [RH_Winter2018.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/RH_Winter2018.csv)
 
 **Description**:
 
@@ -252,7 +251,8 @@ EL-USB-2 humidity logger data from three survey sites.
 
 ### env_dataloggers
 
-**File name**: BIO46_W2018_env_dataloggers.csv
+**File name**: [BIO46_W2018_env_dataloggers.csv](https://github.com/jescoyle/BIO46/raw/master/2018/Data/BIO46_W2018_env_dataloggers.csv)
+
 
 **Description**:
 
