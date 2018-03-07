@@ -1,4 +1,4 @@
-Team,LichenID,Site,Substrate_type,Substrate_status,Ascomata,Experiment,Mass_mg_init-,Mass_mg_6weeks,Health
+Team,LichenID,Site,Substrate_type,Substrate_status,Ascomata,Experiment,Mass_mg_init,Mass_mg_6weeks,Health
 1,G1-11,9,shrub,living,0,infection,,,
 1,G1-3,5,tree,dead,10,growth,118,127,1
 1,G1-4,5,tree,dead,14,growth,121,127,2
