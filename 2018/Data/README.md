@@ -14,7 +14,6 @@ Location and environmental data for Jasper Ridge survey sites.
 
 Each row corresponds to one site that was sampled for lichens in the BIO46 class. Site numbers correspond to the same plant numbers used by the BIO47 course. Canopy cover variables are from Gap Light Analyzer (GLA) analysis of hemispherical digital photographs of taken at each site in April - May of 2017 (for the BIO 47 class).
 
-**Columns**:
 
 | Column name | Description                                                          |
 |-------------|----------------------------------------------------------------------|
@@ -38,7 +37,6 @@ Lichens collected at Jasper Ridge, including outcomes of growth and infection ex
 
 Each row corresponds to a lichen collected at Jasper Ridge on January 11, 2018. Lichens were used in two experiments: 1) a growth experiment in which the change in mass and health of lichens was observed before and after growing in a growth chamber for 6 weeks (at 22 C with 14 / 10 hr light / dark cycle) and 2) an infection experiment in which lichens the health of lichens was observed after infection with different fungal isolates (see infection_experiment table). 
 
-**Columns**:
 
 | Column name | Description                                                          |
 |-------------|----------------------------------------------------------------------|
@@ -131,7 +129,6 @@ Abundance of *E. prunastri* and infection prevalence at survey sites.
 
 Site were surveyed for *Evernia prunastri* abundance by searching for all *E. prunastri* present within a 1 x 3 meter plot centered on the station holding the ibutton. Lichens were not surveyed from branches that had fallen on the ground. The prevalence of *Unguiculariopsis lettaui* infecting *E. prunastri* was estimated by randomly choosing nine lichen thalli and inspecting them for ascomata with a 10x hand lens.
 
-**Columns**:
 
 | Column name | Description                                                          |
 |-------------|----------------------------------------------------------------------|
