@@ -110,7 +110,7 @@ comp2 <- cg_data %>%
 
 cg_data_long <- bind_rows(comp1, comp2)
 
-write.csv(int_data_long, 
+write.csv(cg_data_long, 
           file = "Data/interaction_experiment_bycompetitor_CG.csv",
           row.names = FALSE)
 
@@ -440,6 +440,8 @@ write.csv(env_summary, file.path(local_dir, 'env_logger_summary.csv'), row.names
 
 #############################################
 ### Make site X species tables            ###
+
+# Ran code to update tables on 2018-06-04
 
 # Load packages
 library(dplyr)
